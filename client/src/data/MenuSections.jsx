@@ -43,31 +43,28 @@ const menuSections = [
 			{
 				id: 'products',
 				label: 'Products',
-				path: '/products',
 				icon: <Inventory2Icon />,
 				subitems: [
-					{ label: 'All Products', path: '/products/all-products' },
-					{ label: 'Add Product', path: '/products/add-products' },
+					{ label: 'List products', path: '/products' },
+					{ label: 'Create product', path: '/products/create-products' },
 				],
 			},
 			{
 				id: 'categories',
 				label: 'Categories',
-				path: '/categories',
 				icon: <CategoryIcon />,
 				subitems: [
-					{ label: 'All Categories', path: '/categories/all-categories' },
-					{ label: 'Add Category', path: '/categories/add-category' },
+					{ label: 'List categories', path: '/categories' },
+					{ label: 'Create category', path: '/create-category' },
 				],
 			},
 			{
 				id: 'brands',
 				label: 'Brands',
-				path: '/brands',
 				icon: <BrandingWatermarkIcon />,
 				subitems: [
-					{ label: 'All Brands', path: '/brands/all-brands' },
-					{ label: 'Add Brand', path: '/brands/add-brand' },
+					{ label: 'List brands', path: '/brands' },
+					{ label: 'Create brand', path: '/create-brand' },
 				],
 			},
 		],

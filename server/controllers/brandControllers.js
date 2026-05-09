@@ -32,7 +32,16 @@ const createBrand = async (req, res) => {
 
 const getAllBrands = async (req, res) => {
 	try {
+		const { search, isActive } = req.query;
+		console.log(req.query, 'req query');
+
+		const where = {
+			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
+			...(isActive !== undefined ? { isActive: isActive === 'true' } : {}),
+		};
+
 		const brands = await prisma.brand.findMany({
+			where,
 			orderBy: {
 				createdAt: 'desc',
 			},

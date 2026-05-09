@@ -24,7 +24,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import getCustomers from '../../api/customers_api/getCustomers';
+import getProducts from '../../api/products_api/getProducts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -37,23 +37,37 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useSearchParams } from 'react-router-dom';
+import getCategories from '../../api/categories_api/getCategories';
+import getBrands from '../../api/brands_api/getBrands';
 
-function CustomerTable() {
+function ProductTable() {
 	const [rowSelection, setRowSelection] = useState({});
-	const [emailAnchorEl, setEmailAnchorEl] = useState(null);
-	const [phoneAnchorEl, setPhoneAnchorEl] = useState(null);
-	const [emailFilter, setEmailFilter] = useState('');
-	const [phoneFilter, setPhoneFilter] = useState('');
+	const [nameAnchorEl, setNameAnchorEl] = useState(null);
+	const [skuAnchorEl, setSkuAnchorEl] = useState(null);
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [nameFilter, setNameFilter] = useState('');
+	const [skuFilter, setSkuFilter] = useState('');
 
-	const pageNumber = Number(searchParams.get('page'));
-	const pageLimit = Number(searchParams.get('limit')) || 1;
+	const pageNumber = Number(searchParams.get('page')) || 1;
+	const pageLimit = Number(searchParams.get('limit')) || 10;
 
 	const { data, isLoading, isError } = useQuery({
-		queryKey: ['customers', Object.fromEntries(searchParams)],
-		queryFn: () => getCustomers(Object.fromEntries(searchParams)),
+		queryKey: ['products', Object.fromEntries(searchParams)],
+		queryFn: () => getProducts(Object.fromEntries(searchParams)),
 	});
+
+	const { data: categories } = useQuery({
+		queryKey: ['categories'],
+		queryFn: () => getCategories(),
+	});
+
+	const { data: brands } = useQuery({
+		queryKey: ['brands'],
+		queryFn: () => getBrands(),
+	});
+
+	console.log(data, 'data');
 
 	const columns = [
 		{
@@ -73,35 +87,50 @@ function CustomerTable() {
 				/>
 			),
 		},
-
-		{ header: 'Name', accessorKey: 'name', enableSorting: false },
+		{ header: 'Name', accessorKey: 'name', enableSorting: true },
+		{ header: 'SKU', accessorKey: 'sku', enableSorting: true },
 		{
-			header: 'Email',
-			accessorKey: 'email',
-			cell: ({ getValue }) => getValue() || 'N/A',
+			header: 'Category',
+			accessorKey: 'categoryId',
+			cell: ({ row }) =>
+				row.original.category?.name || row.original.categoryId || 'N/A',
 			enableSorting: false,
 		},
-		{ header: 'Phone', accessorKey: 'phone', enableSorting: false },
 		{
-			header: 'Created At',
-			accessorKey: 'createdAt',
+			header: 'Brand',
+			accessorKey: 'brandId',
+			cell: ({ row }) =>
+				row.original.brand?.name || row.original.brandId || 'N/A',
+			enableSorting: false,
+		},
+		{ header: 'Stock', accessorKey: 'stock', enableSorting: true },
+		{ header: 'Unit', accessorKey: 'unit', enableSorting: false },
+		{
+			header: 'Base Price',
+			accessorKey: 'basePrice',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
 			enableSorting: true,
-			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
 		},
 		{
-			header: 'Total Orders',
-			accessorKey: '_count.orders',
-			enableSorting: false,
+			header: 'Cost Price',
+			accessorKey: 'costPrice',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+			enableSorting: true,
 		},
-		{ header: 'Total Spent', accessorKey: 'totalSpent', enableSorting: true },
-		{ header: 'Due Amount', accessorKey: 'totalDue', enableSorting: true },
 		{
 			header: 'Status',
 			accessorKey: 'isActive',
-			enableSorting: false,
 			cell: ({ getValue }) => (getValue() ? 'Active' : 'Inactive'),
+			enableSorting: false,
 		},
-
+		{
+			header: 'Created At',
+			accessorKey: 'createdAt',
+			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+			enableSorting: true,
+		},
 		{
 			header: 'Actions',
 			id: 'actions',
@@ -153,27 +182,24 @@ function CustomerTable() {
 			limit: newLimit,
 			page: 1,
 		}));
-		setSearchParams('page, 1');
 	};
 
-	const handleEmailApply = () => {
+	const handleNameFilterApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: emailFilter,
+			search: nameFilter,
 			page: 1,
 		}));
-		setEmailFilter('');
-		setEmailAnchorEl(null);
+		setNameAnchorEl(null);
 	};
 
-	const handlePhoneApply = () => {
+	const handleSkuFilterApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: phoneFilter,
+			search: skuFilter,
 			page: 1,
 		}));
-		setPhoneFilter('');
-		setPhoneAnchorEl(null);
+		setSkuAnchorEl(null);
 	};
 
 	const table = useReactTable({
@@ -186,7 +212,7 @@ function CustomerTable() {
 		},
 		manualPagination: true,
 		manualSorting: true,
-		rowCount: data?.pagination?.total || 0,
+		rowCount: data?.count || 0,
 		onRowSelectionChange: setRowSelection,
 		onSortingChange: (updater) => {
 			const newSorting =
@@ -204,23 +230,31 @@ function CustomerTable() {
 		getRowId: (row) => row.id,
 	});
 
+	const hasFilters = Boolean(searchParams.toString());
+
 	if (isLoading) return <CircularProgress />;
 	if (isError) return <Typography>Something went wrong</Typography>;
+
 	return (
 		<Paper
 			sx={{
 				mt: 2,
-
 				p: 4,
 				borderRadius: 4,
 				overflowX: 'auto',
 			}}>
-			<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Box sx={{ display: 'flex', gap: 2 }}>
+			<Box
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					gap: 2,
+					flexWrap: 'wrap',
+				}}>
+				<Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
 					<Button
 						variant='outlined'
 						startIcon={<AddCircleIcon />}
-						onClick={(e) => setEmailAnchorEl(e.currentTarget)}
+						onClick={(e) => setNameAnchorEl(e.currentTarget)}
 						sx={{
 							color: 'text.primary',
 							borderColor: 'divider',
@@ -229,12 +263,12 @@ function CustomerTable() {
 								backgroundColor: 'action.hover',
 							},
 						}}>
-						Email
+						Name
 					</Button>
 					<Button
 						variant='outlined'
 						startIcon={<AddCircleIcon />}
-						onClick={(e) => setPhoneAnchorEl(e.currentTarget)}
+						onClick={(e) => setSkuAnchorEl(e.currentTarget)}
 						sx={{
 							color: 'text.primary',
 							borderColor: 'divider',
@@ -243,103 +277,150 @@ function CustomerTable() {
 								backgroundColor: 'action.hover',
 							},
 						}}>
-						Phone number
+						SKU
 					</Button>
-					{searchParams.get('page') && (
+					{hasFilters && (
 						<Button
 							variant='outlined'
 							startIcon={<ResetIcon />}
 							onClick={() => {
 								setSearchParams({});
-								setEmailFilter('');
-								setPhoneFilter('');
+
+								setSorting([]);
 							}}>
 							Reset
 						</Button>
 					)}
-					{/* Email Filter Popover */}
-					<Popover
-						open={Boolean(emailAnchorEl)}
-						anchorEl={emailAnchorEl}
-						onClose={() => setEmailAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Email
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter email'
-								value={emailFilter}
-								onChange={(e) => setEmailFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handleEmailApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
-					{/* Phone Filter Popover */}
-					<Popover
-						open={Boolean(phoneAnchorEl)}
-						anchorEl={phoneAnchorEl}
-						onClose={() => setPhoneAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Phone Number
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter phone number'
-								value={phoneFilter}
-								onChange={(e) => setPhoneFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handlePhoneApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
 				</Box>
-
-				<Select
-					value={searchParams.get('customerType') || ''}
-					onChange={(e) =>
-						setSearchParams((prev) => ({
-							...Object.fromEntries(prev),
-							customerType: e.target.value,
-							page: 1,
-						}))
-					}
-					displayEmpty
-					color='primary'
-					size='small'
-					sx={{ minWidth: 150 }}>
-					<MenuItem value=''>All Customers</MenuItem>
-					<MenuItem value='REGULAR'>Regular</MenuItem>
-					<MenuItem value='WHOLESALE'>Wholesale</MenuItem>
-					<MenuItem value='VIP'>VIP</MenuItem>
-				</Select>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						gap: 2,
+					}}>
+					<Select
+						value={searchParams.get('category') || ''}
+						onChange={(e) =>
+							setSearchParams((prev) => ({
+								...Object.fromEntries(prev),
+								category: e.target.value,
+								page: 1,
+							}))
+						}
+						displayEmpty
+						size='small'
+						sx={{ minWidth: 170 }}>
+						<MenuItem value=''>All Categories</MenuItem>
+						{categories?.data?.map((cat) => (
+							<MenuItem
+								key={cat.id}
+								value={cat.id}>
+								{cat.name}
+							</MenuItem>
+						))}
+					</Select>
+					<Select
+						value={searchParams.get('brand') || ''}
+						onChange={(e) =>
+							setSearchParams((prev) => ({
+								...Object.fromEntries(prev),
+								brand: e.target.value,
+								page: 1,
+							}))
+						}
+						displayEmpty
+						size='small'
+						sx={{ minWidth: 170 }}>
+						<MenuItem value=''>All Brands</MenuItem>
+						{brands?.data?.map((brand) => (
+							<MenuItem
+								key={brand.id}
+								value={brand.id}>
+								{brand.name}
+							</MenuItem>
+						))}
+					</Select>
+					<Select
+						value={searchParams.get('productType') || ''}
+						onChange={(e) =>
+							setSearchParams((prev) => ({
+								...Object.fromEntries(prev),
+								productType: e.target.value,
+								page: 1,
+							}))
+						}
+						displayEmpty
+						color='primary'
+						size='small'
+						sx={{ minWidth: 170 }}>
+						<MenuItem value=''>All Products</MenuItem>
+						<MenuItem value='SIMPLE'>Simple</MenuItem>
+						<MenuItem value='VARIANT'>Variant</MenuItem>
+						<MenuItem value='COMPOSITE'>Composite</MenuItem>
+					</Select>
+				</Box>
 			</Box>
+			<Popover
+				open={Boolean(nameAnchorEl)}
+				anchorEl={nameAnchorEl}
+				onClose={() => setNameAnchorEl(null)}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}>
+				<Box sx={{ p: 3, minWidth: 300 }}>
+					<Typography
+						variant='h6'
+						sx={{ mb: 2 }}>
+						Filter by Name
+					</Typography>
+					<TextField
+						fullWidth
+						placeholder='Enter product name'
+						value={nameFilter}
+						onChange={(e) => setNameFilter(e.target.value)}
+						size='small'
+						sx={{ mb: 2 }}
+					/>
+					<Button
+						variant='contained'
+						fullWidth
+						onClick={handleNameFilterApply}>
+						Apply
+					</Button>
+				</Box>
+			</Popover>
+			<Popover
+				open={Boolean(skuAnchorEl)}
+				anchorEl={skuAnchorEl}
+				onClose={() => setSkuAnchorEl(null)}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}>
+				<Box sx={{ p: 3, minWidth: 300 }}>
+					<Typography
+						variant='h6'
+						sx={{ mb: 2 }}>
+						Filter by SKU
+					</Typography>
+					<TextField
+						fullWidth
+						placeholder='Enter brand name'
+						value={skuFilter}
+						onChange={(e) => setSkuFilter(e.target.value)}
+						size='small'
+						sx={{ mb: 2 }}
+					/>
+					<Button
+						variant='contained'
+						fullWidth
+						onClick={handleSkuFilterApply}>
+						Apply
+					</Button>
+				</Box>
+			</Popover>
 			<TableContainer
 				component={Box}
 				sx={{
@@ -348,9 +429,7 @@ function CustomerTable() {
 					borderColor: 'divider',
 					borderRadius: 4,
 				}}>
-				{/* Table structure will go here */}
 				<Table sx={{ minWidth: 650 }}>
-					{/* TableHead and TableBody will be defined here */}
 					<TableHead>
 						<TableRow>
 							{table.getHeaderGroups()[0].headers.map((header) => (
@@ -365,7 +444,6 @@ function CustomerTable() {
 											header.column.columnDef.header,
 											header.getContext(),
 										)}
-										{/* Sort Icon */}
 										{header.column.getIsSorted() === 'asc' && (
 											<ArrowUpwardIcon fontSize='small' />
 										)}
@@ -405,8 +483,7 @@ function CustomerTable() {
 									))}
 								</TableRow>
 							))
-						:	/* Data na thakle ei Row-ti dekhabe */
-							<TableRow>
+						:	<TableRow>
 								<TableCell
 									colSpan={columns.length}
 									align='center'
@@ -415,10 +492,11 @@ function CustomerTable() {
 										<Typography
 											variant='h6'
 											fontWeight={600}>
-											No Customers Found
+											No Products Found
 										</Typography>
 										<Typography variant='body2'>
-											It looks like you haven't added any customers yet.
+											Add your first product or adjust filters to see product
+											results.
 										</Typography>
 									</Box>
 								</TableCell>
@@ -429,7 +507,7 @@ function CustomerTable() {
 			</TableContainer>
 			<TablePagination
 				component='div'
-				count={data?.pagination?.total || 0}
+				count={data?.count || 0}
 				page={pageNumber - 1}
 				onPageChange={(event, newPage) => {
 					handlePageChange(newPage + 1);
@@ -438,10 +516,10 @@ function CustomerTable() {
 				onRowsPerPageChange={(event) => {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
-				rowsPerPageOptions={[1, 2, 5, 10, 25, 50]}
+				rowsPerPageOptions={[10, 25, 50, 100]}
 			/>
 		</Paper>
 	);
 }
 
-export default CustomerTable;
+export default ProductTable;

@@ -30,7 +30,17 @@ const createCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
 	try {
+		const { search = '', isActive } = req.query;
+
+		const where = {
+			...(search ?
+				{ OR: [{ name: { contains: search, mode: 'insensitive' } }] }
+			:	{}),
+			...(isActive !== undefined ? { isActive: isActive === 'true' } : {}),
+		};
+
 		const categories = await prisma.category.findMany({
+			where,
 			orderBy: {
 				createdAt: 'desc',
 			},

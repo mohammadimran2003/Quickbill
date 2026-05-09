@@ -30,9 +30,48 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
 	try {
+		console.log(req.query, 'req.query');
+
+		const {
+			category = '',
+			page = 1,
+			brand = '',
+			limit = 10,
+			search = '',
+			sortBy = 'createdAt',
+			sortOrder = 'desc',
+			productType = '',
+		} = req.query;
+
+		console.log(req.query, 'req query');
+
+		const where = {
+			...(search ?
+				{
+					OR: [
+						{ name: { contains: search, mode: 'insensitive' } },
+						{ barcode: { contains: search, mode: 'insensitive' } },
+						{ sku: { contains: search, mode: 'insensitive' } },
+					],
+				}
+			:	{}),
+			...(category ? { categoryId: category } : {}),
+			...(brand ? { brandId: brand } : {}),
+			...(productType ? { productType } : {}),
+		};
+
 		const products = await prisma.product.findMany({
+			where,
 			orderBy: {
 				createdAt: 'desc',
+			},
+			include: {
+				category: {
+					select: { name: true },
+				},
+				brand: {
+					select: { name: true, id: true },
+				},
 			},
 		});
 

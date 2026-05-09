@@ -24,7 +24,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import getCustomers from '../../api/customers_api/getCustomers';
+import getOrders from '../../api/orders_api/getOrders';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -38,21 +38,21 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useSearchParams } from 'react-router-dom';
 
-function CustomerTable() {
+function OrderTable() {
 	const [rowSelection, setRowSelection] = useState({});
-	const [emailAnchorEl, setEmailAnchorEl] = useState(null);
-	const [phoneAnchorEl, setPhoneAnchorEl] = useState(null);
-	const [emailFilter, setEmailFilter] = useState('');
-	const [phoneFilter, setPhoneFilter] = useState('');
+	const [invoiceAnchorEl, setInvoiceAnchorEl] = useState(null);
+	const [customerNameAnchorEl, setCustomerNameAnchorEl] = useState(null);
+	const [invoiceFilter, setInvoiceFilter] = useState('');
+	const [customerNameFilter, setCustomerNameFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
 
-	const pageNumber = Number(searchParams.get('page'));
-	const pageLimit = Number(searchParams.get('limit')) || 1;
+	const pageNumber = Number(searchParams.get('page')) || 1;
+	const pageLimit = Number(searchParams.get('limit')) || 10;
 
 	const { data, isLoading, isError } = useQuery({
-		queryKey: ['customers', Object.fromEntries(searchParams)],
-		queryFn: () => getCustomers(Object.fromEntries(searchParams)),
+		queryKey: ['orders', Object.fromEntries(searchParams)],
+		queryFn: () => getOrders(Object.fromEntries(searchParams)),
 	});
 
 	const columns = [
@@ -73,35 +73,55 @@ function CustomerTable() {
 				/>
 			),
 		},
-
-		{ header: 'Name', accessorKey: 'name', enableSorting: false },
+		{ header: 'Invoice No', accessorKey: 'orderNumber', enableSorting: true },
 		{
-			header: 'Email',
-			accessorKey: 'email',
-			cell: ({ getValue }) => getValue() || 'N/A',
+			header: 'Customer',
+			accessorKey: 'customer',
+			cell: ({ row }) =>
+				row.original.customer?.name || row.original.customerId || 'Walk-in',
 			enableSorting: false,
 		},
-		{ header: 'Phone', accessorKey: 'phone', enableSorting: false },
 		{
-			header: 'Created At',
-			accessorKey: 'createdAt',
+			header: 'Items',
+			accessorKey: 'items',
+			cell: ({ row }) => row.original.items?.length ?? 0,
+			enableSorting: false,
+		},
+		{
+			header: 'Subtotal',
+			accessorKey: 'subtotal',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
 			enableSorting: true,
+		},
+		{
+			header: 'Discount',
+			accessorKey: 'discountAmount',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : '$0.00',
+			enableSorting: true,
+		},
+		{
+			header: 'Total',
+			accessorKey: 'total',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+			enableSorting: true,
+		},
+		{
+			header: 'Payment',
+			accessorKey: 'amountPaid',
+			cell: ({ getValue }) =>
+				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+			enableSorting: true,
+		},
+		{ header: 'Status', accessorKey: 'status', enableSorting: false },
+		{
+			header: 'Date',
+			accessorKey: 'createdAt',
 			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+			enableSorting: true,
 		},
-		{
-			header: 'Total Orders',
-			accessorKey: '_count.orders',
-			enableSorting: false,
-		},
-		{ header: 'Total Spent', accessorKey: 'totalSpent', enableSorting: true },
-		{ header: 'Due Amount', accessorKey: 'totalDue', enableSorting: true },
-		{
-			header: 'Status',
-			accessorKey: 'isActive',
-			enableSorting: false,
-			cell: ({ getValue }) => (getValue() ? 'Active' : 'Inactive'),
-		},
-
 		{
 			header: 'Actions',
 			id: 'actions',
@@ -109,7 +129,7 @@ function CustomerTable() {
 				<Stack
 					direction='row'
 					spacing={1}>
-					<Tooltip title='View Details'>
+					<Tooltip title='View'>
 						<IconButton
 							size='small'
 							color='info'
@@ -117,7 +137,6 @@ function CustomerTable() {
 							<VisibilityIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
-
 					<Tooltip title='Edit'>
 						<IconButton
 							size='small'
@@ -126,7 +145,6 @@ function CustomerTable() {
 							<EditIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
-
 					<Tooltip title='Delete'>
 						<IconButton
 							size='small'
@@ -153,27 +171,25 @@ function CustomerTable() {
 			limit: newLimit,
 			page: 1,
 		}));
-		setSearchParams('page, 1');
 	};
 
-	const handleEmailApply = () => {
+	const handleInvoiceApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: emailFilter,
+			search: invoiceFilter,
 			page: 1,
 		}));
-		setEmailFilter('');
-		setEmailAnchorEl(null);
+		setInvoiceFilter('');
+		setInvoiceAnchorEl(null);
 	};
-
-	const handlePhoneApply = () => {
+	const handleCustomerNameApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: phoneFilter,
+			search: customerNameFilter,
 			page: 1,
 		}));
-		setPhoneFilter('');
-		setPhoneAnchorEl(null);
+		setInvoiceFilter('');
+		setInvoiceAnchorEl(null);
 	};
 
 	const table = useReactTable({
@@ -186,7 +202,7 @@ function CustomerTable() {
 		},
 		manualPagination: true,
 		manualSorting: true,
-		rowCount: data?.pagination?.total || 0,
+		rowCount: data?.count || 0,
 		onRowSelectionChange: setRowSelection,
 		onSortingChange: (updater) => {
 			const newSorting =
@@ -204,23 +220,31 @@ function CustomerTable() {
 		getRowId: (row) => row.id,
 	});
 
+	const hasFilters = Boolean(searchParams.toString());
+
 	if (isLoading) return <CircularProgress />;
 	if (isError) return <Typography>Something went wrong</Typography>;
+
 	return (
 		<Paper
 			sx={{
 				mt: 2,
-
 				p: 4,
 				borderRadius: 4,
 				overflowX: 'auto',
 			}}>
-			<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Box sx={{ display: 'flex', gap: 2 }}>
+			<Box
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					gap: 2,
+					flexWrap: 'wrap',
+				}}>
+				<Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
 					<Button
 						variant='outlined'
 						startIcon={<AddCircleIcon />}
-						onClick={(e) => setEmailAnchorEl(e.currentTarget)}
+						onClick={(e) => setInvoiceAnchorEl(e.currentTarget)}
 						sx={{
 							color: 'text.primary',
 							borderColor: 'divider',
@@ -229,12 +253,12 @@ function CustomerTable() {
 								backgroundColor: 'action.hover',
 							},
 						}}>
-						Email
+						Invoice No
 					</Button>
 					<Button
 						variant='outlined'
 						startIcon={<AddCircleIcon />}
-						onClick={(e) => setPhoneAnchorEl(e.currentTarget)}
+						onClick={(e) => setCustomerNameAnchorEl(e.currentTarget)}
 						sx={{
 							color: 'text.primary',
 							borderColor: 'divider',
@@ -243,103 +267,100 @@ function CustomerTable() {
 								backgroundColor: 'action.hover',
 							},
 						}}>
-						Phone number
+						Customer name
 					</Button>
-					{searchParams.get('page') && (
+					{hasFilters && (
 						<Button
 							variant='outlined'
 							startIcon={<ResetIcon />}
 							onClick={() => {
 								setSearchParams({});
-								setEmailFilter('');
-								setPhoneFilter('');
+								setInvoiceFilter('');
+								setSorting([]);
 							}}>
 							Reset
 						</Button>
 					)}
-					{/* Email Filter Popover */}
-					<Popover
-						open={Boolean(emailAnchorEl)}
-						anchorEl={emailAnchorEl}
-						onClose={() => setEmailAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Email
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter email'
-								value={emailFilter}
-								onChange={(e) => setEmailFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handleEmailApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
-					{/* Phone Filter Popover */}
-					<Popover
-						open={Boolean(phoneAnchorEl)}
-						anchorEl={phoneAnchorEl}
-						onClose={() => setPhoneAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Phone Number
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter phone number'
-								value={phoneFilter}
-								onChange={(e) => setPhoneFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handlePhoneApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
 				</Box>
-
 				<Select
-					value={searchParams.get('customerType') || ''}
+					value={searchParams.get('status') || ''}
 					onChange={(e) =>
 						setSearchParams((prev) => ({
 							...Object.fromEntries(prev),
-							customerType: e.target.value,
+							status: e.target.value,
 							page: 1,
 						}))
 					}
 					displayEmpty
 					color='primary'
 					size='small'
-					sx={{ minWidth: 150 }}>
-					<MenuItem value=''>All Customers</MenuItem>
-					<MenuItem value='REGULAR'>Regular</MenuItem>
-					<MenuItem value='WHOLESALE'>Wholesale</MenuItem>
-					<MenuItem value='VIP'>VIP</MenuItem>
+					sx={{ minWidth: 170 }}>
+					<MenuItem value=''>All Status</MenuItem>
+					<MenuItem value='COMPLETED'>COMPLETED</MenuItem>
+					<MenuItem value='PARTIAL'>PARTIAL</MenuItem>
+					<MenuItem value='PENDING'>PENDING</MenuItem>
 				</Select>
 			</Box>
+			<Popover
+				open={Boolean(invoiceAnchorEl)}
+				anchorEl={invoiceAnchorEl}
+				onClose={() => setInvoiceAnchorEl(null)}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}>
+				<Box sx={{ p: 3, minWidth: 300 }}>
+					<Typography
+						variant='h6'
+						sx={{ mb: 2 }}>
+						Filter by Invoice No
+					</Typography>
+					<TextField
+						fullWidth
+						placeholder='Enter invoice number'
+						value={invoiceFilter}
+						onChange={(e) => setInvoiceFilter(e.target.value)}
+						size='small'
+						sx={{ mb: 2 }}
+					/>
+					<Button
+						variant='contained'
+						fullWidth
+						onClick={handleInvoiceApply}>
+						Apply
+					</Button>
+				</Box>
+			</Popover>
+			<Popover
+				open={Boolean(customerNameAnchorEl)}
+				anchorEl={customerNameAnchorEl}
+				onClose={() => setCustomerNameAnchorEl(null)}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}>
+				<Box sx={{ p: 3, minWidth: 300 }}>
+					<Typography
+						variant='h6'
+						sx={{ mb: 2 }}>
+						Filter by Customer name
+					</Typography>
+					<TextField
+						fullWidth
+						placeholder='Enter customer name'
+						value={customerNameFilter}
+						onChange={(e) => setCustomerNameFilter(e.target.value)}
+						size='small'
+						sx={{ mb: 2 }}
+					/>
+					<Button
+						variant='contained'
+						fullWidth
+						onClick={handleCustomerNameApply}>
+						Apply
+					</Button>
+				</Box>
+			</Popover>
 			<TableContainer
 				component={Box}
 				sx={{
@@ -348,9 +369,7 @@ function CustomerTable() {
 					borderColor: 'divider',
 					borderRadius: 4,
 				}}>
-				{/* Table structure will go here */}
 				<Table sx={{ minWidth: 650 }}>
-					{/* TableHead and TableBody will be defined here */}
 					<TableHead>
 						<TableRow>
 							{table.getHeaderGroups()[0].headers.map((header) => (
@@ -365,7 +384,6 @@ function CustomerTable() {
 											header.column.columnDef.header,
 											header.getContext(),
 										)}
-										{/* Sort Icon */}
 										{header.column.getIsSorted() === 'asc' && (
 											<ArrowUpwardIcon fontSize='small' />
 										)}
@@ -405,8 +423,7 @@ function CustomerTable() {
 									))}
 								</TableRow>
 							))
-						:	/* Data na thakle ei Row-ti dekhabe */
-							<TableRow>
+						:	<TableRow>
 								<TableCell
 									colSpan={columns.length}
 									align='center'
@@ -415,10 +432,10 @@ function CustomerTable() {
 										<Typography
 											variant='h6'
 											fontWeight={600}>
-											No Customers Found
+											No Orders Found
 										</Typography>
 										<Typography variant='body2'>
-											It looks like you haven't added any customers yet.
+											Create an order or change filters to see results.
 										</Typography>
 									</Box>
 								</TableCell>
@@ -429,7 +446,7 @@ function CustomerTable() {
 			</TableContainer>
 			<TablePagination
 				component='div'
-				count={data?.pagination?.total || 0}
+				count={data?.count || 0}
 				page={pageNumber - 1}
 				onPageChange={(event, newPage) => {
 					handlePageChange(newPage + 1);
@@ -438,10 +455,10 @@ function CustomerTable() {
 				onRowsPerPageChange={(event) => {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
-				rowsPerPageOptions={[1, 2, 5, 10, 25, 50]}
+				rowsPerPageOptions={[10, 25, 50, 100]}
 			/>
 		</Paper>
 	);
 }
 
-export default CustomerTable;
+export default OrderTable;

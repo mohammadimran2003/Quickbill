@@ -187,9 +187,23 @@ const createOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
 	try {
+		const { search, status } = req.query;
+
+		const where = {
+			...(search ?
+				{ orderNumber: { contains: search, mode: 'insensitive' } }
+			:	{}),
+			...(status ? { status: status } : {}),
+		};
+
 		const orders = await prisma.order.findMany({
+			where,
 			orderBy: {
 				createdAt: 'desc',
+			},
+			include: {
+				items: true,
+				customer: true,
 			},
 		});
 

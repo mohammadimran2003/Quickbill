@@ -1,4 +1,4 @@
-import { Box, Typography, Badge, IconButton } from '@mui/material';
+import { Box, Badge, IconButton } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import UserProfile from '../profile/UserProfile';
 import { useTheme } from '@mui/material';
@@ -49,14 +49,7 @@ function LayoutHeader() {
 
 						flexWrap: 'wrap',
 					}}>
-					<Box>
-						<Typography
-							variant='h4'
-							fontWeight={700}
-							gutterBottom>
-							Dashboard
-						</Typography>
-					</Box>
+					<Box></Box>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 						<Badge
 							badgeContent={5}
