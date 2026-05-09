@@ -1,0 +1,29 @@
+import express from 'express';
+import {
+	createCategory,
+	getAllCategories,
+	deleteCategory,
+	editCategory,
+} from '../controllers/categoryControllers.js';
+import validatorsMiddleware from '../middlewares/validatorsMiddleware.js';
+import { createCategorySchema } from '../validations/categoryValidations.js';
+
+const categoryRouter = express.Router();
+
+//create category
+categoryRouter.post(
+	'/',
+	validatorsMiddleware(createCategorySchema),
+	createCategory,
+);
+
+// get all category
+categoryRouter.get('/', getAllCategories);
+
+//delete category
+categoryRouter.delete('/:id', deleteCategory);
+
+//edit category
+categoryRouter.put('/:id', editCategory);
+
+export default categoryRouter;

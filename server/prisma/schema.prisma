@@ -1,0 +1,300 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SALESMAN
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(SALESMAN)
+
+  orders Order[]
+  walletTransactions WalletTransaction[]
+  products Product[]
+  catagories  Category[]
+  brands  Brand[]
+  priceTiers  PriceTier[]
+  productVariants   ProductVariant[]
+  customers Customer[]
+}
+
+enum ProductType {
+  SIMPLE
+  VARIANT
+  COMPOSITE
+}
+
+enum Unit {
+  PCS
+  KG
+  GRAM
+  LITRE
+  DOZEN
+  METER
+  BOX
+}
+
+enum DiscountType {
+  FLAT
+  PERCENTAGE
+}
+
+enum TierName {
+  RETAIL
+  WHOLESALE
+  VIP
+  SPECIAL
+}
+
+enum CustomerType {
+  REGULAR
+  WHOLESALE
+  VIP
+}
+
+model Customer {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  phone         String       @unique
+  email         String?      @unique
+  address       String?
+  customerType  CustomerType @default(REGULAR)
+  creditLimit   Float        @default(0)
+  totalSpent    Float        @default(0)
+  totalDue      Float        @default(0)
+  walletBalance Float        @default(0)
+  note          String?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+  orders        Order[]
+  walletTransactions WalletTransaction[]
+}
+
+enum WalletTransactionType {
+  RECHARGE   // taka add hoyeche
+  PAYMENT    // order a wallet theke kata hoyeche
+  DUE_PAYMENT  // due payment hoyeche
+}
+
+model WalletTransaction {
+  id           String                @id @default(auto()) @map("_id") @db.ObjectId
+  customerId   String                @db.ObjectId
+  customer     Customer              @relation(fields: [customerId], references: [id])
+
+  type         WalletTransactionType
+  amount       Float                 // total koto taka dilo
+  dueDeduction Float @default(0)     // due theke koto katlo
+  walletCredit Float @default(0)     // wallet a koto gelo
+  note         String?
+
+  createdBy    String                @db.ObjectId
+  user         User                  @relation(fields: [createdBy], references: [id])
+  createdAt    DateTime              @default(now())
+}
+
+model Category {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String @unique
+  description String?
+  image       String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+
+  products    Product[]
+}
+
+model Brand {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String @unique
+  description String?
+  logo        String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+
+  products    Product[]
+}
+
+model Product {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Basic Info
+  name            String
+  description     String?
+  images          String[]
+  barcode         String?     @unique
+  sku             String?     @unique
+  productType     ProductType @default(SIMPLE)
+
+  // Categorization
+  categoryId      String      @db.ObjectId
+  category        Category    @relation(fields: [categoryId], references: [id])
+  brandId         String?     @db.ObjectId
+  brand           Brand?      @relation(fields: [brandId], references: [id])
+
+  // Base Pricing 
+  costPrice       Float      
+  basePrice       Float      
+
+  // Discount
+  discountType    DiscountType?
+  discountValue   Float?
+
+  // Stock
+  stock           Int         @default(0)
+  lowStockAlert   Int         @default(5)
+  unit            Unit        @default(PCS)
+
+  // Extra
+  taxRate         Float       @default(0)
+  isActive        Boolean     @default(true)
+  tags            String[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+  priceTiers      PriceTier[] //ekti product er onk gulo priceTiers thakte pare
+  variants        ProductVariant[]
+  orderItems       OrderItem[]
+}
+
+model PriceTier {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  productId String    @db.ObjectId
+  product   Product   @relation(fields: [productId], references: [id])
+
+  name      TierName  // RETAIL, WHOLESALE, VIP, SPECIAL
+  minQty    Int      //koto quantity theke ei price apply hobe
+  price     Float     
+
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+enum OrderStatus {
+  COMPLETED
+  PENDING
+  PARTIAL
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  MOBILE_BANKING
+  UNPAID
+}
+
+enum OrderType {
+  WALK_IN
+  DELIVERY
+}
+
+//counter model for order number generate;
+model Counter {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String @unique
+  value Int    @default(0)
+}
+
+model Order {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber    String        @unique
+
+  // Customer
+  customerId     String?       @db.ObjectId
+  customer       Customer?     @relation(fields: [customerId], references: [id])
+
+  //user
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+
+  // Order Items
+  items          OrderItem[]
+
+  // Pricing
+  subtotal       Float         // discount, tax chara total
+  discountType   DiscountType?
+  discountValue  Float         @default(0)
+  discountAmount Float         @default(0)
+  taxAmount      Float         @default(0)
+  total          Float        
+  totalCostPrice Float         @default(0) // profit hiseber jonno
+
+  // Payment
+  paymentMethod  PaymentMethod @default(CASH)
+  amountPaid     Float
+  changeAmount   Float         @default(0)
+  dueAmount      Float         @default(0)
+
+  // Extra
+  orderType      OrderType     @default(WALK_IN)
+  note           String?
+  status         OrderStatus   @default(COMPLETED)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model OrderItem {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId       String   @db.ObjectId
+  order         Order    @relation(fields: [orderId], references: [id])
+  productId     String   @db.ObjectId
+  product       Product  @relation(fields: [productId], references: [id])
+
+  productName   String   // sei somoyer product name
+  unitPrice     Float    // bikroy mullo
+  purchasePrice Float    // kroy mullo  (profit hisber jonno)
+  quantity      Int
+  discount      Float    @default(0)
+  total         Float    // (unitPrice - discount) * quantity
+
+  createdAt     DateTime @default(now())
+}
+
+
+
+model ProductVariant {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId  String   @db.ObjectId
+  product    Product  @relation(fields: [productId], references: [id])
+
+  size       String?  // "S", "M", "L", "XL", "XXL"
+  color      String?  // "Red", "Blue", "Black"
+  stock      Int      @default(0)
+  extraPrice Float    @default(0) // base price er upore koto barbe
+
+  createdBy   String   @db.ObjectId
+  user     User     @relation(fields: [createdBy], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
