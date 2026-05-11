@@ -229,6 +229,7 @@ model Order {
   orderNumber    String        @unique
 
   // Customer
+  customerName  String?
   customerId     String?       @db.ObjectId
   customer       Customer?     @relation(fields: [customerId], references: [id])
 

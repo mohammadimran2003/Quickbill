@@ -9,8 +9,11 @@ const customerSchema = z.object({
 		.min(1, 'Name is required')
 		.max(50, 'Name must be at most 50 characters'),
 	phone: z
-		.string()
+		.string({
+			required_error: 'Phone number is required',
+		})
 		.trim()
+		.min(1, { message: 'Phone number is required' })
 		.regex(
 			bdPhoneRegex,
 			'Invalid Bangladeshi phone number (e.g., 017xxxxxxxx)',

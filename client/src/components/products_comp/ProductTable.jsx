@@ -28,7 +28,7 @@ import getProducts from '../../api/products_api/getProducts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -39,8 +39,11 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useSearchParams } from 'react-router-dom';
 import getCategories from '../../api/categories_api/getCategories';
 import getBrands from '../../api/brands_api/getBrands';
+import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
+import deleteProduct from '../../api/products_api/deleteProduct';
+import { toast } from 'sonner';
 
-function ProductTable() {
+function ProductTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [nameAnchorEl, setNameAnchorEl] = useState(null);
 	const [skuAnchorEl, setSkuAnchorEl] = useState(null);
@@ -48,13 +51,30 @@ function ProductTable() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [nameFilter, setNameFilter] = useState('');
 	const [skuFilter, setSkuFilter] = useState('');
+	const [productToDelete, setProductToDelete] = useState(null);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
 
+	const queryClient = useQueryClient();
+
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['products', Object.fromEntries(searchParams)],
 		queryFn: () => getProducts(Object.fromEntries(searchParams)),
+	});
+
+	const { mutate: deleteMutation, isPending } = useMutation({
+		mutationFn: (id) => deleteProduct(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries(['products']);
+			setDeleteDialogOpen(false);
+			setProductToDelete(null);
+			toast.success('Customer deleted successfully');
+		},
+		onError: (err) => {
+			toast.error(err?.message || 'Something went wrong!');
+		},
 	});
 
 	const { data: categories } = useQuery({
@@ -66,8 +86,6 @@ function ProductTable() {
 		queryKey: ['brands'],
 		queryFn: () => getBrands(),
 	});
-
-	console.log(data, 'data');
 
 	const columns = [
 		{
@@ -147,20 +165,22 @@ function ProductTable() {
 						</IconButton>
 					</Tooltip>
 
-					<Tooltip title='Edit'>
+					<Tooltip>
 						<IconButton
 							size='small'
-							color='primary'
-							onClick={() => console.log('Edit', row.original.id)}>
+							color='success'
+							onClick={() => onEditClick(row.original)}>
 							<EditIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
-
 					<Tooltip title='Delete'>
 						<IconButton
 							size='small'
 							color='error'
-							onClick={() => console.log('Delete', row.original.id)}>
+							onClick={() => {
+								setProductToDelete(row.original);
+								setDeleteDialogOpen(true);
+							}}>
 							<DeleteIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -168,6 +188,8 @@ function ProductTable() {
 			),
 		},
 	];
+
+	console.log(productToDelete, 'delte');
 
 	const handlePageChange = (newPage) => {
 		setSearchParams((prev) => ({
@@ -517,6 +539,20 @@ function ProductTable() {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
 				rowsPerPageOptions={[10, 25, 50, 100]}
+			/>
+			<DeleteConfirmationDialog
+				open={deleteDialogOpen}
+				onClose={() => {
+					setDeleteDialogOpen(false);
+					setProductToDelete(null);
+				}}
+				onConfirm={() => {
+					console.log(productToDelete.id, 'id');
+					deleteMutation(productToDelete?.id);
+				}}
+				title='Delete Customer'
+				message={`Are you sure you want to delete "${productToDelete?.name}"? This action cannot be undone and will permanently remove the customer and all associated data.`}
+				loading={isPending}
 			/>
 		</Paper>
 	);

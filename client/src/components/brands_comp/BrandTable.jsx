@@ -28,7 +28,7 @@ import getBrands from '../../api/brands_api/getBrands';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -37,13 +37,20 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useSearchParams } from 'react-router-dom';
+import deleteBrand from '../../api/brands_api/deleteBrand';
+import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
+import { toast } from 'sonner';
 
-function BrandTable() {
+function BrandTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [nameAnchorEl, setNameAnchorEl] = useState(null);
 	const [nameFilter, setNameFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const [brandToDelete, setBrandToDelete] = useState(null);
+
+	const queryClient = useQueryClient();
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
@@ -51,6 +58,19 @@ function BrandTable() {
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['brands', Object.fromEntries(searchParams)],
 		queryFn: () => getBrands(Object.fromEntries(searchParams)),
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: deleteBrand,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['brands'] });
+			setDeleteDialogOpen(false);
+			setBrandToDelete(null);
+			toast.success('Brand deleted successfully');
+		},
+		onError: (error) => {
+			toast.error(error.response?.data?.message || 'Failed to delete brand');
+		},
 	});
 
 	const columns = [
@@ -104,7 +124,7 @@ function BrandTable() {
 						<IconButton
 							size='small'
 							color='primary'
-							onClick={() => console.log('Edit', row.original.id)}>
+							onClick={() => onEditClick(row.original)}>
 							<EditIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -113,7 +133,10 @@ function BrandTable() {
 						<IconButton
 							size='small'
 							color='error'
-							onClick={() => console.log('Delete', row.original.id)}>
+							onClick={() => {
+								setBrandToDelete(row.original);
+								setDeleteDialogOpen(true);
+							}}>
 							<DeleteIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -367,6 +390,17 @@ function BrandTable() {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
 				rowsPerPageOptions={[10, 25, 50, 100]}
+			/>
+			<DeleteConfirmationDialog
+				open={deleteDialogOpen}
+				onClose={() => {
+					setDeleteDialogOpen(false);
+					setBrandToDelete(null);
+				}}
+				onConfirm={() => deleteMutation.mutate(brandToDelete.id)}
+				title='Delete Brand'
+				message={`Are you sure you want to delete "${brandToDelete?.name}"? This action cannot be undone and will permanently remove the brand and all associated products.`}
+				loading={deleteMutation.isPending}
 			/>
 		</Paper>
 	);

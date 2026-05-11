@@ -11,6 +11,7 @@ import orderRouter from './routers/orderRouters.js';
 import verifyToken from './middlewares/verifyToken.js';
 import dashboardRouter from './routers/dashboardRouters.js';
 import cors from 'cors';
+import prisma from './lib/prisma.js';
 
 const PORT = 3000;
 
@@ -18,9 +19,25 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+const ensureWalkInCustomer = async () => {
+	const admin = await prisma.user.findFirst({
+		where: { role: 'ADMIN' },
+	});
+	await prisma.customer.upsert({
+		where: { phone: 'walk-in' },
+		create: {
+			name: 'Walk-in Customer',
+			phone: 'walk-in',
+			email: 'walk-in@gmail.com',
+			createdBy: admin.id,
+		},
+		update: {},
+	});
+};
+
 app.use(
 	cors({
-		origin: 'http://localhost:5173', // Apnar frontend URL
+		origin: 'http://localhost:5173', // frontend URL
 		credentials: true, // HttpOnly cookie handle korar jonno eta MUST
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
@@ -40,6 +57,7 @@ app.use('/api/customers', verifyToken, customerRouter);
 app.use('/api/orders', verifyToken, orderRouter);
 app.use('/api/dashboard', verifyToken, dashboardRouter);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
 	console.log(`Your server is running at localhost:${PORT}`);
+	await await ensureWalkInCustomer();
 });

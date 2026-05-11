@@ -24,11 +24,12 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import getCustomers from '../../api/customers_api/getCustomers';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -37,8 +38,11 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useSearchParams } from 'react-router-dom';
+import deleteCustomer from '../../api/customers_api/deleteCustomer';
+import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
+import { toast } from 'sonner';
 
-function CustomerTable() {
+function CustomerTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [emailAnchorEl, setEmailAnchorEl] = useState(null);
 	const [phoneAnchorEl, setPhoneAnchorEl] = useState(null);
@@ -46,6 +50,12 @@ function CustomerTable() {
 	const [phoneFilter, setPhoneFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const [customerToDelete, setCustomerToDelete] = useState(null);
+
+	const navigate = useNavigate();
+
+	const queryClient = useQueryClient();
 
 	const pageNumber = Number(searchParams.get('page'));
 	const pageLimit = Number(searchParams.get('limit')) || 1;
@@ -53,6 +63,19 @@ function CustomerTable() {
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['customers', Object.fromEntries(searchParams)],
 		queryFn: () => getCustomers(Object.fromEntries(searchParams)),
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: deleteCustomer,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['customers'] });
+			setDeleteDialogOpen(false);
+			setCustomerToDelete(null);
+			toast.success('Customer deleted successfully');
+		},
+		onError: (error) => {
+			toast.error(error.response?.data?.message || 'Failed to delete customer');
+		},
 	});
 
 	const columns = [
@@ -113,7 +136,7 @@ function CustomerTable() {
 						<IconButton
 							size='small'
 							color='info'
-							onClick={() => console.log('View', row.original.id)}>
+							onClick={() => navigate(`/customers/${row.original.id}`)}>
 							<VisibilityIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -122,7 +145,7 @@ function CustomerTable() {
 						<IconButton
 							size='small'
 							color='primary'
-							onClick={() => console.log('Edit', row.original.id)}>
+							onClick={() => onEditClick(row.original)}>
 							<EditIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -131,7 +154,10 @@ function CustomerTable() {
 						<IconButton
 							size='small'
 							color='error'
-							onClick={() => console.log('Delete', row.original.id)}>
+							onClick={() => {
+								setCustomerToDelete(row.original);
+								setDeleteDialogOpen(true);
+							}}>
 							<DeleteIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -439,6 +465,18 @@ function CustomerTable() {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
 				rowsPerPageOptions={[1, 2, 5, 10, 25, 50]}
+			/>
+			{/* Delete Confirmation Dialog */}
+			<DeleteConfirmationDialog
+				open={deleteDialogOpen}
+				onClose={() => {
+					setDeleteDialogOpen(false);
+					setCustomerToDelete(null);
+				}}
+				onConfirm={() => deleteMutation.mutate(customerToDelete.id)}
+				title='Delete Customer'
+				message={`Are you sure you want to delete "${customerToDelete?.name}"? This action cannot be undone and will permanently remove the customer and all associated data.`}
+				loading={deleteMutation.isPending}
 			/>
 		</Paper>
 	);

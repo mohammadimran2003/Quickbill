@@ -54,7 +54,7 @@ function OrderTable() {
 		queryKey: ['orders', Object.fromEntries(searchParams)],
 		queryFn: () => getOrders(Object.fromEntries(searchParams)),
 	});
-
+	console.log(data, 'dtata');
 	const columns = [
 		{
 			id: 'select',

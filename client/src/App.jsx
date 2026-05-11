@@ -6,7 +6,9 @@ import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import PrivateRoute from './components/PrivateRoute';
 import Customers from './pages/Customers';
+import CustomerDetailsPage from './pages/CustomerDetailsPage';
 import Products from './pages/Product_pages/Products';
+import ProductForm from './pages/Product_pages/ProductForm';
 import Categories from './pages/category_pages/Categories';
 import Brands from './pages/brand_pages/Brands';
 import Orders from './pages/Orders';
@@ -43,10 +45,34 @@ function App() {
 						}
 					/>
 					<Route
+						path='/customers/:id'
+						element={
+							<PrivateRoute>
+								<CustomerDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
 						path='/products'
 						element={
 							<PrivateRoute>
 								<Products />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/products/create-products'
+						element={
+							<PrivateRoute>
+								<ProductForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/products/edit-products/:id'
+						element={
+							<PrivateRoute>
+								<ProductForm />
 							</PrivateRoute>
 						}
 					/>

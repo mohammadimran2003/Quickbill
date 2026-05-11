@@ -19,6 +19,7 @@ const createOrder = async (req, res) => {
 		let taxAmount = 0;
 		let walletDeduction = 0;
 		const orderItems = [];
+		let customerName = 'Walk-in customer';
 
 		// stock check + price calculate
 		for (const item of items) {
@@ -86,6 +87,8 @@ const createOrder = async (req, res) => {
 				});
 			}
 
+			customerName = customer.name;
+
 			if (customer.totalDue + dueAmount > customer.creditLimit) {
 				return res.status(400).json({
 					success: false,
@@ -97,6 +100,13 @@ const createOrder = async (req, res) => {
 				walletDeduction = Math.min(customer.walletBalance, dueAmount);
 				dueAmount = dueAmount - walletDeduction;
 			}
+		}
+
+		if (!customerId) {
+			const walkIn = await tx.customer.findUnique({
+				where: { phone: 'walk-in' },
+			});
+			customerId = walkIn.id;
 		}
 
 		const result = await prisma.$transaction(async (tx) => {
@@ -124,7 +134,8 @@ const createOrder = async (req, res) => {
 			const order = await tx.order.create({
 				data: {
 					orderNumber,
-					customerId: customerId || null,
+					customerId,
+					customerName,
 					subtotal: subTotal,
 					discountType: discountType || null,
 					discountValue: discountValue || 0,
