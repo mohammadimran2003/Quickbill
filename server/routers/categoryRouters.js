@@ -2,6 +2,7 @@ import express from 'express';
 import {
 	createCategory,
 	getAllCategories,
+	getCategoryById,
 	deleteCategory,
 	editCategory,
 } from '../controllers/categoryControllers.js';
@@ -19,6 +20,9 @@ categoryRouter.post(
 
 // get all category
 categoryRouter.get('/', getAllCategories);
+
+// get category by id
+categoryRouter.get('/:id', getCategoryById);
 
 //delete category
 categoryRouter.delete('/:id', deleteCategory);

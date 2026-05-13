@@ -36,7 +36,7 @@ import ResetIcon from '@mui/icons-material/RestartAlt';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import deleteBrand from '../../api/brands_api/deleteBrand';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
 import { toast } from 'sonner';
@@ -49,6 +49,8 @@ function BrandTable({ onEditClick = () => {} }) {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 	const [brandToDelete, setBrandToDelete] = useState(null);
+
+	const navigate = useNavigate();
 
 	const queryClient = useQueryClient();
 
@@ -115,7 +117,7 @@ function BrandTable({ onEditClick = () => {} }) {
 						<IconButton
 							size='small'
 							color='info'
-							onClick={() => console.log('View', row.original.id)}>
+							onClick={() => navigate(`/brands/${row.original.id}`)}>
 							<VisibilityIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>

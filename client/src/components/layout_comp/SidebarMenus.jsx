@@ -48,7 +48,7 @@ function SidebarMenus({
 			}}>
 			{menuSections.map((menu) => (
 				<Box
-					key={menu.section}
+					key={menu.id}
 					sx={{ mb: 2 }}>
 					{sidebarOpen && (
 						<Typography
@@ -66,7 +66,7 @@ function SidebarMenus({
 					<List disablePadding>
 						{menu.items.map((item) => (
 							<ListItem
-								key={item.path}
+								key={item.id}
 								disablePadding
 								sx={{ display: 'block' }}>
 								<ListItemButton
@@ -107,18 +107,26 @@ function SidebarMenus({
 										<List
 											disablePadding
 											sx={{ pl: 5, pr: 1 }}>
-											{item.subitems.map((sub) => (
+											{item.subitems.map((sub, index) => (
 												<ListItem
-													key={sub.path}
+													key={`${item.id || item.path}-collapsed-${index}`}
 													disablePadding>
 													<ListItemButton
 														component={NavLink}
 														to={sub.path}
-														sx={{ py: 0.5, borderRadius: 1 }}>
-														<ListItemText
-															primary={sub.label}
-															primaryTypographyProps={{ fontSize: '0.875rem' }}
-														/>
+														sx={{
+															py: 0.75,
+															px: 1.25,
+															borderRadius: 1,
+															'&:hover': {
+																bgcolor: theme.palette.action.hover,
+															},
+														}}>
+														<Typography
+															variant='body2'
+															color='primary'>
+															{sub.label}
+														</Typography>
 													</ListItemButton>
 												</ListItem>
 											))}
@@ -147,28 +155,31 @@ function SidebarMenus({
 											{item.label}
 										</Typography>
 
-										{item.subitems.map((sub) => (
-											<Box
-												key={sub.path}
-												component={NavLink}
-												to={sub.path}
-												sx={{
-													display: 'block',
-													textDecoration: 'none',
-													py: 0.75,
-													px: 1.25,
-													borderRadius: 1,
-													'&:hover': {
-														bgcolor: theme.palette.action.hover,
-													},
-												}}>
-												<Typography
-													variant='body2'
-													color='primary'>
-													{sub.label}
-												</Typography>
-											</Box>
-										))}
+										<List disablePadding>
+											{item.subitems.map((sub, index) => (
+												<ListItem
+													key={`${item.id || item.path}-hover-${index}`}
+													disablePadding>
+													<ListItemButton
+														component={NavLink}
+														to={sub.path}
+														sx={{
+															py: 0.75,
+															px: 1.25,
+															borderRadius: 1,
+															'&:hover': {
+																bgcolor: theme.palette.action.hover,
+															},
+														}}>
+														<Typography
+															variant='body2'
+															color='primary'>
+															{sub.label}
+														</Typography>
+													</ListItemButton>
+												</ListItem>
+											))}
+										</List>
 									</Paper>
 								)}
 							</ListItem>

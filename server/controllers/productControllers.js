@@ -1,6 +1,8 @@
 import prisma from '../lib/prisma.js';
 
 const createProduct = async (req, res) => {
+	console.log('Hello');
+
 	try {
 		const product = await prisma.product.create({
 			data: {
@@ -30,8 +32,6 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
 	try {
-		console.log(req.query, 'req.query');
-
 		const {
 			category = '',
 			page = 1,
@@ -42,8 +42,6 @@ const getAllProducts = async (req, res) => {
 			sortOrder = 'desc',
 			productType = '',
 		} = req.query;
-
-		console.log(req.query, 'req query');
 
 		const where = {
 			...(search ?
@@ -69,6 +67,7 @@ const getAllProducts = async (req, res) => {
 				category: {
 					select: { name: true },
 				},
+				priceTiers: true,
 				brand: {
 					select: { name: true, id: true },
 				},

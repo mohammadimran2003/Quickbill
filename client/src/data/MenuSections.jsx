@@ -13,9 +13,11 @@ import StoreIcon from '@mui/icons-material/Store';
 
 const menuSections = [
 	{
+		id: 1,
 		section: 'Overview',
 		items: [
 			{
+				id: 'overview_items-1',
 				label: 'Dashboard',
 				path: '/dashboard',
 				icon: <DashboardIcon />,
@@ -23,14 +25,17 @@ const menuSections = [
 		],
 	},
 	{
+		id: 2,
 		section: 'Sales',
 		items: [
 			{
+				id: 'sales_items-1',
 				label: 'New Sale',
 				path: '/pos',
 				icon: <PointOfSaleIcon />,
 			},
 			{
+				id: 'sales_items-2',
 				label: 'Orders',
 				path: '/orders',
 				icon: <ReceiptLongIcon />,
@@ -38,6 +43,7 @@ const menuSections = [
 		],
 	},
 	{
+		id: 3,
 		section: 'Inventory',
 		items: [
 			{
@@ -45,8 +51,12 @@ const menuSections = [
 				label: 'Products',
 				icon: <Inventory2Icon />,
 				subitems: [
-					{ label: 'List products', path: '/products' },
-					{ label: 'Create product', path: '/products/create-products' },
+					{ id: 'products_id-1', label: 'List products', path: '/products' },
+					{
+						id: 'products_id-2',
+						label: 'Create product',
+						path: '/products/create-products',
+					},
 				],
 			},
 			{
@@ -54,8 +64,16 @@ const menuSections = [
 				label: 'Categories',
 				icon: <CategoryIcon />,
 				subitems: [
-					{ label: 'List categories', path: '/categories' },
-					{ label: 'Create category', path: '/create-category' },
+					{
+						id: 'categories_id-1',
+						label: 'List categories',
+						path: '/categories',
+					},
+					{
+						id: 'categories_id-2',
+						label: 'Create category',
+						path: '/categories/create-category',
+					},
 				],
 			},
 			{
@@ -63,13 +81,18 @@ const menuSections = [
 				label: 'Brands',
 				icon: <BrandingWatermarkIcon />,
 				subitems: [
-					{ label: 'List brands', path: '/brands' },
-					{ label: 'Create brand', path: '/create-brand' },
+					{ id: 'brands_id-1', label: 'List brands', path: '/brands' },
+					{
+						id: 'brands_id-2',
+						label: 'Create brand',
+						path: '/brands/create-brand',
+					},
 				],
 			},
 		],
 	},
 	{
+		id: 4,
 		section: 'People',
 		items: [
 			{
@@ -81,19 +104,23 @@ const menuSections = [
 		],
 	},
 	{
+		id: 5,
 		section: 'Reports',
 		items: [
 			{
+				id: 'reports_id-1',
 				label: 'Sales Report',
 				path: '/reports/sales',
 				icon: <BarChartIcon />,
 			},
 			{
+				id: 'reports_id-2',
 				label: 'Profit Report',
 				path: '/reports/profit',
 				icon: <TrendingUpIcon />,
 			},
 			{
+				id: 'reports_id-3',
 				label: 'Stock Report',
 				path: '/reports/stock',
 				icon: <WarehouseIcon />,
@@ -101,14 +128,17 @@ const menuSections = [
 		],
 	},
 	{
+		id: 6,
 		section: 'Settings',
 		items: [
 			{
+				id: 'settings_id-1',
 				label: 'Users',
 				path: '/settings/users',
 				icon: <PeopleAltIcon />,
 			},
 			{
+				id: 'settings_id-2',
 				label: 'Store Info',
 				path: '/settings/store',
 				icon: <StoreIcon />,

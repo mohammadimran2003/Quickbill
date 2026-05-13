@@ -5,14 +5,27 @@ import { Box } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createCategory from '../../api/categories_api/createCategory';
+import updateCategory from '../../api/categories_api/updateCategory';
 import { toast } from 'sonner';
 
 function Categories() {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const queryClient = useQueryClient();
-	const { mutate } = useMutation({
+
+	const createMutation = useMutation({
 		mutationFn: createCategory,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['categories'] });
+			handleModalClose();
+		},
+		onError: (err) => {
+			toast.error(err.response?.data?.message || 'Something went wrong');
+		},
+	});
+
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }) => updateCategory(id, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['categories'] });
 			handleModalClose();
@@ -38,11 +51,17 @@ function Categories() {
 	};
 
 	const handleSave = async (formData) => {
-		console.log(formData, 'Form Data');
+		const action =
+			selectedCategory ?
+				updateMutation.mutateAsync({ id: selectedCategory.id, data: formData })
+			:	createMutation.mutateAsync(formData);
 
-		await toast.promise(mutate(formData), {
-			success: 'Category created successfully',
-			loading: 'Saving category',
+		await toast.promise(action, {
+			loading: selectedCategory ? 'Updating category...' : 'Saving category...',
+			success:
+				selectedCategory ?
+					'Category updated successfully'
+				:	'Category created successfully',
 			error: (err) => err?.response?.data?.message || 'Something went wrong',
 		});
 	};

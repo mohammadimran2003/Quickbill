@@ -61,8 +61,6 @@ const getCustomers = async (req, res) => {
 			customerType = '',
 		} = req.query;
 
-		console.log(req.query, 'query');
-
 		const skip = (Number(page) - 1) * Number(limit);
 
 		const where = {

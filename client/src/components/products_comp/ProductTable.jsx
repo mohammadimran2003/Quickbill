@@ -18,12 +18,15 @@ import {
 	TextField,
 	Select,
 } from '@mui/material';
+
 import {
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
+
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import getProducts from '../../api/products_api/getProducts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -42,7 +45,7 @@ import getBrands from '../../api/brands_api/getBrands';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
 import deleteProduct from '../../api/products_api/deleteProduct';
 import { toast } from 'sonner';
-
+import PriceTierModal from './PriceTierModal';
 function ProductTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [nameAnchorEl, setNameAnchorEl] = useState(null);
@@ -53,6 +56,7 @@ function ProductTable({ onEditClick = () => {} }) {
 	const [skuFilter, setSkuFilter] = useState('');
 	const [productToDelete, setProductToDelete] = useState(null);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
@@ -160,12 +164,11 @@ function ProductTable({ onEditClick = () => {} }) {
 						<IconButton
 							size='small'
 							color='info'
-							onClick={() => console.log('View', row.original.id)}>
+							onClick={() => navigate(`/products/${row.original.id}`)}>
 							<VisibilityIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
-
-					<Tooltip>
+					<Tooltip title='Edit'>
 						<IconButton
 							size='small'
 							color='success'
@@ -173,6 +176,7 @@ function ProductTable({ onEditClick = () => {} }) {
 							<EditIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
+					<PriceTierModal product={row.original} />
 					<Tooltip title='Delete'>
 						<IconButton
 							size='small'
@@ -188,8 +192,6 @@ function ProductTable({ onEditClick = () => {} }) {
 			),
 		},
 	];
-
-	console.log(productToDelete, 'delte');
 
 	const handlePageChange = (newPage) => {
 		setSearchParams((prev) => ({

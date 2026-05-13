@@ -11,6 +11,11 @@ import Products from './pages/Product_pages/Products';
 import ProductForm from './pages/Product_pages/ProductForm';
 import Categories from './pages/category_pages/Categories';
 import Brands from './pages/brand_pages/Brands';
+import BrandDetailsPage from './pages/brand_pages/BrandDetailsPage';
+import CategoryDetailsPage from './pages/category_pages/CategoryDetailsPage';
+import BrandForm from './pages/brand_pages/BrandForm';
+import CategoryForm from './pages/category_pages/CategoryForm';
+import ProductDetailsPage from './pages/Product_pages/ProductDetailsPage';
 import Orders from './pages/Orders';
 
 function App() {
@@ -77,6 +82,14 @@ function App() {
 						}
 					/>
 					<Route
+						path='/products/:id'
+						element={
+							<PrivateRoute>
+								<ProductDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
 						path='/categories'
 						element={
 							<PrivateRoute>
@@ -85,10 +98,58 @@ function App() {
 						}
 					/>
 					<Route
+						path='/categories/:id'
+						element={
+							<PrivateRoute>
+								<CategoryDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/categories/create-category'
+						element={
+							<PrivateRoute>
+								<CategoryForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/categories/edit-category/:id'
+						element={
+							<PrivateRoute>
+								<CategoryForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
 						path='/brands'
 						element={
 							<PrivateRoute>
 								<Brands />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/brands/:id'
+						element={
+							<PrivateRoute>
+								<BrandDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/brands/create-brand'
+						element={
+							<PrivateRoute>
+								<BrandForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/brands/edit-brand/:id'
+						element={
+							<PrivateRoute>
+								<BrandForm />
 							</PrivateRoute>
 						}
 					/>

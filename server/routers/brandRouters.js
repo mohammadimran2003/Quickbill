@@ -2,6 +2,7 @@ import express from 'express';
 import {
 	createBrand,
 	getAllBrands,
+	getBrandById,
 	deleteBrand,
 	editBrand,
 } from '../controllers/brandControllers.js';
@@ -13,6 +14,7 @@ const brandRouter = express.Router();
 
 brandRouter.post('/', validatorsMiddleware(createBrandSchema), createBrand);
 brandRouter.get('/', getAllBrands);
+brandRouter.get('/:id', getBrandById);
 brandRouter.delete('/:id', deleteBrand);
 brandRouter.put('/:id', editBrand);
 

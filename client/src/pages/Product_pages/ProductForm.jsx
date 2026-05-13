@@ -168,6 +168,8 @@ function ProductForm() {
 			tags: formData.tags || [],
 		};
 
+		console.log(payload, 'payload of formData');
+
 		const action =
 			isEditMode ?
 				updateMutation.mutateAsync({ id, data: payload })
@@ -215,9 +217,7 @@ function ProductForm() {
 					noValidate>
 					{/* ========== BASIC INFORMATION SECTION ========== */}
 					<FormSection title='Basic Information'>
-						<Grid
-							item
-							size={6}>
+						<Grid size={6}>
 							<TextField
 								{...register('name')}
 								label='Product Name'
@@ -230,9 +230,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<TextField
 								{...register('barcode')}
 								label='Barcode'
@@ -245,9 +243,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<TextField
 								{...register('sku')}
 								label='SKU'
@@ -260,9 +256,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={12}>
+						<Grid size={12}>
 							<TextField
 								{...register('description')}
 								label='Description'
@@ -280,9 +274,7 @@ function ProductForm() {
 
 					{/* ========== CATEGORY & TYPE SECTION ========== */}
 					<FormSection title='Category & Type'>
-						<Grid
-							item
-							size={4}>
+						<Grid size={4}>
 							<Controller
 								name='categoryId'
 								control={control}
@@ -312,9 +304,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={4}>
+						<Grid size={4}>
 							<Controller
 								name='brandId'
 								control={control}
@@ -347,9 +337,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={4}>
+						<Grid size={4}>
 							<Controller
 								name='productType'
 								control={control}
@@ -375,9 +363,7 @@ function ProductForm() {
 
 					{/* ========== PRICING SECTION ========== */}
 					<FormSection title='Pricing & Discount'>
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<TextField
 								{...register('costPrice', { valueAsNumber: true })}
 								label='Cost Price'
@@ -392,14 +378,11 @@ function ProductForm() {
 								error={!!errors.costPrice}
 								helperText={errors.costPrice?.message}
 								size='small'
-								inputProps={{ min: 0, step: '0.01' }}
 								placeholder='0.00'
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<TextField
 								{...register('basePrice', { valueAsNumber: true })}
 								label='Base Price'
@@ -414,14 +397,11 @@ function ProductForm() {
 								error={!!errors.basePrice}
 								helperText={errors.basePrice?.message}
 								size='small'
-								inputProps={{ min: 0, step: '0.01' }}
 								placeholder='0.00'
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<TextField
 								{...register('taxRate', { valueAsNumber: true })}
 								label='Tax Rate (%)'
@@ -436,14 +416,11 @@ function ProductForm() {
 								error={!!errors.taxRate}
 								helperText={errors.taxRate?.message}
 								size='small'
-								inputProps={{ min: 0, step: '0.01' }}
 								placeholder='0.00'
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={3}>
+						<Grid size={3}>
 							<Controller
 								name='unit'
 								control={control}
@@ -467,9 +444,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={4}>
+						<Grid size={4}>
 							<Controller
 								name='discountType'
 								control={control}
@@ -493,9 +468,7 @@ function ProductForm() {
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={8}>
+						<Grid size={8}>
 							<TextField
 								{...register('discountValue', { valueAsNumber: true })}
 								label='Discount Value'
@@ -507,7 +480,6 @@ function ProductForm() {
 								error={!!errors.discountValue}
 								helperText={errors.discountValue?.message}
 								size='small'
-								inputProps={{ min: 0, step: '0.01' }}
 								placeholder='0.00'
 							/>
 						</Grid>
@@ -517,9 +489,7 @@ function ProductForm() {
 
 					{/* ========== INVENTORY SECTION ========== */}
 					<FormSection title='Inventory Management'>
-						<Grid
-							item
-							size={4}>
+						<Grid size={4}>
 							<TextField
 								{...register('stock', { valueAsNumber: true })}
 								label='Current Stock'
@@ -534,14 +504,11 @@ function ProductForm() {
 								error={!!errors.stock}
 								helperText={errors.stock?.message}
 								size='small'
-								inputProps={{ min: 0, step: '1' }}
 								placeholder='0'
 							/>
 						</Grid>
 
-						<Grid
-							item
-							size={8}>
+						<Grid size={8}>
 							<TextField
 								{...register('lowStockAlert', { valueAsNumber: true })}
 								label='Low Stock Alert Threshold'
@@ -559,7 +526,6 @@ function ProductForm() {
 									'Alert will trigger when stock falls below this value'
 								}
 								size='small'
-								inputProps={{ min: 0, step: '1' }}
 								placeholder='5'
 							/>
 						</Grid>
@@ -568,9 +534,7 @@ function ProductForm() {
 					<Divider sx={{ my: 1 }} />
 
 					<FormSection title='Media & Metadata'>
-						<Grid
-							item
-							size={6}>
+						<Grid size={6}>
 							<Controller
 								name='images'
 								control={control}
@@ -606,18 +570,24 @@ function ProductForm() {
 									<Autocomplete
 										multiple
 										freeSolo
+										disablePortal
 										sx={{ width: '100%' }}
 										options={[]}
 										value={value || []}
 										onChange={(event, newValue) => onChange(newValue)}
-										renderTags={(value, getTagProps) =>
-											value.map((option, index) => (
-												<Chip
-													variant='outlined'
-													label={option}
-													{...getTagProps({ index })}
-												/>
-											))
+										rendertags={(tagValue, getTagProps) =>
+											tagValue.map((option, index) => {
+												const { key, ...tagProps } = getTagProps({ index });
+												return (
+													<Chip
+														key={key}
+														variant='outlined'
+														label={option}
+														size='small'
+														{...tagProps}
+													/>
+												);
+											})
 										}
 										renderInput={(params) => (
 											<TextField
@@ -637,9 +607,7 @@ function ProductForm() {
 
 					{/* ========== STATUS SECTION ========== */}
 					<FormSection title='Status'>
-						<Grid
-							item
-							xs={12}>
+						<Grid xs={12}>
 							<FormControlLabel
 								control={
 									<Controller

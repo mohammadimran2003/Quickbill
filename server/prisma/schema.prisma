@@ -47,15 +47,9 @@ enum Unit {
 }
 
 enum DiscountType {
+  NONE
   FLAT
   PERCENTAGE
-}
-
-enum TierName {
-  RETAIL
-  WHOLESALE
-  VIP
-  SPECIAL
 }
 
 enum CustomerType {
@@ -160,7 +154,7 @@ model Product {
   basePrice       Float      
 
   // Discount
-  discountType    DiscountType?
+  discountType    DiscountType  @default(NONE)
   discountValue   Float?
 
   // Stock
@@ -183,6 +177,14 @@ model Product {
   variants        ProductVariant[]
   orderItems       OrderItem[]
 }
+
+enum TierName {
+  RETAIL
+  WHOLESALE
+  VIP
+  SPECIAL
+}
+
 
 model PriceTier {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId

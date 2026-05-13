@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createBrand from '../../api/brands_api/createBrand';
+import updateBrand from '../../api/brands_api/updateBrand';
 import { toast } from 'sonner';
 
 function Brands() {
@@ -12,8 +13,19 @@ function Brands() {
 	const [selectedBrand, setSelectedBrand] = useState(null);
 	const queryClient = useQueryClient();
 
-	const { mutate } = useMutation({
+	const createMutation = useMutation({
 		mutationFn: createBrand,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['brands'] });
+			handleModalClose();
+		},
+		onError: (err) => {
+			toast.error(err.response?.data?.message || 'Something went wrong');
+		},
+	});
+
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }) => updateBrand(id, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['brands'] });
 			handleModalClose();
@@ -39,11 +51,17 @@ function Brands() {
 	};
 
 	const handleSave = async (formData) => {
-		console.log(formData, 'Form Data');
+		const action =
+			selectedBrand ?
+				updateMutation.mutateAsync({ id: selectedBrand.id, data: formData })
+			:	createMutation.mutateAsync(formData);
 
-		await toast.promise(mutate(formData), {
-			success: 'Brand created successfully',
-			loading: 'Saving brand',
+		await toast.promise(action, {
+			loading: selectedBrand ? 'Updating brand...' : 'Saving brand...',
+			success:
+				selectedBrand ?
+					'Brand updated successfully'
+				:	'Brand created successfully',
 			error: (err) => err?.response?.data?.message || 'Something went wrong',
 		});
 	};

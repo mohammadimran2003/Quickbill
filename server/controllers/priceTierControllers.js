@@ -1,6 +1,7 @@
 import prisma from '../lib/prisma.js';
 
 const createPriceTier = async (req, res) => {
+	console.log('Hello from price tier');
 	try {
 		const productId = req.params.id;
 

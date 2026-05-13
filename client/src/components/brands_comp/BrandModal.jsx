@@ -7,7 +7,6 @@ import {
 	Button,
 	FormControlLabel,
 	Switch,
-	Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { useEffect } from 'react';

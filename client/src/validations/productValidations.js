@@ -18,8 +18,11 @@ const productsSchema = z
 		productType: z.enum(['SIMPLE', 'VARIANT', 'COMPOSITE']).default('SIMPLE'),
 
 		// categorization
-		categoryId: z.string({ required_error: 'Category is required' }),
-		brandId: z.string().optional(),
+		categoryId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid Category ID'),
+		brandId: z
+			.string()
+			.regex(/^[0-9a-fA-F]{24}$/, 'Invalid Brand ID')
+			.optional(),
 
 		// pricing
 		costPrice: z

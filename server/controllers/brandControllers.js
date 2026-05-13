@@ -33,7 +33,6 @@ const createBrand = async (req, res) => {
 const getAllBrands = async (req, res) => {
 	try {
 		const { search, isActive } = req.query;
-		console.log(req.query, 'req query');
 
 		const where = {
 			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
@@ -58,6 +57,40 @@ const getAllBrands = async (req, res) => {
 		res.status(500).json({
 			success: false,
 			message: 'Failed to fetch brands',
+		});
+	}
+};
+
+const getBrandById = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const brand = await prisma.brand.findUnique({
+			where: { id },
+			include: {
+				_count: {
+					select: { products: true },
+				},
+			},
+		});
+
+		if (!brand) {
+			return res.status(404).json({
+				success: false,
+				message: 'Brand not found',
+			});
+		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Brand retrieved successfully',
+			data: brand,
+		});
+	} catch (err) {
+		console.error('Error fetching brand:', err);
+		res.status(500).json({
+			success: false,
+			message: 'Failed to fetch brand',
 		});
 	}
 };
@@ -110,4 +143,4 @@ const editBrand = async (req, res) => {
 	}
 };
 
-export { createBrand, getAllBrands, deleteBrand, editBrand };
+export { createBrand, getAllBrands, getBrandById, deleteBrand, editBrand };

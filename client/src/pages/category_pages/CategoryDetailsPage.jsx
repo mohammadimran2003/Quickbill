@@ -12,42 +12,29 @@ import {
 import {
 	ArrowBack as ArrowBackIcon,
 	Edit as EditIcon,
-	Phone as PhoneIcon,
-	Email as EmailIcon,
-	LocationOn as LocationOnIcon,
-	History as HistoryIcon,
+	Inventory as InventoryIcon,
+	Description as DescriptionIcon,
+	Image as ImageIcon,
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import getCustomerById from '../api/customers_api/getCustomerById';
+import getCategoryById from '../../api/categories_api/getCategoryById';
 
-const CustomerDetailsPage = () => {
+const CategoryDetailsPage = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 
-	const { data: customerData } = useQuery({
-		queryFn: () => getCustomerById(id),
-		queryKey: ['customers'],
+	const { data: categoryData } = useQuery({
+		queryFn: () => getCategoryById(id),
+		queryKey: ['categories', id],
 	});
 
 	// Jodi data load hote thake ba na thake
-	if (!customerData)
-		return <Typography>Loading customer details...</Typography>;
+	if (!categoryData)
+		return <Typography>Loading category details...</Typography>;
 
-	const {
-		name,
-		email,
-		customerType,
-		isActive,
-		phone,
-		address,
-		totalSpent,
-		totalDue,
-		walletBalance,
-		creditLimit,
-		note,
-		createdAt,
-	} = customerData.data;
+	const { name, description, image, isActive, createdAt, _count } =
+		categoryData.data;
 
 	const infoItem = (icon, label, value) => (
 		<Stack
@@ -90,7 +77,7 @@ const CustomerDetailsPage = () => {
 				variant='h6'
 				color={`${color}.main`}
 				fontWeight='bold'>
-				৳{value?.toLocaleString()}
+				{value}
 			</Typography>
 		</Paper>
 	);
@@ -124,11 +111,6 @@ const CustomerDetailsPage = () => {
 							direction='row'
 							spacing={1}>
 							<Chip
-								label={customerType}
-								size='small'
-								color={customerType === 'WHOLESALE' ? 'secondary' : 'default'}
-							/>
-							<Chip
 								label={isActive ? 'Active' : 'Inactive'}
 								size='small'
 								color={isActive ? 'success' : 'error'}
@@ -140,29 +122,51 @@ const CustomerDetailsPage = () => {
 				<Button
 					variant='contained'
 					startIcon={<EditIcon />}
-					onClick={() => navigate(`/customers/edit/${id}`)}>
-					Edit Customer
+					onClick={() => navigate(`/categories/edit/${id}`)}>
+					Edit Category
 				</Button>
 			</Stack>
 
 			<Grid
 				container
 				spacing={3}>
-				{/* Contact Information */}
+				{/* Category Information */}
 				<Grid
 					xs={12}
-					md={4}>
+					md={6}>
 					<Paper sx={{ p: 3, height: '100%' }}>
 						<Typography
 							variant='h6'
 							gutterBottom
 							sx={{ mb: 2 }}>
-							Contact Info
+							Category Information
 						</Typography>
 						<Divider sx={{ mb: 2 }} />
-						{infoItem(<PhoneIcon />, 'Phone Number', phone)}
-						{infoItem(<EmailIcon />, 'Email Address', email)}
-						{infoItem(<LocationOnIcon />, 'Address', address)}
+						{infoItem(<DescriptionIcon />, 'Description', description)}
+
+						{image && (
+							<Box sx={{ mb: 2 }}>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+									display='block'
+									sx={{ mb: 1 }}>
+									Image
+								</Typography>
+								<Box
+									component='img'
+									src={image}
+									alt={`${name} image`}
+									sx={{
+										maxWidth: '150px',
+										maxHeight: '150px',
+										borderRadius: 1,
+										border: '1px solid',
+										borderColor: 'divider',
+									}}
+								/>
+							</Box>
+						)}
 
 						<Typography
 							variant='caption'
@@ -173,16 +177,16 @@ const CustomerDetailsPage = () => {
 					</Paper>
 				</Grid>
 
-				{/* Financial Summary */}
+				{/* Statistics */}
 				<Grid
 					xs={12}
-					md={8}>
+					md={6}>
 					<Paper sx={{ p: 3, height: '100%' }}>
 						<Typography
 							variant='h6'
 							gutterBottom
 							sx={{ mb: 2 }}>
-							Financial Summary
+							Statistics
 						</Typography>
 						<Divider sx={{ mb: 3 }} />
 
@@ -190,59 +194,38 @@ const CustomerDetailsPage = () => {
 							container
 							spacing={2}>
 							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Total Spent', totalSpent, 'primary')}
+								xs={12}
+								sm={6}>
+								{statCard('Total Products', _count?.products || 0, 'primary')}
 							</Grid>
 							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Total Due', totalDue, 'error')}
-							</Grid>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Wallet Balance', walletBalance, 'success')}
-							</Grid>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Credit Limit', creditLimit, 'warning')}
+								xs={12}
+								sm={6}>
+								{statCard(
+									'Status',
+									isActive ? 'Active' : 'Inactive',
+									isActive ? 'success' : 'error',
+								)}
 							</Grid>
 						</Grid>
-
-						<Box sx={{ mt: 4 }}>
-							<Typography
-								variant='subtitle2'
-								gutterBottom
-								color='text.secondary'>
-								Internal Note
-							</Typography>
-							<Paper
-								variant='outlined'
-								sx={{ p: 2, bgcolor: 'grey.50', minHeight: '80px' }}>
-								<Typography variant='body2'>
-									{note || 'No internal notes added for this customer.'}
-								</Typography>
-							</Paper>
-						</Box>
 					</Paper>
 				</Grid>
 
-				{/* Placeholder for Transactions/Orders */}
+				{/* Associated Products */}
 				<Grid xs={12}>
 					<Paper sx={{ p: 3 }}>
 						<Stack
 							direction='row'
 							spacing={1}
 							sx={{ mb: 2 }}>
-							<HistoryIcon color='action' />
-							<Typography variant='h6'>Recent Activity</Typography>
+							<InventoryIcon color='action' />
+							<Typography variant='h6'>Associated Products</Typography>
 						</Stack>
 						<Divider />
 						<Box sx={{ py: 4, textAlign: 'center' }}>
 							<Typography color='text.secondary'>
-								Transaction history and Order list will be displayed here.
+								Product list associated with this category will be displayed
+								here.
 							</Typography>
 						</Box>
 					</Paper>
@@ -252,4 +235,4 @@ const CustomerDetailsPage = () => {
 	);
 };
 
-export default CustomerDetailsPage;
+export default CategoryDetailsPage;
