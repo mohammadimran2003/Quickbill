@@ -36,7 +36,8 @@ import ResetIcon from '@mui/icons-material/RestartAlt';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 function OrderTable() {
 	const [rowSelection, setRowSelection] = useState({});
@@ -46,6 +47,7 @@ function OrderTable() {
 	const [customerNameFilter, setCustomerNameFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
+	const navigate = useNavigate();
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
@@ -54,7 +56,7 @@ function OrderTable() {
 		queryKey: ['orders', Object.fromEntries(searchParams)],
 		queryFn: () => getOrders(Object.fromEntries(searchParams)),
 	});
-	console.log(data, 'dtata');
+
 	const columns = [
 		{
 			id: 'select',
@@ -91,28 +93,30 @@ function OrderTable() {
 			header: 'Subtotal',
 			accessorKey: 'subtotal',
 			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+				typeof getValue() === 'number' ? formatCurrency(getValue()) : 'N/A',
 			enableSorting: true,
 		},
 		{
 			header: 'Discount',
 			accessorKey: 'discountAmount',
 			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : '$0.00',
+				typeof getValue() === 'number' ?
+					formatCurrency(getValue())
+				:	formatCurrency(0),
 			enableSorting: true,
 		},
 		{
 			header: 'Total',
 			accessorKey: 'total',
 			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+				typeof getValue() === 'number' ? formatCurrency(getValue()) : 'N/A',
 			enableSorting: true,
 		},
 		{
 			header: 'Payment',
 			accessorKey: 'amountPaid',
 			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
+				typeof getValue() === 'number' ? formatCurrency(getValue()) : 'N/A',
 			enableSorting: true,
 		},
 		{ header: 'Status', accessorKey: 'status', enableSorting: false },
@@ -133,7 +137,7 @@ function OrderTable() {
 						<IconButton
 							size='small'
 							color='info'
-							onClick={() => console.log('View', row.original.id)}>
+							onClick={() => navigate(`/orders/${row.original.id}`)}>
 							<VisibilityIcon fontSize='small' />
 						</IconButton>
 					</Tooltip>
@@ -455,7 +459,7 @@ function OrderTable() {
 				onRowsPerPageChange={(event) => {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
-				rowsPerPageOptions={[10, 25, 50, 100]}
+				rowsPerPageOptions={[5, 10, 25, 50, 100]}
 			/>
 		</Paper>
 	);

@@ -3,10 +3,12 @@ import prisma from '../lib/prisma.js';
 const createCustomer = async (req, res) => {
 	try {
 		const { phone, email } = req.body;
+		console.log(req.body, 'reqbody');
 
 		const existingPhone = await prisma.customer.findUnique({
 			where: { phone },
 		});
+
 		if (existingPhone) {
 			return res.status(409).json({
 				success: false,
@@ -14,7 +16,7 @@ const createCustomer = async (req, res) => {
 			});
 		}
 
-		if (email) {
+		if (email !== '') {
 			const existingEmail = await prisma.customer.findUnique({
 				where: { email },
 			});
@@ -39,7 +41,7 @@ const createCustomer = async (req, res) => {
 			data: newCustomer,
 		});
 	} catch (err) {
-		if (error.code === 'P2002') {
+		if (err.code === 'P2002') {
 			// P2002 mane holo duplicate entry
 			return res.status(400).json({
 				message:

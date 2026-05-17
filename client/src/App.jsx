@@ -5,8 +5,6 @@ import Dashboard from './pages/Dashboard';
 import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import PrivateRoute from './components/PrivateRoute';
-import Customers from './pages/Customers';
-import CustomerDetailsPage from './pages/CustomerDetailsPage';
 import Products from './pages/Product_pages/Products';
 import ProductForm from './pages/Product_pages/ProductForm';
 import Categories from './pages/category_pages/Categories';
@@ -16,7 +14,12 @@ import CategoryDetailsPage from './pages/category_pages/CategoryDetailsPage';
 import BrandForm from './pages/brand_pages/BrandForm';
 import CategoryForm from './pages/category_pages/CategoryForm';
 import ProductDetailsPage from './pages/Product_pages/ProductDetailsPage';
-import Orders from './pages/Orders';
+import Orders from './pages/order_pages/Orders';
+import OrderDetailsPage from './pages/order_pages/OrderDetailsPage';
+import POS from './pages/POS';
+import CustomerForm from './pages/customer_pages/CustomerForm';
+import Customers from './pages/customer_pages/Customers';
+import CustomerDetailsPage from './pages/customer_pages/CustomerDetailsPage';
 
 function App() {
 	return (
@@ -46,6 +49,14 @@ function App() {
 						element={
 							<PrivateRoute>
 								<Customers />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/customers/create-customer'
+						element={
+							<PrivateRoute>
+								<CustomerForm />
 							</PrivateRoute>
 						}
 					/>
@@ -158,6 +169,22 @@ function App() {
 						element={
 							<PrivateRoute>
 								<Orders />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/orders/:id'
+						element={
+							<PrivateRoute>
+								<OrderDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/pos'
+						element={
+							<PrivateRoute>
+								<POS />
 							</PrivateRoute>
 						}
 					/>

@@ -30,7 +30,7 @@ const menuSections = [
 		items: [
 			{
 				id: 'sales_items-1',
-				label: 'New Sale',
+				label: 'POS',
 				path: '/pos',
 				icon: <PointOfSaleIcon />,
 			},
@@ -98,8 +98,19 @@ const menuSections = [
 			{
 				id: 'customers',
 				label: 'Customers',
-				path: '/customers',
 				icon: <PeopleIcon />,
+				subitems: [
+					{
+						id: 'customers_id-1',
+						label: 'List customers',
+						path: '/customers',
+					},
+					{
+						id: 'customers_id-2',
+						label: 'Create customer',
+						path: '/customers/create-customer',
+					},
+				],
 			},
 		],
 	},

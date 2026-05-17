@@ -30,7 +30,10 @@ const createCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
 	try {
-		const { search = '', isActive } = req.query;
+		const { search = '', isActive, page = 1, limit = 10	 } = req.query;
+	
+		const skip = (Number(page) - 1) * Number(limit);
+
 
 		const where = {
 			...(search ?
@@ -44,12 +47,16 @@ const getAllCategories = async (req, res) => {
 			orderBy: {
 				createdAt: 'desc',
 			},
+			skip,
+			take: Number(limit),
 		});
+
+		const totalCategories = await prisma.category.count({where})
 
 		res.status(200).json({
 			success: true,
 			message: 'Categories retrieved successfully',
-			count: categories.length,
+			count: totalCategories,
 			data: categories,
 		});
 	} catch (err) {

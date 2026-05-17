@@ -43,6 +43,8 @@ const getAllProducts = async (req, res) => {
 			productType = '',
 		} = req.query;
 
+		const skip = (Number(page) - 1) * Number(limit);
+
 		const where = {
 			...(search ?
 				{
@@ -58,31 +60,35 @@ const getAllProducts = async (req, res) => {
 			...(productType ? { productType } : {}),
 		};
 
-		const products = await prisma.product.findMany({
-			where,
-			orderBy: {
-				createdAt: 'desc',
-			},
-			include: {
-				category: {
-					select: { name: true },
+		const [products, total] = await Promise.all([
+			prisma.product.findMany({
+				where,
+				skip,
+				take: Number(limit),
+				orderBy: { [sortBy]: sortOrder },
+				include: {
+					category: { select: { name: true } },
+					priceTiers: true,
+					brand: { select: { name: true, id: true } },
 				},
-				priceTiers: true,
-				brand: {
-					select: { name: true, id: true },
-				},
-			},
-		});
+			}),
+			prisma.product.count({ where }),
+		]);
 
 		res.status(200).json({
 			success: true,
 			message: 'Products retrieved successfully',
-			count: products.length,
 			data: products,
+			pagination: {
+				total,
+				page: Number(page),
+				limit: Number(limit),
+				totalPages: Math.ceil(total / Number(limit)),
+			},
 		});
 	} catch (err) {
 		console.log(err, 'err');
-		res.status(500).json({ success: false, message: 'Server internal error!' });
+		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
 

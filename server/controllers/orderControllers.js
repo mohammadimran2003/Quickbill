@@ -7,6 +7,14 @@ const createOrder = async (req, res) => {
 		const orderData = req.body;
 		const { items, amountPaid, customerId, discountType, discountValue } =
 			orderData;
+		console.log(orderData, 'order data');
+
+		if (!items || items.length === 0) {
+			return res.status(400).json({
+				success: false,
+				message: 'No items in the order',
+			});
+		}
 
 		const productIds = items.map((item) => item.productId);
 		const products = await prisma.product.findMany({
@@ -14,6 +22,7 @@ const createOrder = async (req, res) => {
 			include: { priceTiers: true },
 		});
 
+		let setCustomerId = customerId;
 		let subTotal = 0;
 		let totalCostPrice = 0;
 		let taxAmount = 0;
@@ -102,11 +111,11 @@ const createOrder = async (req, res) => {
 			}
 		}
 
-		if (!customerId) {
-			const walkIn = await tx.customer.findUnique({
+		if (!setCustomerId) {
+			const walkIn = await prisma.customer.findUnique({
 				where: { phone: 'walk-in' },
 			});
-			customerId = walkIn.id;
+			setCustomerId = walkIn.id;
 		}
 
 		const result = await prisma.$transaction(async (tx) => {
@@ -134,7 +143,7 @@ const createOrder = async (req, res) => {
 			const order = await tx.order.create({
 				data: {
 					orderNumber,
-					customerId,
+					customerId: setCustomerId,
 					customerName,
 					subtotal: subTotal,
 					discountType: discountType || null,
@@ -198,7 +207,8 @@ const createOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
 	try {
-		const { search, status } = req.query;
+		const { search, status, page = 1, limit = 10 } = req.query;
+		const skip = (page - 1) * limit;
 
 		const where = {
 			...(search ?
@@ -212,16 +222,21 @@ const getOrders = async (req, res) => {
 			orderBy: {
 				createdAt: 'desc',
 			},
+			skip: Number(skip),
+			take: Number(limit),
 			include: {
 				items: true,
 				customer: true,
 			},
 		});
 
+		const totalOrders = await prisma.order.count({ where });
+
 		res.status(200).json({
 			success: true,
 			message: 'Orders retrieved successfully',
-			count: orders.length,
+			count: totalOrders,
+			currentPage: page,
 			data: orders,
 		});
 	} catch (err) {

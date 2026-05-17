@@ -19,7 +19,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import getCustomerById from '../api/customers_api/getCustomerById';
+import getCustomerById from '../../api/customers_api/getCustomerById';
 
 const CustomerDetailsPage = () => {
 	const navigate = useNavigate();

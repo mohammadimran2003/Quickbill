@@ -73,7 +73,11 @@ const CustomerModal = ({ open, onClose, onSave, initialData = null }) => {
 	}, [initialData, open, reset]);
 
 	const handleSave = (data) => {
-		onSave(data);
+		const customerData = {
+			...data,
+			phone: Number(data.phone),
+		};
+		onSave(customerData);
 		reset();
 	};
 

@@ -32,11 +32,14 @@ const createBrand = async (req, res) => {
 
 const getAllBrands = async (req, res) => {
 	try {
-		const { search, isActive } = req.query;
+		const { search, isActive, page = 1, limit = 10 } = req.query;
+		console.log(req.query, "quere");
+		const skip = (Number(page) - 1) * Number(limit);
+
 
 		const where = {
 			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
-			...(isActive !== undefined ? { isActive: isActive === 'true' } : {}),
+			...(isActive !== undefined && isActive !== '' ? { isActive: isActive === 'true' } : {}),
 		};
 
 		const brands = await prisma.brand.findMany({
@@ -44,12 +47,16 @@ const getAllBrands = async (req, res) => {
 			orderBy: {
 				createdAt: 'desc',
 			},
-		});
+			skip: skip,
+			take: Number(limit),
+		});	
+
+		const totalBrands = await prisma.brand.count({ where });
 
 		res.status(200).json({
 			success: true,
 			message: 'brands retrieved successfully',
-			count: brands.length,
+			count: totalBrands,
 			data: brands,
 		});
 	} catch (err) {

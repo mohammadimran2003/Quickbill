@@ -396,7 +396,7 @@ function CategoryTable({ onEditClick = () => {} }) {
 				onRowsPerPageChange={(event) => {
 					handleLimitChange(parseInt(event.target.value, 10));
 				}}
-				rowsPerPageOptions={[10, 25, 50, 100]}
+				rowsPerPageOptions={[2, 5, 10, 25, 50, 100]}
 			/>
 			<DeleteConfirmationDialog
 				open={deleteDialogOpen}
