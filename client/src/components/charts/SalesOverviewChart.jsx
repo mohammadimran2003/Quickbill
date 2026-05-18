@@ -51,7 +51,7 @@ const SalesOverviewChart = () => {
 				<Typography
 					variant='body2'
 					color='text.secondary'>
-					Monthly revenue growth of last 7 days
+					Monthly revenue growth of last 30 days
 				</Typography>
 			</Box>
 

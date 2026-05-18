@@ -20,6 +20,12 @@ import POS from './pages/POS';
 import CustomerForm from './pages/customer_pages/CustomerForm';
 import Customers from './pages/customer_pages/Customers';
 import CustomerDetailsPage from './pages/customer_pages/CustomerDetailsPage';
+import SupplierForm from './pages/supplier_pages/SupplierForm';
+import Suppliers from './pages/supplier_pages/Suppliers';
+import SupplierDetailsPage from './pages/supplier_pages/SupplierDetailsPage';
+import PurchaseForm from './pages/purchase_pages/PurchaseForm';
+import Purchases from './pages/purchase_pages/Purchases';
+import PurchaseDetailsPage from './pages/purchase_pages/PurchaseDetailsPage';
 
 function App() {
 	return (
@@ -177,6 +183,70 @@ function App() {
 						element={
 							<PrivateRoute>
 								<OrderDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/suppliers'
+						element={
+							<PrivateRoute>
+								<Suppliers />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/suppliers/:id'
+						element={
+							<PrivateRoute>
+								<SupplierDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/suppliers/create-supplier'
+						element={
+							<PrivateRoute>
+								<SupplierForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/suppliers/edit-supplier/:id'
+						element={
+							<PrivateRoute>
+								<SupplierForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/purchases'
+						element={
+							<PrivateRoute>
+								<Purchases />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/purchases/:id'
+						element={
+							<PrivateRoute>
+								<PurchaseDetailsPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/purchases/create-purchase'
+						element={
+							<PrivateRoute>
+								<PurchaseForm />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/purchases/edit-purchase/:id'
+						element={
+							<PrivateRoute>
+								<PurchaseForm />
 							</PrivateRoute>
 						}
 					/>

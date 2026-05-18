@@ -12,6 +12,8 @@ import verifyToken from './middlewares/verifyToken.js';
 import dashboardRouter from './routers/dashboardRouters.js';
 import cors from 'cors';
 import prisma from './lib/prisma.js';
+import supplierRouter from './routers/supplierRouters.js';
+import purchaseRouter from './routers/purcheseRouters.js';
 
 const PORT = 3000;
 
@@ -56,8 +58,10 @@ app.use('/api/products/:id/price-tiers', verifyToken, priceTierRouter);
 app.use('/api/customers', verifyToken, customerRouter);
 app.use('/api/orders', verifyToken, orderRouter);
 app.use('/api/dashboard', verifyToken, dashboardRouter);
+app.use('/api/suppliers', verifyToken, supplierRouter);
+app.use('/api/purchases', verifyToken, purchaseRouter);
 
 app.listen(PORT, async () => {
 	console.log(`Your server is running at localhost:${PORT}`);
-	await await ensureWalkInCustomer();
+	await ensureWalkInCustomer();
 });

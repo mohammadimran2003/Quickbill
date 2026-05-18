@@ -17,6 +17,7 @@ const createOrder = async (req, res) => {
 		}
 
 		const productIds = items.map((item) => item.productId);
+
 		const products = await prisma.product.findMany({
 			where: { id: { in: productIds } },
 			include: { priceTiers: true },
@@ -111,7 +112,7 @@ const createOrder = async (req, res) => {
 			}
 		}
 
-		if (!setCustomerId) {
+		if (!customerId) {
 			const walkIn = await prisma.customer.findUnique({
 				where: { phone: 'walk-in' },
 			});

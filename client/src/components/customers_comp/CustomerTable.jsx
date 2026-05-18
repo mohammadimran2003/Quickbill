@@ -17,6 +17,7 @@ import {
 	MenuItem,
 	TextField,
 	Select,
+	Chip,
 } from '@mui/material';
 import {
 	flexRender,
@@ -122,7 +123,13 @@ function CustomerTable({ onEditClick = () => {} }) {
 			header: 'Status',
 			accessorKey: 'isActive',
 			enableSorting: false,
-			cell: ({ getValue }) => (getValue() ? 'Active' : 'Inactive'),
+			cell: ({ getValue }) => (
+				<Chip
+					label={getValue() ? 'Active' : 'Inactive'}
+					size='small'
+					color={getValue() ? 'success' : 'error'}
+				/>
+			),
 		},
 
 		{

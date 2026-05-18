@@ -17,6 +17,7 @@ import {
 	MenuItem,
 	TextField,
 	Select,
+	Chip,
 } from '@mui/material';
 import {
 	flexRender,
@@ -103,7 +104,13 @@ function CategoryTable({ onEditClick = () => {} }) {
 		{
 			header: 'Status',
 			accessorKey: 'isActive',
-			cell: ({ getValue }) => (getValue() ? 'Active' : 'Inactive'),
+			cell: ({ getValue }) => (
+				<Chip
+					label={getValue() ? 'Active' : 'Inactive'}
+					size='small'
+					color={getValue() ? 'success' : 'error'}
+				/>
+			),
 			enableSorting: false,
 		},
 		{

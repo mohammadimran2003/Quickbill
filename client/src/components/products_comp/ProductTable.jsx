@@ -9,76 +9,51 @@ import {
 	TableBody,
 	TableCell,
 	Stack,
-	IconButton,
-	Tooltip,
-	Checkbox,
-	Button,
-	Popover,
-	MenuItem,
-	TextField,
-	Select,
+	CircularProgress,
 } from '@mui/material';
-
 import {
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import getProducts from '../../api/products_api/getProducts';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ResetIcon from '@mui/icons-material/RestartAlt';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
-import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+
+import getProducts from '../../api/products_api/getProducts';
+import deleteProduct from '../../api/products_api/deleteProduct';
 import getCategories from '../../api/categories_api/getCategories';
 import getBrands from '../../api/brands_api/getBrands';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
-import deleteProduct from '../../api/products_api/deleteProduct';
-import { toast } from 'sonner';
-import PriceTierModal from './PriceTierModal';
+import ProductTableToolbar from './ProductTableToolbar';
+import useProductColumns from './hooks/useProductColumns';
+
 function ProductTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
+	const [sorting, setSorting] = useState([]);
 	const [nameAnchorEl, setNameAnchorEl] = useState(null);
 	const [skuAnchorEl, setSkuAnchorEl] = useState(null);
-	const [sorting, setSorting] = useState([]);
-	const [searchParams, setSearchParams] = useSearchParams();
 	const [nameFilter, setNameFilter] = useState('');
 	const [skuFilter, setSkuFilter] = useState('');
 	const [productToDelete, setProductToDelete] = useState(null);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-	const navigate = useNavigate();
+
+	const [searchParams, setSearchParams] = useSearchParams();
+	const queryClient = useQueryClient();
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
+	const hasFilters = Boolean(searchParams.toString());
 
-	const queryClient = useQueryClient();
-
+	// ── Queries ────────────────────────────────────────────────
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['products', Object.fromEntries(searchParams)],
 		queryFn: () => getProducts(Object.fromEntries(searchParams)),
-	});
-
-	const { mutate: deleteMutation, isPending } = useMutation({
-		mutationFn: (id) => deleteProduct(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries(['products']);
-			setDeleteDialogOpen(false);
-			setProductToDelete(null);
-			toast.success('Customer deleted successfully');
-		},
-		onError: (err) => {
-			toast.error(err?.message || 'Something went wrong!');
-		},
 	});
 
 	const { data: categories } = useQuery({
@@ -91,113 +66,32 @@ function ProductTable({ onEditClick = () => {} }) {
 		queryFn: () => getBrands(),
 	});
 
-	const columns = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<Checkbox
-					checked={table.getIsAllPageRowsSelected()}
-					indeterminate={table.getIsSomePageRowsSelected()}
-					onChange={table.getToggleAllPageRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<Checkbox
-					checked={row.getIsSelected()}
-					disabled={!row.getCanSelect()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
+	// ── Mutations ──────────────────────────────────────────────
+	const { mutate: deleteMutation, isPending } = useMutation({
+		mutationFn: (id) => deleteProduct(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries(['products']);
+			setDeleteDialogOpen(false);
+			setProductToDelete(null);
+			toast.success('Product deleted successfully');
 		},
-		{ header: 'Name', accessorKey: 'name', enableSorting: true },
-		{ header: 'SKU', accessorKey: 'sku', enableSorting: true },
-		{
-			header: 'Category',
-			accessorKey: 'categoryId',
-			cell: ({ row }) =>
-				row.original.category?.name || row.original.categoryId || 'N/A',
-			enableSorting: false,
+		onError: (err) => {
+			toast.error(err?.message || 'Something went wrong!');
 		},
-		{
-			header: 'Brand',
-			accessorKey: 'brandId',
-			cell: ({ row }) =>
-				row.original.brand?.name || row.original.brandId || 'N/A',
-			enableSorting: false,
-		},
-		{ header: 'Stock', accessorKey: 'stock', enableSorting: true },
-		{ header: 'Unit', accessorKey: 'unit', enableSorting: false },
-		{
-			header: 'Base Price',
-			accessorKey: 'basePrice',
-			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
-			enableSorting: true,
-		},
-		{
-			header: 'Cost Price',
-			accessorKey: 'costPrice',
-			cell: ({ getValue }) =>
-				typeof getValue() === 'number' ? `$${getValue().toFixed(2)}` : 'N/A',
-			enableSorting: true,
-		},
-		{
-			header: 'Status',
-			accessorKey: 'isActive',
-			cell: ({ getValue }) => (getValue() ? 'Active' : 'Inactive'),
-			enableSorting: false,
-		},
-		{
-			header: 'Created At',
-			accessorKey: 'createdAt',
-			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
-			enableSorting: true,
-		},
-		{
-			header: 'Actions',
-			id: 'actions',
-			cell: ({ row }) => (
-				<Stack
-					direction='row'
-					spacing={1}>
-					<Tooltip title='View Details'>
-						<IconButton
-							size='small'
-							color='info'
-							onClick={() => navigate(`/products/${row.original.id}`)}>
-							<VisibilityIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title='Edit'>
-						<IconButton
-							size='small'
-							color='success'
-							onClick={() => onEditClick(row.original)}>
-							<EditIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-					<PriceTierModal product={row.original} />
-					<Tooltip title='Delete'>
-						<IconButton
-							size='small'
-							color='error'
-							onClick={() => {
-								setProductToDelete(row.original);
-								setDeleteDialogOpen(true);
-							}}>
-							<DeleteIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-				</Stack>
-			),
-		},
-	];
+	});
 
+	// ── Columns ────────────────────────────────────────────────
+	const columns = useProductColumns({
+		onDeleteClick: (product) => {
+			setProductToDelete(product);
+			setDeleteDialogOpen(true);
+		},
+		onEditClick,
+	});
+
+	// ── Handlers ───────────────────────────────────────────────
 	const handlePageChange = (newPage) => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			page: newPage,
-		}));
+		setSearchParams((prev) => ({ ...Object.fromEntries(prev), page: newPage }));
 	};
 
 	const handleLimitChange = (newLimit) => {
@@ -226,225 +120,62 @@ function ProductTable({ onEditClick = () => {} }) {
 		setSkuAnchorEl(null);
 	};
 
+	const handleReset = () => {
+		setSearchParams({});
+		setSorting([]);
+	};
+
+	const handleSortingChange = (updater) => {
+		const newSorting =
+			typeof updater === 'function' ? updater(sorting) : updater;
+		setSorting(newSorting);
+		setSearchParams((prev) => ({
+			...Object.fromEntries(prev),
+			sortBy: newSorting[0]?.id || 'createdAt',
+			sortOrder: newSorting[0]?.desc ? 'desc' : 'asc',
+			page: 1,
+		}));
+	};
+
+	// ── Table ──────────────────────────────────────────────────
 	const table = useReactTable({
 		data: data?.data || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		state: {
-			rowSelection,
-			sorting,
-		},
+		state: { rowSelection, sorting },
 		manualPagination: true,
 		manualSorting: true,
 		rowCount: data?.count || 0,
 		onRowSelectionChange: setRowSelection,
-		onSortingChange: (updater) => {
-			const newSorting =
-				typeof updater === 'function' ? updater(sorting) : updater;
-
-			setSorting(newSorting);
-
-			setSearchParams((prev) => ({
-				...Object.fromEntries(prev),
-				sortBy: newSorting[0]?.id || 'createdAt',
-				sortOrder: newSorting[0]?.desc ? 'desc' : 'asc',
-				page: 1,
-			}));
-		},
+		onSortingChange: handleSortingChange,
 		getRowId: (row) => row.id,
 	});
 
-	const hasFilters = Boolean(searchParams.toString());
-
+	// ── Render ─────────────────────────────────────────────────
 	if (isLoading) return <CircularProgress />;
 	if (isError) return <Typography>Something went wrong</Typography>;
 
 	return (
-		<Paper
-			sx={{
-				mt: 2,
-				p: 4,
-				borderRadius: 4,
-				overflowX: 'auto',
-			}}>
-			<Box
-				sx={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					gap: 2,
-					flexWrap: 'wrap',
-				}}>
-				<Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-					<Button
-						variant='outlined'
-						startIcon={<AddCircleIcon />}
-						onClick={(e) => setNameAnchorEl(e.currentTarget)}
-						sx={{
-							color: 'text.primary',
-							borderColor: 'divider',
-							'&:hover': {
-								borderColor: 'text.secondary',
-								backgroundColor: 'action.hover',
-							},
-						}}>
-						Name
-					</Button>
-					<Button
-						variant='outlined'
-						startIcon={<AddCircleIcon />}
-						onClick={(e) => setSkuAnchorEl(e.currentTarget)}
-						sx={{
-							color: 'text.primary',
-							borderColor: 'divider',
-							'&:hover': {
-								borderColor: 'text.secondary',
-								backgroundColor: 'action.hover',
-							},
-						}}>
-						SKU
-					</Button>
-					{hasFilters && (
-						<Button
-							variant='outlined'
-							startIcon={<ResetIcon />}
-							onClick={() => {
-								setSearchParams({});
+		<Paper sx={{ mt: 2, p: 4, borderRadius: 4, overflowX: 'auto' }}>
+			<ProductTableToolbar
+				hasFilters={hasFilters}
+				nameAnchorEl={nameAnchorEl}
+				setNameAnchorEl={setNameAnchorEl}
+				skuAnchorEl={skuAnchorEl}
+				setSkuAnchorEl={setSkuAnchorEl}
+				nameFilter={nameFilter}
+				setNameFilter={setNameFilter}
+				skuFilter={skuFilter}
+				setSkuFilter={setSkuFilter}
+				onNameFilterApply={handleNameFilterApply}
+				onSkuFilterApply={handleSkuFilterApply}
+				onReset={handleReset}
+				categories={categories}
+				brands={brands}
+				searchParams={searchParams}
+				setSearchParams={setSearchParams}
+			/>
 
-								setSorting([]);
-							}}>
-							Reset
-						</Button>
-					)}
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						gap: 2,
-					}}>
-					<Select
-						value={searchParams.get('category') || ''}
-						onChange={(e) =>
-							setSearchParams((prev) => ({
-								...Object.fromEntries(prev),
-								category: e.target.value,
-								page: 1,
-							}))
-						}
-						displayEmpty
-						size='small'
-						sx={{ minWidth: 170 }}>
-						<MenuItem value=''>All Categories</MenuItem>
-						{categories?.data?.map((cat) => (
-							<MenuItem
-								key={cat.id}
-								value={cat.id}>
-								{cat.name}
-							</MenuItem>
-						))}
-					</Select>
-					<Select
-						value={searchParams.get('brand') || ''}
-						onChange={(e) =>
-							setSearchParams((prev) => ({
-								...Object.fromEntries(prev),
-								brand: e.target.value,
-								page: 1,
-							}))
-						}
-						displayEmpty
-						size='small'
-						sx={{ minWidth: 170 }}>
-						<MenuItem value=''>All Brands</MenuItem>
-						{brands?.data?.map((brand) => (
-							<MenuItem
-								key={brand.id}
-								value={brand.id}>
-								{brand.name}
-							</MenuItem>
-						))}
-					</Select>
-					<Select
-						value={searchParams.get('productType') || ''}
-						onChange={(e) =>
-							setSearchParams((prev) => ({
-								...Object.fromEntries(prev),
-								productType: e.target.value,
-								page: 1,
-							}))
-						}
-						displayEmpty
-						color='primary'
-						size='small'
-						sx={{ minWidth: 170 }}>
-						<MenuItem value=''>All Products</MenuItem>
-						<MenuItem value='SIMPLE'>Simple</MenuItem>
-						<MenuItem value='VARIANT'>Variant</MenuItem>
-						<MenuItem value='COMPOSITE'>Composite</MenuItem>
-					</Select>
-				</Box>
-			</Box>
-			<Popover
-				open={Boolean(nameAnchorEl)}
-				anchorEl={nameAnchorEl}
-				onClose={() => setNameAnchorEl(null)}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'left',
-				}}>
-				<Box sx={{ p: 3, minWidth: 300 }}>
-					<Typography
-						variant='h6'
-						sx={{ mb: 2 }}>
-						Filter by Name
-					</Typography>
-					<TextField
-						fullWidth
-						placeholder='Enter product name'
-						value={nameFilter}
-						onChange={(e) => setNameFilter(e.target.value)}
-						size='small'
-						sx={{ mb: 2 }}
-					/>
-					<Button
-						variant='contained'
-						fullWidth
-						onClick={handleNameFilterApply}>
-						Apply
-					</Button>
-				</Box>
-			</Popover>
-			<Popover
-				open={Boolean(skuAnchorEl)}
-				anchorEl={skuAnchorEl}
-				onClose={() => setSkuAnchorEl(null)}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'left',
-				}}>
-				<Box sx={{ p: 3, minWidth: 300 }}>
-					<Typography
-						variant='h6'
-						sx={{ mb: 2 }}>
-						Filter by SKU
-					</Typography>
-					<TextField
-						fullWidth
-						placeholder='Enter brand name'
-						value={skuFilter}
-						onChange={(e) => setSkuFilter(e.target.value)}
-						size='small'
-						sx={{ mb: 2 }}
-					/>
-					<Button
-						variant='contained'
-						fullWidth
-						onClick={handleSkuFilterApply}>
-						Apply
-					</Button>
-				</Box>
-			</Popover>
 			<TableContainer
 				component={Box}
 				sx={{
@@ -486,12 +217,8 @@ function ProductTable({ onEditClick = () => {} }) {
 							))}
 						</TableRow>
 					</TableHead>
-					<TableBody
-						sx={{
-							'& tr:last-child td': {
-								borderBottom: 0,
-							},
-						}}>
+
+					<TableBody sx={{ '& tr:last-child td': { borderBottom: 0 } }}>
 						{table.getRowModel().rows.length > 0 ?
 							table.getRowModel().rows.map((row) => (
 								<TableRow
@@ -511,16 +238,17 @@ function ProductTable({ onEditClick = () => {} }) {
 								<TableCell
 									colSpan={columns.length}
 									align='center'
-									sx={{ py: 8, color: 'text.secondary' }}>
+									sx={{ py: 8 }}>
 									<Box sx={{ textAlign: 'center' }}>
 										<Typography
 											variant='h6'
 											fontWeight={600}>
 											No Products Found
 										</Typography>
-										<Typography variant='body2'>
-											Add your first product or adjust filters to see product
-											results.
+										<Typography
+											variant='body2'
+											color='text.secondary'>
+											Add your first product or adjust filters to see results.
 										</Typography>
 									</Box>
 								</TableCell>
@@ -529,31 +257,28 @@ function ProductTable({ onEditClick = () => {} }) {
 					</TableBody>
 				</Table>
 			</TableContainer>
+
 			<TablePagination
 				component='div'
 				count={data?.count || 0}
 				page={pageNumber - 1}
-				onPageChange={(event, newPage) => {
-					handlePageChange(newPage + 1);
-				}}
+				onPageChange={(_, newPage) => handlePageChange(newPage + 1)}
 				rowsPerPage={pageLimit}
-				onRowsPerPageChange={(event) => {
-					handleLimitChange(parseInt(event.target.value, 10));
-				}}
+				onRowsPerPageChange={(e) =>
+					handleLimitChange(parseInt(e.target.value, 10))
+				}
 				rowsPerPageOptions={[10, 25, 50, 100]}
 			/>
+
 			<DeleteConfirmationDialog
 				open={deleteDialogOpen}
 				onClose={() => {
 					setDeleteDialogOpen(false);
 					setProductToDelete(null);
 				}}
-				onConfirm={() => {
-					console.log(productToDelete.id, 'id');
-					deleteMutation(productToDelete?.id);
-				}}
-				title='Delete Customer'
-				message={`Are you sure you want to delete "${productToDelete?.name}"? This action cannot be undone and will permanently remove the customer and all associated data.`}
+				onConfirm={() => deleteMutation(productToDelete?.id)}
+				title='Delete Product'
+				message={`Are you sure you want to delete "${productToDelete?.name}"? This action cannot be undone.`}
 				loading={isPending}
 			/>
 		</Paper>

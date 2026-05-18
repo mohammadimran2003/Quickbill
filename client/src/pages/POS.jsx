@@ -4,17 +4,18 @@ import getProducts from '../api/products_api/getProducts';
 import ProductCard from '../components/pos_comp/ProductCard';
 import useCartStore from '../store/cartStore';
 import CartList from '../components/pos_comp/CartList';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function POS() {
 	const addItem = useCartStore((state) => state.addItem);
 	const loadMoreRef = useRef(null);
+	const [search, setSearch] = useState('');
 
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useInfiniteQuery({
-			queryKey: ['pos-products'],
+			queryKey: ['pos-products', search],
 			queryFn: ({ pageParam = 1 }) =>
-				getProducts({ page: pageParam, limit: 12 }),
+				getProducts({ page: pageParam, limit: 12, search }),
 			initialPageParam: 1,
 			getNextPageParam: (lastPage) => {
 				const { page, totalPages } = lastPage.pagination;
@@ -41,10 +42,13 @@ function POS() {
 	}, [hasNextPage, fetchNextPage]);
 
 	const allProducts = data?.pages.flatMap((page) => page.data) ?? [];
-	console.log(data, 'data');
 
 	const handleAddToCart = (product) => {
 		addItem(product);
+	};
+
+	const handleSearch = (e) => {
+		setSearch(e.target.value);
 	};
 
 	return (
@@ -70,6 +74,8 @@ function POS() {
 					<TextField
 						placeholder='Search here'
 						size='small'
+						value={search}
+						onChange={handleSearch}
 					/>
 				</Box>
 			</Box>
@@ -107,12 +113,13 @@ function POS() {
 					<Typography
 						variant='body2'
 						color='text.secondary'>
-						সব product দেখানো হয়েছে
+						All products displayed
 					</Typography>
 				)}
 			</Box>
 		</Box>
 	);
 }
+``;
 
 export default POS;

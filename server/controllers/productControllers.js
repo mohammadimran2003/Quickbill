@@ -42,6 +42,7 @@ const getAllProducts = async (req, res) => {
 			sortOrder = 'desc',
 			productType = '',
 		} = req.query;
+		console.log(req.query, 'query');
 
 		const skip = (Number(page) - 1) * Number(limit);
 

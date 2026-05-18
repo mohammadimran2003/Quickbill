@@ -10,10 +10,19 @@ import {
 	Stack,
 } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import getDiscountAmount from '../../utils/getDiscountAmount';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const ProductCard = ({ product, onAddToCart }) => {
 	const isOutOfStock = product.stock <= 0;
+
+	const discountAmount = getDiscountAmount(
+		product.discountType,
+		product.discountValue,
+		product.basePrice,
+	);
+
+	const finalPrice = product.basePrice - discountAmount;
 
 	return (
 		<Card
@@ -42,9 +51,11 @@ const ProductCard = ({ product, onAddToCart }) => {
 			<CardMedia
 				component='img'
 				height='140'
-				image={product.imageUrl || 'https://placehold.co/200x200?text=No+Image'}
+				image={
+					product.images?.[0] || 'https://placehold.co/200x200?text=No+Image'
+				}
 				alt={product.name}
-				sx={{ objectFit: 'contain', p: 1, bgcolor: '#f5f5f5' }}
+				sx={{ objectFit: 'cover', p: 1, bgcolor: '#f5f5f5' }}
 			/>
 
 			{/* Product Details */}
@@ -74,13 +85,26 @@ const ProductCard = ({ product, onAddToCart }) => {
 					{product.name}
 				</Typography>
 
-				<Stack>
+				<Stack
+					direction='row'
+					spacing={1}
+					sx={{ alignItems: 'flex-end' }}>
 					<Typography
 						variant='h6'
 						color='primary.main'
-						fontWeight='bold'>
-						{formatCurrency(product.basePrice)}
+						fontWeight='bold'
+						sx={{ lineHeight: 1 }}>
+						{formatCurrency(finalPrice)}
 					</Typography>
+					{product.discountValue > 0 && (
+						<Typography
+							variant='caption'
+							color='text.secondary'
+							sx={{ textDecoration: 'line-through', lineHeight: 1.2 }}>
+							{' '}
+							{formatCurrency(product.basePrice)}
+						</Typography>
+					)}
 				</Stack>
 			</CardContent>
 

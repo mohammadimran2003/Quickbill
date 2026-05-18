@@ -10,6 +10,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import StoreIcon from '@mui/icons-material/Store';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 const menuSections = [
 	{
@@ -73,6 +74,40 @@ const menuSections = [
 						id: 'categories_id-2',
 						label: 'Create category',
 						path: '/categories/create-category',
+					},
+				],
+			},
+			{
+				id: 'suppliers',
+				label: 'Suppliers',
+				icon: <LocalShippingIcon />,
+				subitems: [
+					{
+						id: 'suppliers_id-1',
+						label: 'List suppliers',
+						path: '/suppliers',
+					},
+					{
+						id: 'suppliers_id-2',
+						label: 'Create supplier',
+						path: '/suppliers/create-supplier',
+					},
+				],
+			},
+			{
+				id: 'purchases',
+				label: 'Purchases',
+				icon: <Inventory2Icon />,
+				subitems: [
+					{
+						id: 'purchases_id-1',
+						label: 'List purchases',
+						path: '/purchases',
+					},
+					{
+						id: 'purchases_id-2',
+						label: 'Create purchase',
+						path: '/purchases/create-purchase',
 					},
 				],
 			},

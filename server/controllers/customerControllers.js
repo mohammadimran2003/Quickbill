@@ -110,6 +110,30 @@ const getCustomers = async (req, res) => {
 	}
 };
 
+const getCustomerByPhone = async (req, res) => {
+	try {
+		const { phone } = req.params;
+		console.log(phone, 'phone');
+
+		const customer = await prisma.customer.findFirst({
+			where: {
+				phone: {
+					equals: phone,
+				},
+			},
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: 'Customer retrieved successfully',
+			data: customer,
+		});
+	} catch (err) {
+		console.log(err, 'get customer err');
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const getCustomerById = async (req, res) => {
 	try {
 		const id = req.params.id;
@@ -268,4 +292,5 @@ export {
 	updateCustomer,
 	rechargeWallet,
 	getCustomerOrders,
+	getCustomerByPhone,
 };

@@ -7,6 +7,7 @@ import {
 	updateCustomer,
 	rechargeWallet,
 	getCustomerOrders,
+	getCustomerByPhone,
 } from '../controllers/customerControllers.js';
 import validatorsMiddleware from '../middlewares/validatorsMiddleware.js';
 import { customerSchema } from '../validations/customersValidations.js';
@@ -31,5 +32,6 @@ customerRouter.put(
 );
 
 customerRouter.get('/:id/orders', getCustomerOrders);
+customerRouter.get('/phone/:phone', getCustomerByPhone);
 
 export default customerRouter;

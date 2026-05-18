@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useCartStore from '../../store/cartStore';
 import {
 	Box,
@@ -24,6 +24,9 @@ import createCustomer from '../../api/customers_api/createCustomer';
 import createOrder from '../../api/pos_api/createOrder';
 import { toast } from 'sonner';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { OrderPrintTemplate } from '../shared/OrderPrintTemplate';
+import { useReactToPrint } from 'react-to-print';
+import getCustomerByPhone from '../../api/orders_api/getCustomerByPhone';
 
 function CartList() {
 	const {
@@ -40,6 +43,24 @@ function CartList() {
 	const [amountPaid, setAmountPaid] = useState('');
 	const [selectedCustomer, setSelectedCustomer] = useState(null);
 	const [openCustomerModal, setOpenCustomerModal] = useState(false);
+	const [order, setOrder] = useState(null);
+	const printRef = useRef();
+	const handlePrint = useReactToPrint({
+		contentRef: printRef,
+		documentTitle: `Order_Details`,
+	});
+
+	const { data: walkInCustomer } = useQuery({
+		queryKey: ['walk-in-customer'],
+		queryFn: () => getCustomerByPhone('walk-in'),
+		staleTime: Infinity,
+	});
+
+	useEffect(() => {
+		if (walkInCustomer?.data) {
+			setSelectedCustomer(walkInCustomer.data);
+		}
+	}, [walkInCustomer]);
 
 	const paymentMethods = ['CASH', 'CARD', 'MOBILE_BANKING', 'UNPAID'];
 
@@ -67,7 +88,6 @@ function CartList() {
 	};
 
 	const handleCreateCustomerSubmit = (data) => {
-		console.log(data, 'data');
 		mutate(data);
 		setOpenCustomerModal(false);
 	};
@@ -93,18 +113,26 @@ function CartList() {
 				paymentMethod,
 				amountPaid: paymentMethod === 'UNPAID' ? 0 : Number(amountPaid),
 			};
-			console.log(orderData, 'order data');
-			await toast.promise(createOrder(orderData), {
+
+			const response = await toast.promise(createOrder(orderData), {
 				loading: 'Creating order...',
 				success: 'Order created successfully',
-				error: (err) => err.message,
+
+				error: (err) => err.message || 'Something went wrong',
 			});
-			clearCart();
-			setPaymentMethod('CASH');
-			setAmountPaid('');
-			setSelectedCustomer(null);
+
+			console.log(response, 'response');
+
+			if (response?.success) {
+				setOrder(response?.data);
+				setTimeout(() => handlePrint(), 100);
+				clearCart();
+				setPaymentMethod('CASH');
+				setAmountPaid('');
+				setSelectedCustomer(null);
+			}
 		} catch (err) {
-			console.log(err);
+			console.log('Order creation failed:', err.message);
 		}
 	};
 
@@ -377,6 +405,13 @@ function CartList() {
 				open={openDiscountModal}
 				setOpen={setOpenDiscountModal}
 			/>
+
+			<Box sx={{ display: 'none' }}>
+				<OrderPrintTemplate
+					ref={printRef}
+					order={order}
+				/>
+			</Box>
 		</Paper>
 	);
 }

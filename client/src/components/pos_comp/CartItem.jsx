@@ -2,6 +2,7 @@ import { Box, ListItem, Typography, List, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 import QuantityInput from './QuantityInput';
 
@@ -60,7 +61,7 @@ function CartItem({ items, updateQuantity, removeItem }) {
 							variant='body2'
 							color='text.secondary'
 							fontWeight='medium'>
-							৳{item.basePrice}
+							{formatCurrency(item.basePrice)}
 						</Typography>
 
 						<Box
@@ -95,7 +96,7 @@ function CartItem({ items, updateQuantity, removeItem }) {
 							variant='subtitle2'
 							fontWeight='bold'
 							color='primary.main'>
-							৳{(item.basePrice * item.quantity).toFixed(2)}
+							{formatCurrency(item.basePrice * item.quantity)}
 						</Typography>
 					</Box>
 				</ListItem>
