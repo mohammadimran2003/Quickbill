@@ -10,7 +10,6 @@ const createPurchase = async (req, res) => {
 			paymentMethod = 'CASH',
 		} = req.body;
 		const createdBy = req.user.id;
-		console.log(req.body, 'req.boy puchae');
 
 		const productIds = items.map((item) => item.productId);
 

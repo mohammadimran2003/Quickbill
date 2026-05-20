@@ -1,4 +1,4 @@
-import { Card, Box, Typography } from '@mui/material';
+import { Card, Box, Typography, Chip } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -27,7 +27,7 @@ const iconMap = {
 	},
 };
 
-const StatCard = ({ title, value, type }) => {
+const StatCard = ({ title, value, type, badgeText }) => {
 	const { icon, bg, color } = iconMap[type] || iconMap.revenue;
 
 	return (
@@ -58,6 +58,22 @@ const StatCard = ({ title, value, type }) => {
 					color='text.primary'>
 					{value}
 				</Typography>
+				{badgeText && (
+					<Box sx={{ mt: 1 }}>
+						<Chip
+							label={badgeText}
+							size='small'
+							sx={{
+								bgcolor: bg,
+								color: color,
+								fontWeight: 700,
+								fontSize: '0.68rem',
+								height: 20,
+								borderRadius: 1,
+							}}
+						/>
+					</Box>
+				)}
 			</Box>
 
 			<Box

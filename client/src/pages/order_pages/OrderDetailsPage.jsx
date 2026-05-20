@@ -29,7 +29,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PaymentIcon from '@mui/icons-material/Payment';
 import getOrderById from '../../api/orders_api/getOrderById';
 import { useReactToPrint } from 'react-to-print';
-import { OrderPrintTemplate } from '../../components/shared/OrderPrintTemplate';
+import { OrderPrintTemplate } from '../../components/print/OrderPrintTemplate';
 
 const OrderDetailsPage = () => {
 	const { id } = useParams();

@@ -1,8 +1,7 @@
 import { Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-
-import StatCard from './StatCard';
+import StatCard from '../shared/StatCard';
 import getDashboardSummery from '../../api/dashboard_api/getDashboardSummery';
 
 const DashboardTop = () => {

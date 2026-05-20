@@ -14,6 +14,7 @@ import cors from 'cors';
 import prisma from './lib/prisma.js';
 import supplierRouter from './routers/supplierRouters.js';
 import purchaseRouter from './routers/purcheseRouters.js';
+import reportRouter from './routers/reportRouters.js';
 
 const PORT = 3000;
 
@@ -60,6 +61,7 @@ app.use('/api/orders', verifyToken, orderRouter);
 app.use('/api/dashboard', verifyToken, dashboardRouter);
 app.use('/api/suppliers', verifyToken, supplierRouter);
 app.use('/api/purchases', verifyToken, purchaseRouter);
+app.use('/api/reports', verifyToken, reportRouter);
 
 app.listen(PORT, async () => {
 	console.log(`Your server is running at localhost:${PORT}`);

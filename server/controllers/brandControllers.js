@@ -33,13 +33,14 @@ const createBrand = async (req, res) => {
 const getAllBrands = async (req, res) => {
 	try {
 		const { search, isActive, page = 1, limit = 10 } = req.query;
-		console.log(req.query, "quere");
-		const skip = (Number(page) - 1) * Number(limit);
 
+		const skip = (Number(page) - 1) * Number(limit);
 
 		const where = {
 			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
-			...(isActive !== undefined && isActive !== '' ? { isActive: isActive === 'true' } : {}),
+			...(isActive !== undefined && isActive !== '' ?
+				{ isActive: isActive === 'true' }
+			:	{}),
 		};
 
 		const brands = await prisma.brand.findMany({
@@ -49,7 +50,7 @@ const getAllBrands = async (req, res) => {
 			},
 			skip: skip,
 			take: Number(limit),
-		});	
+		});
 
 		const totalBrands = await prisma.brand.count({ where });
 

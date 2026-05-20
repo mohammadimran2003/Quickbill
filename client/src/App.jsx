@@ -26,6 +26,8 @@ import SupplierDetailsPage from './pages/supplier_pages/SupplierDetailsPage';
 import PurchaseForm from './pages/purchase_pages/PurchaseForm';
 import Purchases from './pages/purchase_pages/Purchases';
 import PurchaseDetailsPage from './pages/purchase_pages/PurchaseDetailsPage';
+import SalesReportPage from './pages/sale_report-pages/SalesReportPage';
+import ProfitReportPage from './pages/profit_report_pages/ProfitReportPage';
 
 function App() {
 	return (
@@ -255,6 +257,23 @@ function App() {
 						element={
 							<PrivateRoute>
 								<POS />
+							</PrivateRoute>
+						}
+					/>
+
+					<Route
+						path='/reports/sales'
+						element={
+							<PrivateRoute>
+								<SalesReportPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/reports/profit'
+						element={
+							<PrivateRoute>
+								<ProfitReportPage />
 							</PrivateRoute>
 						}
 					/>

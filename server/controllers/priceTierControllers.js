@@ -1,7 +1,6 @@
 import prisma from '../lib/prisma.js';
 
 const createPriceTier = async (req, res) => {
-	console.log('Hello from price tier');
 	try {
 		const productId = req.params.id;
 
@@ -68,8 +67,6 @@ const editPriceTier = async (req, res) => {
 				name: req.body.name,
 			},
 		});
-
-		console.log(req.body, tierId, 'req Body');
 
 		if (!existingPriceTier) {
 			return res

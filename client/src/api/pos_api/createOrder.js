@@ -4,8 +4,6 @@ import api from '../axios';
 const createOrder = async (data) => {
 	const validation = orderSchema.safeParse(data);
 
-	console.log(validation, 'validaton');
-
 	if (!validation.success) {
 		const errorMessages = validation.error.issues
 			.map((issue) => issue.message)
@@ -15,6 +13,7 @@ const createOrder = async (data) => {
 	}
 
 	const response = await api.post('/orders', data);
+
 	return response.data;
 };
 

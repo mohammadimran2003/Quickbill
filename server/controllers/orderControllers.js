@@ -7,7 +7,6 @@ const createOrder = async (req, res) => {
 		const orderData = req.body;
 		const { items, amountPaid, customerId, discountType, discountValue } =
 			orderData;
-		console.log(orderData, 'order data');
 
 		if (!items || items.length === 0) {
 			return res.status(400).json({

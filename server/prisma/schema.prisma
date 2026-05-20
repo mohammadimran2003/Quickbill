@@ -348,7 +348,7 @@ model OrderItem {
 
   productName   String   // sei somoyer product name
   unitPrice     Float    // bikroy mullo
-  purchasePrice Float    // kroy mullo  (profit hisber jonno)
+  purchasePrice Float    // kroy mullo  (profit hisaber jonno)
   quantity      Int
   discount      Float    @default(0)
   total         Float    // (unitPrice - discount) * quantity

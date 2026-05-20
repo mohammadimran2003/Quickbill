@@ -1,8 +1,6 @@
 import prisma from '../lib/prisma.js';
 
 const createProduct = async (req, res) => {
-	console.log('Hello');
-
 	try {
 		const product = await prisma.product.create({
 			data: {
@@ -42,7 +40,6 @@ const getAllProducts = async (req, res) => {
 			sortOrder = 'desc',
 			productType = '',
 		} = req.query;
-		console.log(req.query, 'query');
 
 		const skip = (Number(page) - 1) * Number(limit);
 
@@ -98,7 +95,6 @@ const deleteProduct = async (req, res) => {
 		const id = req.params.id;
 
 		const product = await prisma.product.delete({ where: { id } });
-		console.log(product, 'product');
 
 		res.status(200).json({
 			success: true,

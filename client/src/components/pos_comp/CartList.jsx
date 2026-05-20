@@ -24,9 +24,9 @@ import createCustomer from '../../api/customers_api/createCustomer';
 import createOrder from '../../api/pos_api/createOrder';
 import { toast } from 'sonner';
 import { formatCurrency } from '../../utils/formatCurrency';
-import { OrderPrintTemplate } from '../shared/OrderPrintTemplate';
 import { useReactToPrint } from 'react-to-print';
 import getCustomerByPhone from '../../api/orders_api/getCustomerByPhone';
+import { OrderPrintTemplate } from '../print/OrderPrintTemplate';
 
 function CartList() {
 	const {
@@ -118,7 +118,10 @@ function CartList() {
 				loading: 'Creating order...',
 				success: 'Order created successfully',
 
-				error: (err) => err.message || 'Something went wrong',
+				error: (err) => {
+					const serverMessage = err?.response?.data?.message;
+					return serverMessage || err.message || 'Something went wrong';
+				},
 			});
 
 			console.log(response, 'response');

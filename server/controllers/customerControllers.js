@@ -3,8 +3,6 @@ import prisma from '../lib/prisma.js';
 const createCustomer = async (req, res) => {
 	try {
 		const { phone, email } = req.body;
-		console.log(req.body, 'reqbody');
-
 		const existingPhone = await prisma.customer.findUnique({
 			where: { phone },
 		});
@@ -113,7 +111,6 @@ const getCustomers = async (req, res) => {
 const getCustomerByPhone = async (req, res) => {
 	try {
 		const { phone } = req.params;
-		console.log(phone, 'phone');
 
 		const customer = await prisma.customer.findFirst({
 			where: {
