@@ -7,6 +7,7 @@ import {
 	Tooltip,
 	Legend,
 	ResponsiveContainer,
+	Brush,
 } from 'recharts';
 import { Box, Paper, Typography, useTheme } from '@mui/material';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -223,6 +224,14 @@ export default function SalesReportChart({ data = [], groupBy = 'daily' }) {
 							radius={[4, 4, 0, 0]}
 							opacity={0.75}
 						/>
+						{chartData.length > 15 && (
+							<Brush
+								dataKey='date'
+								height={30}
+								stroke='#8884d8'
+								startIndex={chartData.length - 15}
+							/>
+						)}
 					</BarChart>
 				</ResponsiveContainer>
 			}

@@ -27,8 +27,10 @@ const iconMap = {
 	},
 };
 
-const StatCard = ({ title, value, type, badgeText }) => {
-	const { icon, bg, color } = iconMap[type] || iconMap.revenue;
+const StatCard = ({ title, value, type, badgeText, iconConfig }) => {
+	// iconConfig = { icon: <SomeIcon />, bg: '#hex', color: '#hex' }
+	// If iconConfig is provided it takes priority; otherwise fall back to iconMap[type]
+	const { icon, bg, color } = iconConfig || iconMap[type] || iconMap.revenue;
 
 	return (
 		<Card

@@ -28,6 +28,7 @@ import Purchases from './pages/purchase_pages/Purchases';
 import PurchaseDetailsPage from './pages/purchase_pages/PurchaseDetailsPage';
 import SalesReportPage from './pages/sale_report-pages/SalesReportPage';
 import ProfitReportPage from './pages/profit_report_pages/ProfitReportPage';
+import StockReportPage from './pages/stock_report_pages/StockReportPage';
 
 function App() {
 	return (
@@ -274,6 +275,14 @@ function App() {
 						element={
 							<PrivateRoute>
 								<ProfitReportPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path='/reports/stock'
+						element={
+							<PrivateRoute>
+								<StockReportPage />
 							</PrivateRoute>
 						}
 					/>

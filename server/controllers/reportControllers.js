@@ -257,9 +257,6 @@ const getProfitReport = async (req, res) => {
 			categoryMap[key].totalCost += itemCost;
 		}
 
-		console.log(Object.values(categoryMap), 'mapsss');
-		console.log(categoryMap, 'cat map');
-
 		const profitByCategory = Object.values(categoryMap)
 			.map((cat) => {
 				const totalRevenue = Number(cat.totalRevenue.toFixed(2));
@@ -311,4 +308,199 @@ const getProfitReport = async (req, res) => {
 	}
 };
 
-export { getSalesReport, getProfitReport };
+const getStockReport = async (req, res) => {
+	try {
+		const { from, to, groupBy = 'daily' } = req.query;
+
+		const startDate = new Date(from);
+		const endDate = new Date(to);
+		endDate.setHours(23, 59, 59, 999);
+
+		const where = {
+			createdAt: { gte: startDate, lte: endDate },
+		};
+
+		const totalProducts = await prisma.product.count({ where });
+
+		const outOfStockItems = await prisma.product.count({
+			where: {
+				...where,
+				stock: { lte: 0 },
+			},
+		});
+
+		const [
+			openingPurchases,
+			stockInItems,
+			openingOrders,
+			stockOutItems,
+			products,
+			stockByCategory,
+		] = await Promise.all([
+			// Opening Stock (range er ager purchases)
+			prisma.purchaseItem.groupBy({
+				by: ['productId'],
+				where: {
+					purchase: {
+						status: 'RECEIVED',
+						createdAt: { lt: startDate },
+					},
+				},
+				_sum: { quantity: true },
+			}),
+			// Stock In (range er vetorer purchases)
+			prisma.purchaseItem.groupBy({
+				by: ['productId'],
+				where: {
+					purchase: {
+						status: 'RECEIVED',
+						createdAt: { gte: startDate, lte: endDate },
+					},
+				},
+				_sum: { quantity: true },
+			}),
+
+			// Opening er ager sales (opening stock ber korte bad dite hobe)
+			prisma.orderItem.groupBy({
+				by: ['productId'],
+				where: {
+					order: {
+						status: 'COMPLETED',
+						createdAt: { lt: startDate },
+					},
+				},
+				_sum: { quantity: true },
+			}),
+
+			// Stock Out (range er vetorer sales)
+			prisma.orderItem.groupBy({
+				by: ['productId'],
+				where: {
+					order: {
+						status: 'COMPLETED',
+						createdAt: { gte: startDate, lte: endDate },
+					},
+				},
+				_sum: { quantity: true },
+			}),
+
+			// sob products
+			prisma.product.findMany({
+				where: { isActive: true },
+				select: {
+					id: true,
+					name: true,
+					costPrice: true,
+					lowStockAlert: true,
+					stock: true,
+				},
+			}),
+
+			// By category
+			prisma.product.groupBy({
+				by: ['categoryId'],
+				where: { isActive: true },
+				_sum: { stock: true },
+			}),
+		]);
+
+		// Map banano holo
+		const openingPurchaseMap = Object.fromEntries(
+			openingPurchases.map((i) => [i.productId, i._sum.quantity ?? 0]),
+		);
+		const openingOrderMap = Object.fromEntries(
+			openingOrders.map((i) => [i.productId, i._sum.quantity ?? 0]),
+		);
+		const stockInMap = Object.fromEntries(
+			stockInItems.map((i) => [i.productId, i._sum.quantity ?? 0]),
+		);
+		const stockOutMap = Object.fromEntries(
+			stockOutItems.map((i) => [i.productId, i._sum.quantity ?? 0]),
+		);
+
+		// Product-wise breakdown
+		const stockDetails = products.map((product) => {
+			const openingIn = openingPurchaseMap[product.id] || 0;
+			const openingOut = openingOrderMap[product.id] || 0;
+			const purchaseIn = stockInMap[product.id] || 0;
+			const salesOut = stockOutMap[product.id] || 0;
+
+			const openingStock = openingIn - openingOut;
+			const currentStock = openingStock + purchaseIn - salesOut;
+
+			return {
+				productId: product.id,
+				name: product.name,
+				openingStock,
+				stockIn: purchaseIn,
+				stockOut: salesOut,
+				currentStock,
+				lowStockAlert: product.lowStockAlert || 0,
+				isLowStock:
+					currentStock > 0 && currentStock <= (product.lowStockAlert || 0),
+				isOutOfStock: currentStock <= 0,
+				costPrice: product.costPrice || 0,
+			};
+		});
+
+		let lowStockItems = 0;
+		let totalStockValue = 0;
+
+		products.forEach((product) => {
+			const currentStock = product.stock || 0;
+			const alertLimit = product.lowStockAlert || 0;
+			const price = product.costPrice || 0;
+
+			totalStockValue += currentStock * price;
+
+			if (currentStock > 0 && currentStock <= alertLimit) {
+				lowStockItems++;
+			}
+		});
+
+		const topLowStockProducts = products
+			.filter((p) => p.stock > 0 && p.stock <= p.lowStockAlert)
+			.sort((a, b) => a.stock - b.stock)
+			.slice(0, 5);
+
+		const stockByCategoryMap = Object.fromEntries(
+			stockByCategory.map((item) => [item.categoryId, item._sum.stock ?? 0]),
+		);
+
+		const categoryIds = Object.keys(stockByCategoryMap);
+
+		const categories = await prisma.category.findMany({
+			where: { id: { in: categoryIds } },
+			select: { id: true, name: true },
+		});
+
+		const finalStockByCategory = categories.map((category) => ({
+			categoryId: category.id,
+			categoryName: category.name,
+			stock: stockByCategoryMap[category.id] || 0,
+		}));
+
+		return res.status(200).json({
+			success: true,
+			message: 'Stock report retrieved successfully',
+			data: {
+				summary: {
+					totalProducts,
+					totalStockValue: Number(totalStockValue.toFixed(2)),
+					lowStockItems,
+					outOfStockItems,
+				},
+				stockDetails,
+				topLowStockProducts,
+				stockByCategory: finalStockByCategory,
+			},
+		});
+	} catch (err) {
+		console.error(err);
+		return res
+			.status(500)
+			.json({ success: false, message: 'Internal server error' });
+	}
+};
+
+export { getSalesReport, getProfitReport, getStockReport };

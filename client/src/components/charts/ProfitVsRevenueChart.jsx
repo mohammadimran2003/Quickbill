@@ -8,6 +8,7 @@ import {
 	Tooltip,
 	Legend,
 	ResponsiveContainer,
+	Brush,
 } from 'recharts';
 import { Box, Paper, Typography, useTheme } from '@mui/material';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -72,8 +73,18 @@ export default function ProfitVsRevenueChart({ data = [], groupBy = 'daily' }) {
 		if (groupBy === 'monthly') {
 			const [year, month] = dateStr.split('-');
 			const monthNames = [
-				'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-				'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+				'Jan',
+				'Feb',
+				'Mar',
+				'Apr',
+				'May',
+				'Jun',
+				'Jul',
+				'Aug',
+				'Sep',
+				'Oct',
+				'Nov',
+				'Dec',
 			];
 			return `${monthNames[parseInt(month) - 1]} '${year.slice(2)}`;
 		}
@@ -129,7 +140,7 @@ export default function ProfitVsRevenueChart({ data = [], groupBy = 'daily' }) {
 			</Box>
 
 			{/* Chart */}
-			{isEmpty ? (
+			{isEmpty ?
 				<Box
 					sx={{
 						height: 320,
@@ -147,8 +158,7 @@ export default function ProfitVsRevenueChart({ data = [], groupBy = 'daily' }) {
 						No data available to display trend chart
 					</Typography>
 				</Box>
-			) : (
-				<ResponsiveContainer
+			:	<ResponsiveContainer
 					width='100%'
 					height={320}>
 					<LineChart
@@ -197,9 +207,18 @@ export default function ProfitVsRevenueChart({ data = [], groupBy = 'daily' }) {
 							activeDot={{ r: 6 }}
 							dot={{ r: 4 }}
 						/>
+
+						{chartData.length > 15 && (
+							<Brush
+								dataKey='date'
+								height={30}
+								stroke='#8884d8'
+								startIndex={chartData.length - 15}
+							/>
+						)}
 					</LineChart>
 				</ResponsiveContainer>
-			)}
+			}
 		</Paper>
 	);
 }

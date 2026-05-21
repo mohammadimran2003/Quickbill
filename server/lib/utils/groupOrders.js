@@ -1,8 +1,5 @@
 const groupOrders = (orders, groupBy) => {
 	const groups = {};
-
-	console.log(orders, 'orders');
-
 	orders.forEach((order) => {
 		let key;
 		const date = new Date(order.createdAt);
@@ -45,8 +42,6 @@ const groupOrders = (orders, groupBy) => {
 			groups[key].paymentBreakdown.MOBILE_BANKING += order.amountPaid;
 		}
 	});
-
-	console.log(groups);
 
 	return Object.values(groups);
 };
