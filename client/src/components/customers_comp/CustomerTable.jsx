@@ -9,15 +9,6 @@ import {
 	TableBody,
 	TableCell,
 	Stack,
-	IconButton,
-	Tooltip,
-	Checkbox,
-	Button,
-	Popover,
-	MenuItem,
-	TextField,
-	Select,
-	Chip,
 } from '@mui/material';
 import {
 	flexRender,
@@ -27,14 +18,9 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import getCustomers from '../../api/customers_api/getCustomers';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ResetIcon from '@mui/icons-material/RestartAlt';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
@@ -43,12 +29,11 @@ import deleteCustomer from '../../api/customers_api/deleteCustomer';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
 import { toast } from 'sonner';
 
+import useCustomerColumns from './hooks/useCustomerColumns';
+import CustomerFilterSection from './CustomerFilterSection';
+
 function CustomerTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
-	const [emailAnchorEl, setEmailAnchorEl] = useState(null);
-	const [phoneAnchorEl, setPhoneAnchorEl] = useState(null);
-	const [emailFilter, setEmailFilter] = useState('');
-	const [phoneFilter, setPhoneFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -79,99 +64,13 @@ function CustomerTable({ onEditClick = () => {} }) {
 		},
 	});
 
-	const columns = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<Checkbox
-					checked={table.getIsAllPageRowsSelected()}
-					indeterminate={table.getIsSomePageRowsSelected()}
-					onChange={table.getToggleAllPageRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<Checkbox
-					checked={row.getIsSelected()}
-					disabled={!row.getCanSelect()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
+	const columns = useCustomerColumns({
+		onEditClick,
+		onDeleteClick: (customer) => {
+			setCustomerToDelete(customer);
+			setDeleteDialogOpen(true);
 		},
-
-		{ header: 'Name', accessorKey: 'name', enableSorting: false },
-		{
-			header: 'Email',
-			accessorKey: 'email',
-			cell: ({ getValue }) => getValue() || 'N/A',
-			enableSorting: false,
-		},
-		{ header: 'Phone', accessorKey: 'phone', enableSorting: false },
-		{
-			header: 'Created At',
-			accessorKey: 'createdAt',
-			enableSorting: true,
-			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
-		},
-		{
-			header: 'Total Orders',
-			accessorKey: '_count.orders',
-			enableSorting: false,
-		},
-		{ header: 'Total Spent', accessorKey: 'totalSpent', enableSorting: true },
-		{ header: 'Due Amount', accessorKey: 'totalDue', enableSorting: true },
-		{
-			header: 'Status',
-			accessorKey: 'isActive',
-			enableSorting: false,
-			cell: ({ getValue }) => (
-				<Chip
-					label={getValue() ? 'Active' : 'Inactive'}
-					size='small'
-					color={getValue() ? 'success' : 'error'}
-				/>
-			),
-		},
-
-		{
-			header: 'Actions',
-			id: 'actions',
-			cell: ({ row }) => (
-				<Stack
-					direction='row'
-					spacing={1}>
-					<Tooltip title='View Details'>
-						<IconButton
-							size='small'
-							color='info'
-							onClick={() => navigate(`/customers/${row.original.id}`)}>
-							<VisibilityIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-
-					<Tooltip title='Edit'>
-						<IconButton
-							size='small'
-							color='primary'
-							onClick={() => onEditClick(row.original)}>
-							<EditIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-
-					<Tooltip title='Delete'>
-						<IconButton
-							size='small'
-							color='error'
-							onClick={() => {
-								setCustomerToDelete(row.original);
-								setDeleteDialogOpen(true);
-							}}>
-							<DeleteIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-				</Stack>
-			),
-		},
-	];
+	});
 
 	const handlePageChange = (newPage) => {
 		setSearchParams((prev) => ({
@@ -186,28 +85,8 @@ function CustomerTable({ onEditClick = () => {} }) {
 			limit: newLimit,
 			page: 1,
 		}));
-		setSearchParams('page, 1');
 	};
 
-	const handleEmailApply = () => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			search: emailFilter,
-			page: 1,
-		}));
-		setEmailFilter('');
-		setEmailAnchorEl(null);
-	};
-
-	const handlePhoneApply = () => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			search: phoneFilter,
-			page: 1,
-		}));
-		setPhoneFilter('');
-		setPhoneAnchorEl(null);
-	};
 
 	const table = useReactTable({
 		data: data?.data || [],
@@ -248,131 +127,7 @@ function CustomerTable({ onEditClick = () => {} }) {
 				borderRadius: 4,
 				overflowX: 'auto',
 			}}>
-			<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Box sx={{ display: 'flex', gap: 2 }}>
-					<Button
-						variant='outlined'
-						startIcon={<AddCircleIcon />}
-						onClick={(e) => setEmailAnchorEl(e.currentTarget)}
-						sx={{
-							color: 'text.primary',
-							borderColor: 'divider',
-							'&:hover': {
-								borderColor: 'text.secondary',
-								backgroundColor: 'action.hover',
-							},
-						}}>
-						Email
-					</Button>
-					<Button
-						variant='outlined'
-						startIcon={<AddCircleIcon />}
-						onClick={(e) => setPhoneAnchorEl(e.currentTarget)}
-						sx={{
-							color: 'text.primary',
-							borderColor: 'divider',
-							'&:hover': {
-								borderColor: 'text.secondary',
-								backgroundColor: 'action.hover',
-							},
-						}}>
-						Phone number
-					</Button>
-					{searchParams.get('page') && (
-						<Button
-							variant='outlined'
-							startIcon={<ResetIcon />}
-							onClick={() => {
-								setSearchParams({});
-								setEmailFilter('');
-								setPhoneFilter('');
-							}}>
-							Reset
-						</Button>
-					)}
-					{/* Email Filter Popover */}
-					<Popover
-						open={Boolean(emailAnchorEl)}
-						anchorEl={emailAnchorEl}
-						onClose={() => setEmailAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Email
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter email'
-								value={emailFilter}
-								onChange={(e) => setEmailFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handleEmailApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
-					{/* Phone Filter Popover */}
-					<Popover
-						open={Boolean(phoneAnchorEl)}
-						anchorEl={phoneAnchorEl}
-						onClose={() => setPhoneAnchorEl(null)}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'left',
-						}}>
-						<Box sx={{ p: 3, minWidth: 300 }}>
-							<Typography
-								variant='h6'
-								sx={{ mb: 2 }}>
-								Filter by Phone Number
-							</Typography>
-							<TextField
-								fullWidth
-								placeholder='Enter phone number'
-								value={phoneFilter}
-								onChange={(e) => setPhoneFilter(e.target.value)}
-								size='small'
-								sx={{ mb: 2 }}
-							/>
-							<Button
-								variant='contained'
-								fullWidth
-								onClick={handlePhoneApply}>
-								Apply
-							</Button>
-						</Box>
-					</Popover>
-				</Box>
-
-				<Select
-					value={searchParams.get('customerType') || ''}
-					onChange={(e) =>
-						setSearchParams((prev) => ({
-							...Object.fromEntries(prev),
-							customerType: e.target.value,
-							page: 1,
-						}))
-					}
-					displayEmpty
-					color='primary'
-					size='small'
-					sx={{ minWidth: 150 }}>
-					<MenuItem value=''>All Customers</MenuItem>
-					<MenuItem value='REGULAR'>Regular</MenuItem>
-					<MenuItem value='WHOLESALE'>Wholesale</MenuItem>
-					<MenuItem value='VIP'>VIP</MenuItem>
-				</Select>
-			</Box>
+			<CustomerFilterSection onSetSorting={() => setSorting([])} />
 			<TableContainer
 				component={Box}
 				sx={{

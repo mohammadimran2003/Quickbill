@@ -13,12 +13,12 @@ import {
 } from '@mui/material';
 
 const StockReportTable = ({ stockDetails }) => {
-	// ডাটা না থাকলে সেফটি হ্যান্ডেলিং
+
 	if (!stockDetails || stockDetails.length === 0) {
 		return (
 			<Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2 }}>
 				<Typography color='text.secondary'>
-					কোন স্টক ডেটা পাওয়া যায়নি।
+					Stock not Available
 				</Typography>
 			</Paper>
 		);
@@ -37,7 +37,7 @@ const StockReportTable = ({ stockDetails }) => {
 			<Table
 				sx={{ minWidth: 650 }}
 				aria-label='stock report table'>
-				{/* টেবিল হেডার */}
+		
 				<TableHead sx={{ bgcolor: 'grey.100' }}>
 					<TableRow>
 						<TableCell sx={{ fontWeight: 'bold' }}>Product Name</TableCell>

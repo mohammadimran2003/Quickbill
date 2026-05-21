@@ -1,34 +1,18 @@
 import { Grid } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import StatCard from '../shared/StatCard';
 import getDashboardSummery from '../../api/dashboard_api/getDashboardSummery';
+import { useQuery } from '@tanstack/react-query';
 
 const DashboardTop = () => {
-	const [summary, setSummary] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ['dashboardSummery'],
+		queryFn: () => getDashboardSummery(),
+	});
 
-	useEffect(() => {
-		const fetchSummary = async () => {
-			setLoading(true);
-			try {
-				const data = await getDashboardSummery();
-				setSummary(data.data);
-			} catch (err) {
-				console.error('Dashboard summary error:', err);
-				setError('Failed to load dashboard summary');
-			} finally {
-				setLoading(false);
-			}
-		};
+	const { today, allTime } = data?.data || {};
 
-		fetchSummary();
-	}, []);
-
-	const { today, allTime } = summary || {};
-
-	if (loading) {
+	if (isLoading) {
 		return (
 			<Box sx={{ p: 4 }}>
 				<Typography>Loading dashboard...</Typography>
@@ -36,10 +20,10 @@ const DashboardTop = () => {
 		);
 	}
 
-	if (error) {
+	if (isError) {
 		return (
 			<Box sx={{ p: 4 }}>
-				<Typography color='error'>{error}</Typography>
+				<Typography color='error'>Failed to load dashboard summary</Typography>
 			</Box>
 		);
 	}

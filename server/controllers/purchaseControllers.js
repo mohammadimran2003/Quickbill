@@ -110,14 +110,38 @@ const createPurchase = async (req, res) => {
 
 const getPurchases = async (req, res) => {
 	try {
+		const { search, status, page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+
+		const skip = (Number(page) - 1) * Number(limit);
+
+		const where = {
+			...(search ? {
+				OR: [
+					{ purchaseNumber: { contains: search, mode: 'insensitive' } },
+					{ supplier: { name: { contains: search, mode: 'insensitive' } } },
+				],
+			} : {}),
+			...(status ? { status } : {}),
+		};
+
 		const purchases = await prisma.purchase.findMany({
+			where,
 			include: {
 				supplier: true,
 			},
+			orderBy: {
+				[sortBy]: sortOrder,
+			},
+			skip: skip,
+			take: Number(limit),
 		});
+
+		const totalPurchases = await prisma.purchase.count({ where });
+
 		res.status(200).json({
 			success: true,
 			message: 'Purchases retrieved successfully',
+			count: totalPurchases,
 			data: purchases,
 		});
 	} catch (err) {

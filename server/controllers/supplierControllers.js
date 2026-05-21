@@ -43,7 +43,7 @@ const createSuppliser = async (req, res) => {
 
 const getSuppliers = async (req, res) => {
 	try {
-		const { search, page = 1, limit = 10 } = req.query;
+		const { search, isActive, page = 1, limit = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
 		const pageNum = Number(page);
 		const limitNum = Number(limit);
 		const skipNum = (pageNum - 1) * limitNum;
@@ -56,6 +56,11 @@ const getSuppliers = async (req, res) => {
 				{ email: { contains: search, mode: 'insensitive' } },
 			];
 		}
+
+		if (isActive !== undefined && isActive !== '') {
+			where.isActive = isActive === 'true';
+		}
+
 		const suppliers = await prisma.supplier.findMany({
 			where,
 			include: {
@@ -64,6 +69,9 @@ const getSuppliers = async (req, res) => {
 						items: true,
 					},
 				},
+			},
+			orderBy: {
+				[sortBy]: sortOrder,
 			},
 			skip: skipNum,
 			take: limitNum,

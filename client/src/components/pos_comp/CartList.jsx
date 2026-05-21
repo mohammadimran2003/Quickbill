@@ -27,6 +27,9 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { useReactToPrint } from 'react-to-print';
 import getCustomerByPhone from '../../api/orders_api/getCustomerByPhone';
 import { OrderPrintTemplate } from '../print/OrderPrintTemplate';
+import CartSummary from './CartSummary';
+import getDiscountAmount from '../../utils/getDiscountAmount';
+import CartCheckout from './CartCheckout';
 
 function CartList() {
 	const {
@@ -34,11 +37,9 @@ function CartList() {
 		updateQuantity,
 		removeItem,
 		clearCart,
-		discountType,
 		discountValue,
+		discountType,
 	} = useCartStore();
-	const [openDiscountModal, setOpenDiscountModal] = useState(false);
-
 	const [paymentMethod, setPaymentMethod] = useState('CASH');
 	const [amountPaid, setAmountPaid] = useState('');
 	const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -62,7 +63,12 @@ function CartList() {
 		}
 	}, [walkInCustomer]);
 
-	const paymentMethods = ['CASH', 'CARD', 'MOBILE_BANKING', 'UNPAID'];
+	useEffect(() => {
+		if (order && order.id) {
+			handlePrint();
+			setOrder(null);
+		}
+	}, [order, handlePrint]);
 
 	const { data: customerData, refetch } = useQuery({
 		queryKey: ['customers'],
@@ -80,13 +86,24 @@ function CartList() {
 		},
 	});
 
+	const { mutateAsync: createOrderMutation, isPending: createOrderPending } =
+		useMutation({
+			mutationFn: (order) => createOrder(order),
+			onSuccess: (response) => {
+				setOrder(response.data);
+				clearCart();
+				setAmountPaid('');
+				setPaymentMethod('CASH');
+				setSelectedCustomer(walkInCustomer.data);
+			},
+			onError: (err) => {
+				toast.error(err.message);
+			},
+		});
+
 	const customers = customerData?.data || customerData || [];
 
 	//handler function
-	const handleOpenDiscount = () => {
-		setOpenDiscountModal(true);
-	};
-
 	const handleCreateCustomerSubmit = (data) => {
 		mutate(data);
 		setOpenCustomerModal(false);
@@ -99,7 +116,7 @@ function CartList() {
 		setOpenCustomerModal(false);
 	};
 
-	const handleCreateOrder = async () => {
+	const handleCreateOrder = () => {
 		try {
 			const orderData = {
 				items: items.map((item) => ({
@@ -114,42 +131,32 @@ function CartList() {
 				amountPaid: paymentMethod === 'UNPAID' ? 0 : Number(amountPaid),
 			};
 
-			const response = await toast.promise(createOrder(orderData), {
+			toast.promise(createOrderMutation(orderData), {
 				loading: 'Creating order...',
-				success: 'Order created successfully',
+				success: (data) => {
+					return data?.message || 'Order created successfully';
+				},
 
 				error: (err) => {
 					const serverMessage = err?.response?.data?.message;
 					return serverMessage || err.message || 'Something went wrong';
 				},
 			});
-
-			console.log(response, 'response');
-
-			if (response?.success) {
-				setOrder(response?.data);
-				setTimeout(() => handlePrint(), 100);
-				clearCart();
-				setPaymentMethod('CASH');
-				setAmountPaid('');
-				setSelectedCustomer(null);
-			}
 		} catch (err) {
 			console.log('Order creation failed:', err.message);
 		}
 	};
 
-	//derived state;
 	const subTotal = items.reduce(
 		(total, item) => total + item.basePrice * item.quantity,
 		0,
 	);
-	const discount =
-		discountType === 'PERCENT' ?
-			(subTotal * discountValue) / 100
-		:	discountValue;
 
+	// derived state
+
+	const discount = getDiscountAmount(discountType, discountValue, subTotal);
 	const total = subTotal - discount;
+
 	const numericPaid = Number(amountPaid);
 	const changeAmount = numericPaid > total ? numericPaid - total : 0;
 
@@ -222,69 +229,11 @@ function CartList() {
 					borderColor: 'divider',
 					bgcolor: 'background.paper',
 				}}>
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-					<Typography
-						variant='body2'
-						color='text.secondary'>
-						Subtotal
-					</Typography>
-					<Typography
-						variant='body2'
-						fontWeight='bold'>
-						{formatCurrency(subTotal)}
-					</Typography>
-				</Box>
-
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						mb: 2,
-						alignItems: 'center',
-					}}>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<Typography
-							variant='body2'
-							color='text.secondary'>
-							Discount{' '}
-							{discountValue > 0 &&
-								`(${discountType === 'PERCENT' ? `${discountValue}%` : `৳${discountValue}`})`}
-						</Typography>
-						<IconButton
-							size='small'
-							onClick={handleOpenDiscount}
-							color='primary'
-							sx={{ p: 0.5 }}>
-							<LocalOfferOutlinedIcon fontSize='small' />
-						</IconButton>
-					</Box>
-					<Typography
-						variant='body2'
-						fontWeight='bold'
-						color='success.main'>
-						- {formatCurrency(discount)}
-					</Typography>
-				</Box>
-				<Divider sx={{ my: 1.5 }} />
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						mb: 2.5,
-						alignItems: 'center',
-					}}>
-					<Typography
-						variant='h6'
-						fontWeight='bold'>
-						Total
-					</Typography>
-					<Typography
-						variant='h5'
-						fontWeight='bold'
-						color='primary.main'>
-						{formatCurrency(total)}
-					</Typography>
-				</Box>
+				<CartSummary
+					total={total}
+					subTotal={subTotal}
+					discount={discount}
+				/>
 
 				<Box sx={{ mb: 2 }}>
 					{/* Customer Search */}
@@ -326,60 +275,14 @@ function CartList() {
 					</Box>
 
 					{/* Payment Methods */}
-					<Stack
-						direction='row'
-						spacing={1}
-						sx={{
-							mb: 2,
-							overflowX: 'auto',
-							whiteSpace: 'nowrap',
-							pb: 1,
-							gap: 1,
-						}}>
-						{paymentMethods.map((method) => (
-							<Button
-								key={method}
-								variant={paymentMethod === method ? 'contained' : 'outlined'}
-								onClick={() => setPaymentMethod(method)}
-								size='small'
-								sx={{
-									flexShrink: 0,
-									fontSize: '0.75rem',
-									py: 0.5,
-									px: 2,
-								}}>
-								{method.replace('_', ' ')}
-							</Button>
-						))}
-					</Stack>
-
-					{/* Paid & Change */}
-					{paymentMethod !== 'UNPAID' && (
-						<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-							<TextField
-								label='Paid Amount'
-								type='number'
-								size='small'
-								value={amountPaid}
-								onChange={(e) => setAmountPaid(e.target.value)}
-								sx={{ flexGrow: 1 }}
-							/>
-							<Box sx={{ minWidth: '80px', textAlign: 'right' }}>
-								<Typography
-									variant='caption'
-									color='text.secondary'
-									display='block'>
-									Change
-								</Typography>
-								<Typography
-									variant='subtitle1'
-									fontWeight='bold'
-									color={changeAmount > 0 ? 'success.main' : 'text.primary'}>
-									{formatCurrency(changeAmount)}
-								</Typography>
-							</Box>
-						</Box>
-					)}
+					<CartCheckout
+						paymentMethod={paymentMethod}
+						setPaymentMethod={setPaymentMethod}
+						amountPaid={amountPaid}
+						setAmountPaid={setAmountPaid}
+						changeAmount={changeAmount}
+						selectedCustomer={selectedCustomer}
+					/>
 				</Box>
 
 				<Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -395,19 +298,13 @@ function CartList() {
 						variant='contained'
 						color='primary'
 						size='large'
-						disabled={items.length === 0}
+						disabled={items.length === 0 || createOrderPending}
 						sx={{ flex: 2, textTransform: 'none', fontWeight: 'bold' }}
 						onClick={handleCreateOrder}>
 						Pay Now
 					</Button>
 				</Box>
 			</Box>
-
-			{/* Discount Modal */}
-			<DiscountModal
-				open={openDiscountModal}
-				setOpen={setOpenDiscountModal}
-			/>
 
 			<Box sx={{ display: 'none' }}>
 				<OrderPrintTemplate

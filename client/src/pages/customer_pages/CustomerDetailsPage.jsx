@@ -8,6 +8,11 @@ import {
 	Stack,
 	IconButton,
 	Button,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	TextField,
 } from '@mui/material';
 import {
 	ArrowBack as ArrowBackIcon,
@@ -19,12 +24,15 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import getCustomerById from '../../api/customers_api/getCustomerById';
+import RechargeWalletModal from './RechargeWalletModal';
 
 const CustomerDetailsPage = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 
+	const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
 	const { data: customerData } = useQuery({
 		queryFn: () => getCustomerById(id),
 		queryKey: ['customers'],
@@ -148,29 +156,68 @@ const CustomerDetailsPage = () => {
 			<Grid
 				container
 				spacing={3}>
-				{/* Contact Information */}
+				{/* Contact Information & Wallet Actions */}
 				<Grid
 					xs={12}
 					md={4}>
-					<Paper sx={{ p: 3, height: '100%' }}>
-						<Typography
-							variant='h6'
-							gutterBottom
-							sx={{ mb: 2 }}>
-							Contact Info
-						</Typography>
-						<Divider sx={{ mb: 2 }} />
-						{infoItem(<PhoneIcon />, 'Phone Number', phone)}
-						{infoItem(<EmailIcon />, 'Email Address', email)}
-						{infoItem(<LocationOnIcon />, 'Address', address)}
+					<Stack
+						spacing={3}
+						sx={{ height: '100%' }}>
+						{/* Wallet Recharge Card */}
+						<Paper sx={{ p: 3 }}>
+							<Typography
+								variant='h6'
+								gutterBottom
+								sx={{ fontWeight: 'bold' }}>
+								{name}
+							</Typography>
+							<Stack
+								spacing={1.5}
+								sx={{ mb: 2 }}>
+								<Typography variant='body1'>
+									<strong>Phone:</strong> {phone || 'N/A'}
+								</Typography>
+								<Typography variant='body1'>
+									<strong>Wallet:</strong> ৳
+									{walletBalance?.toLocaleString() || 0}
+								</Typography>
+								<Typography
+									variant='body1'
+									color='error'>
+									<strong>Due:</strong> ৳{totalDue?.toLocaleString() || 0}
+								</Typography>
+							</Stack>
+							<Divider sx={{ mb: 2 }} />
+							<Button
+								variant='outlined'
+								color='primary'
+								fullWidth
+								onClick={() => setIsRechargeModalOpen(true)}>
+								+ Recharge Wallet
+							</Button>
+						</Paper>
 
-						<Typography
-							variant='caption'
-							color='text.secondary'
-							sx={{ mt: 2, display: 'block' }}>
-							Created At: {new Date(createdAt).toLocaleDateString()}
-						</Typography>
-					</Paper>
+						{/* Contact Info */}
+						<Paper sx={{ p: 3, flex: 1 }}>
+							<Typography
+								variant='h6'
+								gutterBottom
+								sx={{ mb: 2 }}>
+								Contact Info
+							</Typography>
+							<Divider sx={{ mb: 2 }} />
+							{infoItem(<PhoneIcon />, 'Phone Number', phone)}
+							{infoItem(<EmailIcon />, 'Email Address', email)}
+							{infoItem(<LocationOnIcon />, 'Address', address)}
+
+							<Typography
+								variant='caption'
+								color='text.secondary'
+								sx={{ mt: 2, display: 'block' }}>
+								Created At: {new Date(createdAt).toLocaleDateString()}
+							</Typography>
+						</Paper>
+					</Stack>
 				</Grid>
 
 				{/* Financial Summary */}
@@ -248,6 +295,15 @@ const CustomerDetailsPage = () => {
 					</Paper>
 				</Grid>
 			</Grid>
+
+			{/* Recharge Wallet Modal */}
+			<RechargeWalletModal
+				isRechargeModalOpen={isRechargeModalOpen}
+				setIsRechargeModalOpen={setIsRechargeModalOpen}
+				walletBalance={walletBalance}
+				totalDue={totalDue}
+				id={id}
+			/>
 		</Box>
 	);
 };

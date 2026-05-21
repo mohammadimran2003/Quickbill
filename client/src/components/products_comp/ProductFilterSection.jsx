@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Box, Button, MenuItem, Popover, Select, TextField, Typography } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ResetIcon from '@mui/icons-material/RestartAlt';
@@ -8,24 +10,42 @@ const filterBtnSx = {
 	'&:hover': { borderColor: 'text.secondary', backgroundColor: 'action.hover' },
 };
 
-const ProductTableToolbar = ({
-	hasFilters,
-	nameAnchorEl,
-	setNameAnchorEl,
-	skuAnchorEl,
-	setSkuAnchorEl,
-	nameFilter,
-	setNameFilter,
-	skuFilter,
-	setSkuFilter,
-	onNameFilterApply,
-	onSkuFilterApply,
-	onReset,
-	categories,
-	brands,
-	searchParams,
-	setSearchParams,
-}) => {
+const ProductFilterSection = ({ categories, brands, onSetSorting }) => {
+	const [nameAnchorEl, setNameAnchorEl] = useState(null);
+	const [skuAnchorEl, setSkuAnchorEl] = useState(null);
+	const [nameFilter, setNameFilter] = useState('');
+	const [skuFilter, setSkuFilter] = useState('');
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	const hasFilters = Boolean(searchParams.toString());
+
+	const handleNameFilterApply = () => {
+		setSearchParams((prev) => ({
+			...Object.fromEntries(prev),
+			search: nameFilter,
+			page: 1,
+		}));
+		setNameAnchorEl(null);
+		setNameFilter('');
+	};
+
+	const handleSkuFilterApply = () => {
+		setSearchParams((prev) => ({
+			...Object.fromEntries(prev),
+			search: skuFilter,
+			page: 1,
+		}));
+		setSkuAnchorEl(null);
+		setSkuFilter('');
+	};
+
+	const handleReset = () => {
+		setSearchParams({});
+		setNameFilter('');
+		setSkuFilter('');
+		if (onSetSorting) onSetSorting();
+	};
+
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
 			{/* Left: Search & Reset buttons */}
@@ -45,7 +65,7 @@ const ProductTableToolbar = ({
 					SKU
 				</Button>
 				{hasFilters && (
-					<Button variant='outlined' startIcon={<ResetIcon />} onClick={onReset}>
+					<Button variant='outlined' startIcon={<ResetIcon />} onClick={handleReset}>
 						Reset
 					</Button>
 				)}
@@ -130,7 +150,7 @@ const ProductTableToolbar = ({
 						size='small'
 						sx={{ mb: 2 }}
 					/>
-					<Button variant='contained' fullWidth onClick={onNameFilterApply}>
+					<Button variant='contained' fullWidth onClick={handleNameFilterApply}>
 						Apply
 					</Button>
 				</Box>
@@ -154,7 +174,7 @@ const ProductTableToolbar = ({
 						size='small'
 						sx={{ mb: 2 }}
 					/>
-					<Button variant='contained' fullWidth onClick={onSkuFilterApply}>
+					<Button variant='contained' fullWidth onClick={handleSkuFilterApply}>
 						Apply
 					</Button>
 				</Box>
@@ -163,4 +183,4 @@ const ProductTableToolbar = ({
 	);
 };
 
-export default ProductTableToolbar;
+export default ProductFilterSection;

@@ -73,7 +73,8 @@ function DiscountModal({ open, setOpen }) {
 				<Button
 					onClick={handleApplyDiscount}
 					variant='contained'
-					color='primary'>
+					color='primary'
+					disabled={tempValue <= 0 || tempType === 'NONE'}>
 					Apply
 				</Button>
 			</DialogActions>

@@ -11,7 +11,7 @@ import {
 } from '../controllers/customerControllers.js';
 import validatorsMiddleware from '../middlewares/validatorsMiddleware.js';
 import { customerSchema } from '../validations/customersValidations.js';
-import walletTransactionSchema from '../validations/walletValidations.js';
+import { walletRechargeSchema } from '../validations/walletValidations.js';
 
 const customerRouter = express.Router();
 
@@ -27,7 +27,7 @@ customerRouter.put(
 
 customerRouter.put(
 	'/:id/wallet/recharge',
-	validatorsMiddleware(walletTransactionSchema),
+	validatorsMiddleware(walletRechargeSchema),
 	rechargeWallet,
 );
 

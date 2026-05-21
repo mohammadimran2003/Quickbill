@@ -194,6 +194,7 @@ const updateCustomer = async (req, res) => {
 const rechargeWallet = async (req, res) => {
 	try {
 		const { amount, note } = req.body;
+
 		const customer = await prisma.customer.findUnique({
 			where: { id: req.params.id },
 		});
@@ -207,7 +208,7 @@ const rechargeWallet = async (req, res) => {
 		}
 
 		const result = await prisma.$transaction(async (tx) => {
-			await tx.customer.update({
+			const updatedCustomer = await tx.customer.update({
 				where: { id: customer.id },
 				data: {
 					totalDue: { decrement: dueDeduction },
@@ -215,8 +216,11 @@ const rechargeWallet = async (req, res) => {
 				},
 			});
 
+			let dueTx = null;
+			let rechargeTx = null;
+
 			if (dueDeduction > 0) {
-				await tx.walletTransaction.create({
+				dueTx = await tx.walletTransaction.create({
 					data: {
 						type: 'DUE_PAYMENT',
 						customerId: customer.id,
@@ -230,7 +234,7 @@ const rechargeWallet = async (req, res) => {
 			}
 
 			if (walletAmount > 0) {
-				await tx.walletTransaction.create({
+				rechargeTx = await tx.walletTransaction.create({
 					data: {
 						type: 'RECHARGE',
 						customerId: customer.id,
@@ -243,14 +247,16 @@ const rechargeWallet = async (req, res) => {
 				});
 			}
 
-			return true;
+			return {
+				customer: updatedCustomer,
+				dueTransaction: dueTx,
+				rechargeTransaction: rechargeTx,
+			};
 		});
-
-		console.log(result);
 
 		res.status(200).json({
 			success: true,
-			message: 'Wallet recharge successfull',
+			message: 'Wallet recharge successfully',
 			data: result,
 		});
 	} catch (err) {

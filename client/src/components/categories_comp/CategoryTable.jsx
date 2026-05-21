@@ -9,15 +9,6 @@ import {
 	TableBody,
 	TableCell,
 	Stack,
-	IconButton,
-	Tooltip,
-	Checkbox,
-	Button,
-	Popover,
-	MenuItem,
-	TextField,
-	Select,
-	Chip,
 } from '@mui/material';
 import {
 	flexRender,
@@ -26,32 +17,26 @@ import {
 } from '@tanstack/react-table';
 import { useState } from 'react';
 import getCategories from '../../api/categories_api/getCategories';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ResetIcon from '@mui/icons-material/RestartAlt';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import deleteCategory from '../../api/categories_api/deleteCategory';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
 import { toast } from 'sonner';
 
+import useCategoryColumns from './hooks/useCategoryColumns';
+import CategoryFilterSection from './CategoryFilterSection';
+
 function CategoryTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
-	const [nameAnchorEl, setNameAnchorEl] = useState(null);
-	const [nameFilter, setNameFilter] = useState('');
 	const [sorting, setSorting] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 	const [categoryToDelete, setCategoryToDelete] = useState(null);
-
-	const navigate = useNavigate();
 
 	const queryClient = useQueryClient();
 
@@ -76,88 +61,13 @@ function CategoryTable({ onEditClick = () => {} }) {
 		},
 	});
 
-	const columns = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<Checkbox
-					checked={table.getIsAllPageRowsSelected()}
-					indeterminate={table.getIsSomePageRowsSelected()}
-					onChange={table.getToggleAllPageRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<Checkbox
-					checked={row.getIsSelected()}
-					disabled={!row.getCanSelect()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
+	const columns = useCategoryColumns({
+		onEditClick,
+		onDeleteClick: (category) => {
+			setCategoryToDelete(category);
+			setDeleteDialogOpen(true);
 		},
-		{ header: 'Name', accessorKey: 'name', enableSorting: true },
-		{
-			header: 'Description',
-			accessorKey: 'description',
-			cell: ({ getValue }) => getValue() || 'N/A',
-			enableSorting: false,
-		},
-		{
-			header: 'Status',
-			accessorKey: 'isActive',
-			cell: ({ getValue }) => (
-				<Chip
-					label={getValue() ? 'Active' : 'Inactive'}
-					size='small'
-					color={getValue() ? 'success' : 'error'}
-				/>
-			),
-			enableSorting: false,
-		},
-		{
-			header: 'Date',
-			accessorKey: 'createdAt',
-			cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
-		},
-		{
-			header: 'Actions',
-			id: 'actions',
-			cell: ({ row }) => (
-				<Stack
-					direction='row'
-					spacing={1}>
-					<Tooltip title='View Details'>
-						<IconButton
-							size='small'
-							color='info'
-							onClick={() => navigate(`/categories/${row.original.id}`)}>
-							<VisibilityIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-
-					<Tooltip title='Edit'>
-						<IconButton
-							size='small'
-							color='primary'
-							onClick={() => onEditClick(row.original)}>
-							<EditIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-
-					<Tooltip title='Delete'>
-						<IconButton
-							size='small'
-							color='error'
-							onClick={() => {
-								setCategoryToDelete(row.original);
-								setDeleteDialogOpen(true);
-							}}>
-							<DeleteIcon fontSize='small' />
-						</IconButton>
-					</Tooltip>
-				</Stack>
-			),
-		},
-	];
+	});
 
 	const handlePageChange = (newPage) => {
 		setSearchParams((prev) => ({
@@ -174,15 +84,7 @@ function CategoryTable({ onEditClick = () => {} }) {
 		}));
 	};
 
-	const handleNameApply = () => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			search: nameFilter,
-			page: 1,
-		}));
-		setNameFilter('');
-		setNameAnchorEl(null);
-	};
+
 
 	const table = useReactTable({
 		data: data?.data || [],
@@ -212,7 +114,7 @@ function CategoryTable({ onEditClick = () => {} }) {
 		getRowId: (row) => row.id,
 	});
 
-	const hasFilters = Boolean(searchParams.toString());
+
 
 	if (isLoading) return <CircularProgress />;
 	if (isError) return <Typography>Something went wrong</Typography>;
@@ -225,89 +127,7 @@ function CategoryTable({ onEditClick = () => {} }) {
 				borderRadius: 4,
 				overflowX: 'auto',
 			}}>
-			<Box
-				sx={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					gap: 2,
-					flexWrap: 'wrap',
-				}}>
-				<Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-					<Button
-						variant='outlined'
-						startIcon={<AddCircleIcon />}
-						onClick={(e) => setNameAnchorEl(e.currentTarget)}
-						sx={{
-							color: 'text.primary',
-							borderColor: 'divider',
-							'&:hover': {
-								borderColor: 'text.secondary',
-								backgroundColor: 'action.hover',
-							},
-						}}>
-						Name
-					</Button>
-					{hasFilters && (
-						<Button
-							variant='outlined'
-							startIcon={<ResetIcon />}
-							onClick={() => {
-								setSearchParams({});
-								setNameFilter('');
-								setSorting([]);
-							}}>
-							Reset
-						</Button>
-					)}
-				</Box>
-				<Select
-					value={searchParams.get('isActive') || ''}
-					onChange={(e) =>
-						setSearchParams((prev) => ({
-							...Object.fromEntries(prev),
-							isActive: e.target.value,
-							page: 1,
-						}))
-					}
-					displayEmpty
-					color='primary'
-					size='small'
-					sx={{ minWidth: 150 }}>
-					<MenuItem value=''>All Status</MenuItem>
-					<MenuItem value='true'>Active</MenuItem>
-					<MenuItem value='false'>Inactive</MenuItem>
-				</Select>
-			</Box>
-			<Popover
-				open={Boolean(nameAnchorEl)}
-				anchorEl={nameAnchorEl}
-				onClose={() => setNameAnchorEl(null)}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'left',
-				}}>
-				<Box sx={{ p: 3, minWidth: 300 }}>
-					<Typography
-						variant='h6'
-						sx={{ mb: 2 }}>
-						Filter by Name
-					</Typography>
-					<TextField
-						fullWidth
-						placeholder='Enter category name'
-						value={nameFilter}
-						onChange={(e) => setNameFilter(e.target.value)}
-						size='small'
-						sx={{ mb: 2 }}
-					/>
-					<Button
-						variant='contained'
-						fullWidth
-						onClick={handleNameApply}>
-						Apply
-					</Button>
-				</Box>
-			</Popover>
+			<CategoryFilterSection onSetSorting={() => setSorting([])} />
 			<TableContainer
 				component={Box}
 				sx={{

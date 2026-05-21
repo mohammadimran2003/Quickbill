@@ -9,26 +9,34 @@ import {
 } from 'recharts';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
 
-import { useEffect } from 'react';
-import { useState } from 'react';
 import getLast30DaysSales from '../../api/dashboard_api/getLast30DaysSales';
+import { useQuery } from '@tanstack/react-query';
 
 const SalesOverviewChart = () => {
 	const theme = useTheme();
-	const [data, setData] = useState([]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await getLast30DaysSales();
-				setData(response.data);
-			} catch (error) {
-				console.error('Error fetching sales data:', error);
-			}
-		};
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ['last30DaysSales'],
+		queryFn: () => getLast30DaysSales(),
+	});
 
-		fetchData();
-	}, []);
+	console.log(data, 'data');
+
+	if (isLoading) {
+		return (
+			<Box sx={{ p: 4 }}>
+				<Typography>Loading sales data...</Typography>
+			</Box>
+		);
+	}
+
+	if (isError) {
+		return (
+			<Box sx={{ p: 4 }}>
+				<Typography color='error'>Failed to load sales data</Typography>
+			</Box>
+		);
+	}
 
 	return (
 		<Paper
@@ -63,7 +71,7 @@ const SalesOverviewChart = () => {
 				<AreaChart
 					width='100%'
 					height={350}
-					data={data}
+					data={data?.data}
 					margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
 					<CartesianGrid
 						vertical={false}

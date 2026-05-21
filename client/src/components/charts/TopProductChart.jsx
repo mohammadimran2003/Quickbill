@@ -9,25 +9,32 @@ import {
 import { Paper, Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import getTopProducts from '../../api/dashboard_api/getTopProducts';
+import { useQuery } from '@tanstack/react-query';
 
 // Professional Color Palette
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const TopProductChart = () => {
-	const [data, setData] = useState([]);
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ['topProducts'],
+		queryFn: () => getTopProducts(),
+	});
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await getTopProducts();
-				setData(response.data);
-			} catch (error) {
-				console.error('Error fetching top products data:', error);
-			}
-		};
+	if (isLoading) {
+		return (
+			<Box sx={{ p: 4 }}>
+				<Typography>Loading top products data...</Typography>
+			</Box>
+		);
+	}
 
-		fetchData();
-	}, []);
+	if (isError) {
+		return (
+			<Box sx={{ p: 4 }}>
+				<Typography color='error'>Failed to load top products data</Typography>
+			</Box>
+		);
+	}
 
 	return (
 		<Paper
@@ -45,7 +52,7 @@ const TopProductChart = () => {
 					variant='h6'
 					fontWeight={700}
 					color='text.primary'>
-					Top {data.length} Products
+					Top {data?.data.length} Products
 				</Typography>
 				<Typography
 					variant='body2'
@@ -63,14 +70,14 @@ const TopProductChart = () => {
 					width='100%'
 					height={350}>
 					<Pie
-						data={data}
+						data={data?.data}
 						cx='50%'
 						cy='50%'
 						innerRadius={70}
 						outerRadius={100}
 						paddingAngle={5}
 						dataKey='totalSales'>
-						{data.map((entry, index) => (
+						{data?.data.map((entry, index) => (
 							<Cell
 								key={`cell-${index}`}
 								fill={COLORS[index % COLORS.length]}

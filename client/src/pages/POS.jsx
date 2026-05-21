@@ -5,10 +5,14 @@ import ProductCard from '../components/pos_comp/ProductCard';
 import useCartStore from '../store/cartStore';
 import CartList from '../components/pos_comp/CartList';
 import { useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
+import debounce from 'lodash/debounce';
 
 function POS() {
 	const addItem = useCartStore((state) => state.addItem);
 	const loadMoreRef = useRef(null);
+
+	const [searchInputValue, setSearchInputValue] = useState('');
 	const [search, setSearch] = useState('');
 
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -22,6 +26,13 @@ function POS() {
 				return page < totalPages ? page + 1 : undefined;
 			},
 		});
+
+	const debouncedSetSearch = useCallback(
+		debounce((value) => {
+			setSearch(value);
+		}, 300),
+		[],
+	);
 
 	// Intersection Observer
 	useEffect(() => {
@@ -48,7 +59,9 @@ function POS() {
 	};
 
 	const handleSearch = (e) => {
-		setSearch(e.target.value);
+		const value = e.target.value;
+		setSearchInputValue(value);
+		debouncedSetSearch(value);
 	};
 
 	return (
@@ -74,7 +87,7 @@ function POS() {
 					<TextField
 						placeholder='Search here'
 						size='small'
-						value={search}
+						value={searchInputValue}
 						onChange={handleSearch}
 					/>
 				</Box>

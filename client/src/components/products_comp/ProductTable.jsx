@@ -24,22 +24,18 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { toast } from 'sonner';
-
 import getProducts from '../../api/products_api/getProducts';
 import deleteProduct from '../../api/products_api/deleteProduct';
 import getCategories from '../../api/categories_api/getCategories';
 import getBrands from '../../api/brands_api/getBrands';
 import DeleteConfirmationDialog from '../shared/DeleteConfirmationDialog';
-import ProductTableToolbar from './ProductTableToolbar';
+import ProductFilterSection from './ProductFilterSection';
 import useProductColumns from './hooks/useProductColumns';
 
 function ProductTable({ onEditClick = () => {} }) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [sorting, setSorting] = useState([]);
-	const [nameAnchorEl, setNameAnchorEl] = useState(null);
-	const [skuAnchorEl, setSkuAnchorEl] = useState(null);
-	const [nameFilter, setNameFilter] = useState('');
-	const [skuFilter, setSkuFilter] = useState('');
+
 	const [productToDelete, setProductToDelete] = useState(null);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -48,7 +44,6 @@ function ProductTable({ onEditClick = () => {} }) {
 
 	const pageNumber = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
-	const hasFilters = Boolean(searchParams.toString());
 
 	// ── Queries ────────────────────────────────────────────────
 	const { data, isLoading, isError } = useQuery({
@@ -102,29 +97,6 @@ function ProductTable({ onEditClick = () => {} }) {
 		}));
 	};
 
-	const handleNameFilterApply = () => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			search: nameFilter,
-			page: 1,
-		}));
-		setNameAnchorEl(null);
-	};
-
-	const handleSkuFilterApply = () => {
-		setSearchParams((prev) => ({
-			...Object.fromEntries(prev),
-			search: skuFilter,
-			page: 1,
-		}));
-		setSkuAnchorEl(null);
-	};
-
-	const handleReset = () => {
-		setSearchParams({});
-		setSorting([]);
-	};
-
 	const handleSortingChange = (updater) => {
 		const newSorting =
 			typeof updater === 'function' ? updater(sorting) : updater;
@@ -157,23 +129,10 @@ function ProductTable({ onEditClick = () => {} }) {
 
 	return (
 		<Paper sx={{ mt: 2, p: 4, borderRadius: 4, overflowX: 'auto' }}>
-			<ProductTableToolbar
-				hasFilters={hasFilters}
-				nameAnchorEl={nameAnchorEl}
-				setNameAnchorEl={setNameAnchorEl}
-				skuAnchorEl={skuAnchorEl}
-				setSkuAnchorEl={setSkuAnchorEl}
-				nameFilter={nameFilter}
-				setNameFilter={setNameFilter}
-				skuFilter={skuFilter}
-				setSkuFilter={setSkuFilter}
-				onNameFilterApply={handleNameFilterApply}
-				onSkuFilterApply={handleSkuFilterApply}
-				onReset={handleReset}
+			<ProductFilterSection
 				categories={categories}
 				brands={brands}
-				searchParams={searchParams}
-				setSearchParams={setSearchParams}
+				onSetSorting={() => setSorting([])}
 			/>
 
 			<TableContainer

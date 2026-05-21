@@ -118,7 +118,7 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{order.items?.map((item) => (
+						{order?.items?.map((item) => (
 							<TableRow key={item.id}>
 								<TableCell>{item.productName}</TableCell>
 								<TableCell align='center'>{item.quantity}</TableCell>

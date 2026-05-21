@@ -162,6 +162,9 @@ const createOrder = async (req, res) => {
 					createdBy: req.user.id,
 					items: { create: orderItems },
 				},
+				include: {
+					items: true,
+				},
 			});
 
 			const stockUpdates = items.map((item) =>
@@ -207,12 +210,15 @@ const createOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
 	try {
-		const { search, status, page = 1, limit = 10 } = req.query;
+		const { name, invoice, status, page = 1, limit = 10 } = req.query;
 		const skip = (page - 1) * limit;
 
 		const where = {
-			...(search ?
-				{ orderNumber: { contains: search, mode: 'insensitive' } }
+			...(invoice ?
+				{ orderNumber: { contains: invoice, mode: 'insensitive' } }
+			:	{}),
+			...(name ?
+				{ customerName: { contains: name, mode: 'insensitive' } }
 			:	{}),
 			...(status ? { status: status } : {}),
 		};
