@@ -47,10 +47,6 @@ app.use(
     }),
 );
 
-app.get('/', (req, res) => {
-	res.send('Hello Quickbill!');
-});
-
 app.use('/api/auth', authRouter);
 app.use('/api/categories', verifyToken, categoryRouter);
 app.use('/api/brands', verifyToken, brandRouter);
