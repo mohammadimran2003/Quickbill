@@ -16,7 +16,7 @@ import supplierRouter from './routers/supplierRouters.js';
 import purchaseRouter from './routers/purcheseRouters.js';
 import reportRouter from './routers/reportRouters.js';
 
-const PORT = 3000;
+const PORT = process.env.PORT; 
 
 const app = express();
 app.use(express.json());
@@ -39,12 +39,12 @@ const ensureWalkInCustomer = async () => {
 };
 
 app.use(
-	cors({
-		origin: 'http://localhost:5173', // frontend URL
-		credentials: true, // HttpOnly cookie handle korar jonno eta MUST
-		methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		allowedHeaders: ['Content-Type', 'Authorization'],
-	}),
+    cors({
+        origin: process.env.FRONTEND_URL || 'http://localhost:5173', 
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    }),
 );
 
 app.get('/', (req, res) => {

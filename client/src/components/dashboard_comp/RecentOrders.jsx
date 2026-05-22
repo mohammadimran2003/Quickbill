@@ -27,6 +27,13 @@ const RecentOrders = () => {
 
 	const columns = getRecentOrderTableColumn();
 
+	// 2. Table Instance
+	const table = useReactTable({
+		data: data?.data,
+		columns,
+		getCoreRowModel: getCoreRowModel(),
+	});
+
 	if (isLoading) {
 		return (
 			<Box sx={{ p: 4 }}>
@@ -42,14 +49,6 @@ const RecentOrders = () => {
 			</Box>
 		);
 	}
-
-	// 2. Table Instance
-	const table = useReactTable({
-		data: data?.data,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-	});
-
 	return (
 		<Paper
 			elevation={0}

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -29,11 +29,20 @@ import PurchaseDetailsPage from './pages/purchase_pages/PurchaseDetailsPage';
 import SalesReportPage from './pages/sale_report-pages/SalesReportPage';
 import ProfitReportPage from './pages/profit_report_pages/ProfitReportPage';
 import StockReportPage from './pages/stock_report_pages/StockReportPage';
+import useAuth from './hooks/useAuth';
 
 function App() {
+	const { user } = useAuth();
+
 	return (
 		<BrowserRouter>
 			<Routes>
+				<Route
+					path='/'
+					element={
+						user ? <Navigate to='/dashboard' replace /> : <Navigate to='/login' replace />
+					}
+				/>
 				<Route element={<AuthLayout />}>
 					<Route
 						path='/login'
