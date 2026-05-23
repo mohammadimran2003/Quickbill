@@ -17,8 +17,14 @@ model User {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   email    String @unique
+  phone    String?  @unique
+  address  String?
+  photo    String?
   password String
   role     Role   @default(SALESMAN)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   orders Order[]
   walletTransactions WalletTransaction[]
@@ -29,6 +35,7 @@ model User {
   productVariants   ProductVariant[]
   customers Customer[]
   purchases Purchase[]
+  returns Return[]
 }
 
 enum ProductType {
@@ -242,6 +249,7 @@ model Purchase {
   supplier       Supplier?      @relation(fields: [supplierId], references: [id])
 
   items          PurchaseItem[]
+  returns        Return[]
 
   subTotal       Float
   total          Float
@@ -267,6 +275,7 @@ model PurchaseItem {
 
   productName  String?   
   quantity     Int
+  returnedQty  Int      @default(0)
   unitCost     Float    
   total        Float    
 
@@ -330,6 +339,9 @@ model Order {
   changeAmount   Float         @default(0)
   dueAmount      Float         @default(0)
 
+  // return 
+  returns        Return[]
+
   // Extra
   orderType      OrderType     @default(WALK_IN)
   note           String?
@@ -350,13 +362,70 @@ model OrderItem {
   unitPrice     Float    // bikroy mullo
   purchasePrice Float    // kroy mullo  (profit hisaber jonno)
   quantity      Int
+  returnedQty   Int      @default(0)
   discount      Float    @default(0)
   total         Float    // (unitPrice - discount) * quantity
 
   createdAt     DateTime @default(now())
 }
 
+model returnCounter {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  currentNumber Int      @default(1)
+  createdAt     DateTime @default(now())
+}
 
+enum ReturnType {
+  PURCHASE
+  SALE
+}
+
+// main return model puro return transaction track korbe
+model Return {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  returnNo      String       @unique // example: RET-1001, RET-1002
+  returnType    ReturnType   // "PURCHASE" or "SALE" (same model can handle both)
+  
+  // kharidor kache theke return asche or kharidor kache jachche
+  customerId    String?      @db.ObjectId
+  supplierId    String?      @db.ObjectId
+  
+  // original invoice or purchase order ke link kora
+  orderId       String?      @db.ObjectId // sale return hole
+  purchaseId    String?      @db.ObjectId // purchase return hole
+
+  // tk er hisab
+  totalAmount   Float        // return korar somoy total amount
+  tax           Float        @default(0)
+  grandTotal    Float        // taxsah koto tk ferot deowa holo
+
+  // extra
+  reason        String?
+
+  // return item gulo ke relation kora
+  items         ReturnItem[]
+  order         Order?     @relation(fields: [orderId], references: [id])
+  purchase      Purchase?  @relation(fields: [purchaseId], references: [id])
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  createdBy String @db.ObjectId
+  user      User   @relation(fields: [createdBy], references: [id])
+}
+
+model ReturnItem {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  returnId   String   @db.ObjectId
+  return     Return   @relation(fields: [returnId], references: [id], onDelete: Cascade)
+
+  productId  String   @db.ObjectId
+  
+  quantity   Int      // koto piece return kora holo
+  price      Float    // return korar somoy price
+  total      Float    // quantity * price
+}
 
 model ProductVariant {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -373,4 +442,4 @@ model ProductVariant {
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-}
+} 

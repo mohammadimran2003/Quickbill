@@ -55,7 +55,8 @@ const getCustomers = async (req, res) => {
 		const {
 			page = 1,
 			limit = 10,
-			search = '',
+			email = '',
+			phone = '',
 			sortBy = 'createdAt',
 			sortOrder = 'desc',
 			customerType = '',
@@ -64,13 +65,14 @@ const getCustomers = async (req, res) => {
 		const skip = (Number(page) - 1) * Number(limit);
 
 		const where = {
-			...(search ?
+			...(email ?
 				{
-					OR: [
-						{ name: { contains: search, mode: 'insensitive' } },
-						{ phone: { contains: search } },
-						{ email: { contains: search, mode: 'insensitive' } },
-					],
+					email: { contains: email, mode: 'insensitive' },
+				}
+			:	{}),
+			...(phone ?
+				{
+					phone: { contains: phone },
 				}
 			:	{}),
 			...(customerType ? { customerType } : {}),

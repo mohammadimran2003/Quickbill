@@ -22,7 +22,7 @@ const ProductFilterSection = ({ categories, brands, onSetSorting }) => {
 	const handleNameFilterApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: nameFilter,
+			productName: nameFilter,
 			page: 1,
 		}));
 		setNameAnchorEl(null);
@@ -32,7 +32,7 @@ const ProductFilterSection = ({ categories, brands, onSetSorting }) => {
 	const handleSkuFilterApply = () => {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
-			search: skuFilter,
+			sku: skuFilter,
 			page: 1,
 		}));
 		setSkuAnchorEl(null);

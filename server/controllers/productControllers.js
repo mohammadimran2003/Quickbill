@@ -35,7 +35,8 @@ const getAllProducts = async (req, res) => {
 			page = 1,
 			brand = '',
 			limit = 10,
-			search = '',
+			productName = '',
+			sku = '',
 			sortBy = 'createdAt',
 			sortOrder = 'desc',
 			productType = '',
@@ -44,15 +45,12 @@ const getAllProducts = async (req, res) => {
 		const skip = (Number(page) - 1) * Number(limit);
 
 		const where = {
-			...(search ?
+			...(productName ?
 				{
-					OR: [
-						{ name: { contains: search, mode: 'insensitive' } },
-						{ barcode: { contains: search, mode: 'insensitive' } },
-						{ sku: { contains: search, mode: 'insensitive' } },
-					],
+					name: { contains: productName, mode: 'insensitive' },
 				}
 			:	{}),
+			...(sku ? { sku: { contains: sku, mode: 'insensitive' } } : {}),
 			...(category ? { categoryId: category } : {}),
 			...(brand ? { brandId: brand } : {}),
 			...(productType ? { productType } : {}),
