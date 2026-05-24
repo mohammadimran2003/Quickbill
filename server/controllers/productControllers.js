@@ -40,6 +40,7 @@ const getAllProducts = async (req, res) => {
       sortBy = "createdAt",
       sortOrder = "desc",
       productType = "",
+      stockStatus = "",
     } = req.query;
 
     console.log(req.query, "req.query");
@@ -56,6 +57,13 @@ const getAllProducts = async (req, res) => {
       ...(categoryId ? { categoryId: categoryId } : {}),
       ...(brandId ? { brandId: brandId } : {}),
       ...(productType ? { productType } : {}),
+      ...(stockStatus
+        ? {
+            stock: {
+              lte: prisma.product.fields.lowStockAlert,
+            },
+          }
+        : {}),
     };
 
     const [products, total] = await Promise.all([
@@ -156,10 +164,36 @@ const editProduct = async (req, res) => {
   }
 };
 
+const getLowStockProduct = async (req, res) => {
+  try {
+    const lowStockProducts = await prisma.product.findMany({
+      where: {
+        stock: {
+          lte: prisma.product.fields.lowStockAlert,
+        },
+      },
+      take: 5,
+      orderBy: {
+        stock: "asc",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Low stock products retrieved successfully",
+      data: lowStockProducts,
+    });
+  } catch (err) {
+    console.log(err, "err");
+    res.status(500).json({ success: false, message: "Server internal error" });
+  }
+};
+
 export {
   createProduct,
   getAllProducts,
   deleteProduct,
   getProductById,
   editProduct,
+  getLowStockProduct,
 };

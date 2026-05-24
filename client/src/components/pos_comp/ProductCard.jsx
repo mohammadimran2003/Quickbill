@@ -39,10 +39,23 @@ const ProductCard = ({ product, onAddToCart }) => {
         },
       }}
     >
-      <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+          zIndex: 1,
+        }}
+      >
         <Chip
           label={isOutOfStock ? "Out of Stock" : `Stock: ${product.stock}`}
-          color={isOutOfStock ? "error" : "success"}
+          color={
+            isOutOfStock
+              ? "error"
+              : product.stock <= product.lowStockAlert
+                ? "warning"
+                : "success"
+          }
           size="small"
           sx={{ fontWeight: "bold", fontSize: "0.7rem" }}
         />
