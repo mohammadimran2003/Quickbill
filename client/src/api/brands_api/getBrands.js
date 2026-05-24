@@ -1,9 +1,9 @@
-import api from '../axios';
+import api from "../axios";
 
 const getBrands = async (params) => {
-	const response = await api.get('/brands', { params });
+  const response = await api.get("/brands", { params });
 
-	return response.data;
+  return response.data;
 };
 
 export default getBrands;
