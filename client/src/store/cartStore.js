@@ -42,6 +42,8 @@ const useCartStore = create((set, get) => ({
         item.id === productId ? { ...item, quantity } : item,
       ),
     });
+    console.log(get().items, "items");
+    console.log(productId, quantity, "productId, quantity");
   },
 
   setCustomer: (customer) => set({ customer }),

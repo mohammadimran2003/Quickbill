@@ -1,9 +1,9 @@
 import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const QuantityInput = ({ item, updateQuantity }) => {
   const [value, setValue] = useState(item.quantity);
-
   const maxQuantity = item.stock;
 
   useEffect(() => {
@@ -11,20 +11,31 @@ const QuantityInput = ({ item, updateQuantity }) => {
   }, [item.quantity]);
 
   const handleChange = (e) => {
-    const val = e.target.value;
-    setValue(val);
+    const inputVal = e.target.value;
 
-    if (val < 0) {
-      setValue(1);
+    if (inputVal === "") {
+      setValue("");
+      return;
     }
 
-    if (val > maxQuantity) {
-      setValue(maxQuantity);
+    let finalVal = Number(inputVal);
+
+    if (finalVal < 1) {
+      finalVal = 1;
     }
+
+    if (finalVal > maxQuantity) {
+      toast.warning("Stock limit exceeded");
+      finalVal = maxQuantity;
+    }
+
+    setValue(finalVal);
+    updateQuantity(item.id, finalVal);
   };
 
   const handleBlur = () => {
     const num = Number(value);
+
     if (!value || num < 1) {
       setValue(1);
       updateQuantity(item.id, 1);
@@ -38,12 +49,8 @@ const QuantityInput = ({ item, updateQuantity }) => {
       placeholder="1"
       onChange={handleChange}
       onBlur={handleBlur}
-      sx={{ width: "60px" }}
+      sx={{ width: "70px" }}
       size="small"
-      max={5}
-      slotProps={{
-        input: { min: 1 },
-      }}
     />
   );
 };

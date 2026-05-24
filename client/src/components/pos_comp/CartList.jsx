@@ -5,25 +5,20 @@ import {
   Typography,
   IconButton,
   Button,
-  Divider,
   Paper,
-  Stack,
   Autocomplete,
   TextField,
 } from "@mui/material";
 
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import getCustomers from "../../api/customers_api/getCustomers";
 import CartItem from "./CartItem";
-import DiscountModal from "./DiscountModal";
 import CustomerModal from "../customers_comp/CustomerModal";
 import createCustomer from "../../api/customers_api/createCustomer";
 import createOrder from "../../api/pos_api/createOrder";
 import { toast } from "sonner";
-import { formatCurrency } from "../../utils/formatCurrency";
 import { useReactToPrint } from "react-to-print";
 import getCustomerByPhone from "../../api/orders_api/getCustomerByPhone";
 import { OrderPrintTemplate } from "../print/OrderPrintTemplate";
