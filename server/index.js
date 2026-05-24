@@ -16,6 +16,7 @@ import supplierRouter from "./routers/supplierRouters.js";
 import purchaseRouter from "./routers/purcheseRouters.js";
 import reportRouter from "./routers/reportRouters.js";
 import returnRouter from "./routers/returnRouters.js";
+import userRouter from "./routers/userRouters.js";
 
 const PORT = process.env.PORT;
 
@@ -60,6 +61,7 @@ app.use("/api/suppliers", verifyToken, supplierRouter);
 app.use("/api/purchases", verifyToken, purchaseRouter);
 app.use("/api/reports", verifyToken, reportRouter);
 app.use("/api/return", verifyToken, returnRouter);
+app.use("/api/users", verifyToken, userRouter);
 
 app.listen(PORT, async () => {
   console.log(`Your server is running at localhost:${PORT}`);

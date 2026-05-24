@@ -15,11 +15,20 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createUserSchema } from "../../validations/userValidation";
+import {
+  createUserSchema,
+  updateUserSchema,
+  resetPasswordSchema,
+} from "../../validations/userValidation";
 
-const UserModal = ({ open, onClose, onSave, initialData = null }) => {
-  const isEditMode = !!initialData;
-
+const UserModal = ({
+  open,
+  onClose,
+  onSave,
+  initialData = null,
+  isResetMode = false,
+}) => {
+  const isEditMode = !!initialData && !isResetMode;
   const {
     control,
     register,
@@ -38,7 +47,13 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
       address: "",
       photo: "",
     },
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(
+      isResetMode
+        ? resetPasswordSchema
+        : isEditMode
+          ? updateUserSchema
+          : createUserSchema,
+    ),
     mode: "onChange",
   });
 
@@ -74,7 +89,15 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
   }, [initialData, open, reset]);
 
   const handleSave = (data) => {
-    onSave(data);
+    if (isResetMode) {
+      onSave({ ...data, id: initialData.id });
+      return;
+    }
+    if (isEditMode) {
+      onSave({ ...data, id: initialData.id });
+    } else {
+      onSave(data);
+    }
     reset();
   };
 
@@ -105,7 +128,7 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
           py: 2,
         }}
       >
-        {isEditMode ? "Edit User" : "Add New User"}
+        {isEditMode ? "Edit User" : "Add New User"}dddd
       </DialogTitle>
 
       <DialogContent
@@ -119,32 +142,36 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
         component="form"
       >
         {/* Name Field */}
-        <TextField
-          {...register("name")}
-          label="Full Name *"
-          fullWidth
-          variant="outlined"
-          placeholder="Enter full name"
-          error={!!errors.name}
-          helperText={errors.name?.message}
-          size="small"
-          sx={{ mt: 1 }}
-        />
-
-        {/* Email Field */}
-        <TextField
-          {...register("email")}
-          label="Email *"
-          fullWidth
-          variant="outlined"
-          placeholder="Enter email address"
-          error={!!errors.email}
-          helperText={errors.email?.message}
-          size="small"
-        />
+        {!isResetMode && (
+          <>
+            {" "}
+            <TextField
+              {...register("name")}
+              label="Full Name *"
+              fullWidth
+              variant="outlined"
+              placeholder="Enter full name"
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              size="small"
+              sx={{ mt: 1 }}
+            />
+            {/* Email Field */}
+            <TextField
+              {...register("email")}
+              label="Email *"
+              fullWidth
+              variant="outlined"
+              placeholder="Enter email address"
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              size="small"
+            />
+          </>
+        )}
 
         {/* Password Field */}
-        {!isEditMode && (
+        {(isResetMode || !isEditMode) && (
           <TextField
             {...register("password")}
             label="Password *"
@@ -155,11 +182,12 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
             error={!!errors.password}
             helperText={errors.password?.message}
             size="small"
+            sx={{ ...(isResetMode && { mt: 2 }) }}
           />
         )}
 
         {/* Confirm Password Field */}
-        {!isEditMode && (
+        {(isResetMode || !isEditMode) && (
           <TextField
             {...register("confirmPassword")}
             label="Confirm Password"
@@ -173,74 +201,96 @@ const UserModal = ({ open, onClose, onSave, initialData = null }) => {
           />
         )}
 
-        {/* Role Field */}
-        <FormControl fullWidth size="small">
-          <InputLabel id="role-label">Role *</InputLabel>
-          <Controller
-            name="role"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                labelId="role-label"
-                label="Role *"
-                error={!!errors.role}
-              >
-                <MenuItem value="ADMIN">Admin</MenuItem>
-                <MenuItem value="MANAGER">Manager</MenuItem>
-                <MenuItem value="SALESMAN">Salesman</MenuItem>
-              </Select>
-            )}
-          />
-        </FormControl>
+        {!isResetMode && (
+          <>
+            <FormControl fullWidth size="small">
+              <InputLabel id="role-label">Role *</InputLabel>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="role-label"
+                    label="Role *"
+                    error={!!errors.role}
+                  >
+                    <MenuItem value="ADMIN">Admin</MenuItem>
+                    <MenuItem value="MANAGER">Manager</MenuItem>
+                    <MenuItem value="SALESMAN">Salesman</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
+            <FormControl fullWidth size="small">
+              <InputLabel id="role-label">Role *</InputLabel>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="role-label"
+                    label="Role *"
+                    error={!!errors.role}
+                  >
+                    <MenuItem value="ADMIN">Admin</MenuItem>
+                    <MenuItem value="MANAGER">Manager</MenuItem>
+                    <MenuItem value="SALESMAN">Salesman</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
 
-        {/* Phone Field */}
-        <TextField
-          {...register("phone")}
-          label="Phone Number (optional)"
-          fullWidth
-          variant="outlined"
-          placeholder="Enter phone number (e.g., 01712345678)"
-          error={!!errors.phone}
-          helperText={errors.phone?.message}
-          size="small"
-        />
-
-        {/* Address Field */}
-        <TextField
-          {...register("address")}
-          label="Address (optional)"
-          fullWidth
-          variant="outlined"
-          placeholder="Enter address"
-          multiline
-          rows={2}
-          size="small"
-        />
-
-        {/* Photo URL Field */}
-        <TextField
-          {...register("photo")}
-          label="Photo URL (optional)"
-          fullWidth
-          variant="outlined"
-          placeholder="Enter photo URL"
-          size="small"
-        />
-
-        {/* Active Status */}
-        <FormControlLabel
-          control={
-            <Controller
-              name="isActive"
-              control={control}
-              render={({ field }) => (
-                <Switch {...field} checked={field.value} color="primary" />
-              )}
+            {/* Phone Field */}
+            <TextField
+              {...register("phone")}
+              label="Phone Number (optional)"
+              fullWidth
+              variant="outlined"
+              placeholder="Enter phone number (e.g., 01712345678)"
+              error={!!errors.phone}
+              helperText={errors.phone?.message}
+              size="small"
             />
-          }
-          label="Active"
-        />
+
+            {/* Address Field */}
+            <TextField
+              {...register("address")}
+              label="Address (optional)"
+              fullWidth
+              variant="outlined"
+              placeholder="Enter address"
+              multiline
+              rows={2}
+              size="small"
+            />
+
+            {/* Photo URL Field */}
+            <TextField
+              {...register("photo")}
+              label="Photo URL (optional)"
+              fullWidth
+              variant="outlined"
+              placeholder="Enter photo URL"
+              size="small"
+            />
+
+            {/* Active Status */}
+            <FormControlLabel
+              control={
+                <Controller
+                  name="isActive"
+                  control={control}
+                  render={({ field }) => (
+                    <Switch {...field} checked={field.value} color="primary" />
+                  )}
+                />
+              }
+              label="Active"
+            />
+          </>
+        )}
       </DialogContent>
 
       <DialogActions

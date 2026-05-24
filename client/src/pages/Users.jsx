@@ -7,11 +7,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "../api/users_api/createUser";
 import { toast } from "sonner";
 import { toggleUserStatus } from "../api/users_api/toggleUserStatus";
+import updateUser from "../api/users_api/updateUser";
+import resetPassword from "../api/users_api/resetPassword";
 
 function Users() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const queryClient = useQueryClient();
+  const [isResetMode, setIsResetMode] = useState(false);
 
   const { mutateAsync: createUserAsync } = useMutation({
     mutationFn: (userData) => createUser(userData),
@@ -30,6 +33,20 @@ function Users() {
     },
   });
 
+  const { mutateAsync: updateUserAsync } = useMutation({
+    mutationFn: (userData) => updateUser(userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["users"]);
+    },
+  });
+
+  const { mutateAsync: resetPasswordAsync } = useMutation({
+    mutationFn: (userData) => resetPassword(userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["users"]);
+    },
+  });
+
   //handlers
   const handleAddUser = () => {
     setEditingUser(null);
@@ -38,32 +55,66 @@ function Users() {
 
   const handleEditUser = (user) => {
     setEditingUser(user);
+    setIsResetMode(false);
+    setModalOpen(true);
+  };
+
+  const handleResetPassword = (user) => {
+    setEditingUser(user);
+    setIsResetMode(true);
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
     setEditingUser(null);
+    setIsResetMode(false);
   };
 
   const handleSaveUser = (userData) => {
-    toast.promise(createUserAsync(userData), {
-      loading: "Saving user...",
-      success: (data) => {
-        console.log(data);
-        setModalOpen(false);
-        return "User saved successfully";
-      },
-      error: (error) => {
-        console.log(error);
-        return "Failed to save user";
-      },
-    });
-  };
-
-  const handleResetPassword = (user) => {
-    // TODO: Implement reset password logic
-    console.log("Reset password for:", user);
+    if (isResetMode) {
+      // TODO: Implement reset password logic
+      toast.promise(resetPasswordAsync(userData), {
+        loading: "Resetting password...",
+        success: (data) => {
+          console.log(data);
+          setModalOpen(false);
+          return "Password reset successfully";
+        },
+        error: (error) => {
+          console.log(error.message, "error");
+          return "Failed to reset password";
+        },
+      });
+      return;
+    }
+    if (editingUser) {
+      toast.promise(updateUserAsync(userData), {
+        loading: "Updating user...",
+        success: (data) => {
+          console.log(data);
+          setModalOpen(false);
+          return "User updated successfully";
+        },
+        error: (error) => {
+          console.log(error.message, "error");
+          return "Failed to update user";
+        },
+      });
+    } else {
+      toast.promise(createUserAsync(userData), {
+        loading: "Saving user...",
+        success: (data) => {
+          console.log(data);
+          setModalOpen(false);
+          return "User saved successfully";
+        },
+        error: (error) => {
+          console.log(error);
+          return "Failed to save user";
+        },
+      });
+    }
   };
 
   const handleToggleStatus = (user) => {
@@ -98,6 +149,7 @@ function Users() {
         onClose={handleCloseModal}
         onSave={handleSaveUser}
         initialData={editingUser}
+        isResetMode={isResetMode}
       />
     </Box>
   );
