@@ -31,6 +31,7 @@ import ProfitReportPage from "./pages/profit_report_pages/ProfitReportPage";
 import StockReportPage from "./pages/stock_report_pages/StockReportPage";
 import useAuth from "./hooks/useAuth";
 import Users from "./pages/Users";
+import StoreInfo from "./pages/settings_pages/StoreInfo";
 
 function App() {
   const { user } = useAuth();
@@ -299,6 +300,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Users />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings/store"
+            element={
+              <PrivateRoute>
+                <StoreInfo />
               </PrivateRoute>
             }
           />

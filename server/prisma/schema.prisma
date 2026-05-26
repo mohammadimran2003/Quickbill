@@ -427,6 +427,25 @@ model ReturnItem {
   total      Float    // quantity * price
 }
 
+model Store {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  logo          String?
+  receiptFooter String?
+
+  binNumber     String? 
+  invoicePrefix String   @default("INV-") 
+  timeZone      String   @default("Asia/Dhaka")
+
+  currency      String   @default("৳")
+  taxRate       Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model ProductVariant {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   productId  String   @db.ObjectId
