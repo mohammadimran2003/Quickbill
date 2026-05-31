@@ -21,8 +21,6 @@ const getStore = async (req, res) => {
 };
 
 const updateStore = async (req, res) => {
-  console.log("update store called");
-
   try {
     const store = await prisma.store.findFirst();
 

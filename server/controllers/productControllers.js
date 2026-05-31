@@ -1,11 +1,17 @@
 import prisma from "../lib/prisma.js";
+import generateBarcode from "../lib/utils/generateBarcode.js";
 
 const createProduct = async (req, res) => {
+  const barcode = req.body?.barcode || `QB-${Date.now()}`;
+
+  const barcodeData = await generateBarcode(barcode);
   try {
     const product = await prisma.product.create({
       data: {
         ...req.body,
         createdBy: req.user.id,
+        barcode,
+        barcodeImage: barcodeData,
       },
     });
 

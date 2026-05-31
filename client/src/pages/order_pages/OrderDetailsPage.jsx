@@ -71,11 +71,7 @@ const OrderDetailsPage = () => {
 
   return (
     <Container maxWidth={false} sx={{ maxWidth: 1400, py: 4 }}>
-      <OrderHeader
-        order={order}
-        onEdit={() => navigate(`/orders/edit/${id}`)}
-        printRef={printRef}
-      />
+      <OrderHeader order={order} printRef={printRef} />
 
       <Grid container spacing={3}>
         {/* Left Side: Order Items Table */}

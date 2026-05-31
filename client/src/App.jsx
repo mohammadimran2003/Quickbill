@@ -32,6 +32,7 @@ import StockReportPage from "./pages/stock_report_pages/StockReportPage";
 import useAuth from "./hooks/useAuth";
 import Users from "./pages/Users";
 import StoreInfo from "./pages/settings_pages/StoreInfo";
+import Expenses from "./pages/Expenses";
 
 function App() {
   const { user } = useAuth();
@@ -308,6 +309,14 @@ function App() {
             element={
               <PrivateRoute>
                 <StoreInfo />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/expenses"
+            element={
+              <PrivateRoute>
+                <Expenses />
               </PrivateRoute>
             }
           />

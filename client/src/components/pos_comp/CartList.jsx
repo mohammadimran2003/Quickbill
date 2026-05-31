@@ -91,9 +91,6 @@ function CartList() {
         setPaymentMethod("CASH");
         setSelectedCustomer(walkInCustomer.data);
       },
-      onError: (err) => {
-        toast.error(err.message);
-      },
     });
 
   const customers = customerData?.data || customerData || [];

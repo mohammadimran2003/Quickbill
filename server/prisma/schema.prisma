@@ -36,6 +36,7 @@ model User {
   customers Customer[]
   purchases Purchase[]
   returns Return[]
+  expenses Expense[]
 }
 
 enum ProductType {
@@ -148,6 +149,7 @@ model Product {
   description     String?
   images          String[]
   barcode         String?     @unique
+  barcodeImage    String?
   sku             String?     @unique
   productType     ProductType @default(SIMPLE)
 
@@ -462,3 +464,33 @@ model ProductVariant {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 } 
+
+model ExpenseCategory {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique // jemon: Rent, Utilities, Salaries, Damaged Goods
+  expenses  Expense[]
+  createdAt DateTime  @default(now())
+}
+
+enum ExpensePaymentMethod {
+  CASH
+  BANK_TRANSFER
+  MOBILE_BANKING
+  OTHER
+}
+
+model Expense {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String          // "May maser bhara", "Kormochari beton"
+  amount        Float
+  date          DateTime        @default(now())
+  categoryId    String          @db.ObjectId
+  category      ExpenseCategory @relation(fields: [categoryId], references: [id])
+  paymentMethod ExpensePaymentMethod
+  note          String?
+  referenceId   String?
+  createdBy     String          @db.ObjectId  
+  user          User            @relation(fields: [createdBy], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt   
+}
