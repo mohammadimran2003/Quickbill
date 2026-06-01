@@ -28,9 +28,6 @@ function Users() {
     onSuccess: () => {
       queryClient.invalidateQueries(["users"]);
     },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 
   const { mutateAsync: updateUserAsync } = useMutation({
@@ -129,7 +126,9 @@ function Users() {
         return "User status toggled successfully";
       },
       error: (error) => {
-        return "Failed to toggle user status";
+        const message = error?.response?.data?.message;
+
+        return message || "Failed to toggle user status";
       },
     });
   };

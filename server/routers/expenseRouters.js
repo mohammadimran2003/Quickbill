@@ -13,6 +13,7 @@ import {
   createExpenseSchema,
 } from "../validations/expenseValidations.js";
 import validatorsMiddleware from "../middlewares/validatorsMiddleware.js";
+import restrictTo from "../middlewares/restrictTo.js";
 
 const expenseRouter = express.Router();
 
@@ -30,9 +31,10 @@ expenseRouter.post(
 expenseRouter.put(
   "/:id",
   validatorsMiddleware(createExpenseSchema),
+  restrictTo("ADMIN", "MANAGER"),
   updateExpense,
 );
-expenseRouter.delete("/:id", deleteExpense);
+expenseRouter.delete("/:id", restrictTo("ADMIN", "MANAGER"), deleteExpense);
 expenseRouter.get("/", getExpenses);
 expenseRouter.get("/stats", getExpenseStats);
 

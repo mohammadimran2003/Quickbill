@@ -109,6 +109,7 @@ const updateUser = async (req, res) => {
     address,
     photo,
   } = req.body;
+  console.log(isActive, "isActive", req.body, "req. body");
 
   if (password && confirmPassword && password !== confirmPassword) {
     throw new AppError("Passwords do not match!", 400);

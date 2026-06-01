@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import AppError from "../lib/utils/AppError.js";
 
 const createBrand = async (req, res) => {
   // creat brand and push db
@@ -55,13 +56,6 @@ const getBrandById = async (req, res) => {
       },
     },
   });
-
-  if (!brand) {
-    return res.status(404).json({
-      success: false,
-      message: "Brand not found",
-    });
-  }
 
   res.status(200).json({
     success: true,

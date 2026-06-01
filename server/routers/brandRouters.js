@@ -8,14 +8,14 @@ import {
 } from "../controllers/brandControllers.js";
 import validatorsMiddleware from "../middlewares/validatorsMiddleware.js";
 import { createBrandSchema } from "../validations/brandValidations.js";
-import verifyToken from "../middlewares/verifyToken.js";
+import restrictTo from "../middlewares/restrictTo.js";
 
 const brandRouter = express.Router();
 
 brandRouter.post("/", validatorsMiddleware(createBrandSchema), createBrand);
 brandRouter.get("/", getAllBrands);
 brandRouter.get("/:id", getBrandById);
-brandRouter.delete("/:id", deleteBrand);
-brandRouter.put("/:id", editBrand);
+brandRouter.delete("/:id", restrictTo("ADMIN", "MANAGER"), deleteBrand);
+brandRouter.put("/:id", restrictTo("ADMIN", "MANAGER"), editBrand);
 
 export default brandRouter;
