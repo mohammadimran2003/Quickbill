@@ -9,6 +9,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import { useQuery } from "@tanstack/react-query";
 import { get } from "react-hook-form";
@@ -53,8 +54,6 @@ function StockReportPage() {
     queryFn: () => getStockReports(searchParams),
   });
   const handleFilterChange = async (filters) => {
-    console.log(filters, "filters");
-
     setSearchParams({
       from: filters.startDate,
       to: filters.endDate,
@@ -62,7 +61,6 @@ function StockReportPage() {
     });
   };
 
-  console.log(data, "data");
   const { summary } = data?.data || {};
 
   if (isLoading) {
@@ -133,40 +131,40 @@ function StockReportPage() {
           <StatCard
             title="Total Stock Value"
             value={fmt(summary?.totalStockValue)}
-            type="total"
+            icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
+            color="#B71D2B"
+            bgColor="#FFEBEE"
+            borderColor="#FFEBEE"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Products"
             value={summary?.totalProducts ?? "—"}
-            iconConfig={{
-              icon: <Inventory2Icon sx={{ fontSize: 28 }} />,
-              bg: "#E8EAF6",
-              color: "#283593",
-            }}
+            icon={<Inventory2Icon sx={{ fontSize: 28 }} />}
+            color="#283593"
+            bgColor="#E8EAF6"
+            borderColor="#E8EAF6"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Low Stock Products"
             value={summary?.lowStockItems ?? "—"}
-            iconConfig={{
-              icon: <WarningAmberIcon sx={{ fontSize: 28 }} />,
-              bg: "#FFF3E0",
-              color: "#E65100",
-            }}
+            icon={<WarningAmberIcon sx={{ fontSize: 28 }} />}
+            color="#E65100"
+            bgColor="#FFF3E0"
+            borderColor="#FFF3E0"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Out of Stock"
             value={summary?.outOfStockItems ?? "—"}
-            iconConfig={{
-              icon: <ErrorOutlineOutlinedIcon sx={{ fontSize: 28 }} />,
-              bg: "#FFEBEE",
-              color: "#C62828",
-            }}
+            icon={<ErrorOutlineOutlinedIcon sx={{ fontSize: 28 }} />}
+            color="#C62828"
+            bgColor="#FFEBEE"
+            borderColor="#FFEBEE"
           />
         </Grid>
       </Grid>

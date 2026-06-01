@@ -21,6 +21,10 @@ import { useReactToPrint } from "react-to-print";
 import SalesReportPrint from "../../components/print/SalesReportPrint";
 import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import PrintBtn from "../../components/shared/PrintBtn";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 function SalesReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -105,28 +109,40 @@ function SalesReportPage() {
           <StatCard
             title="Total Revenue"
             value={fmt(summary?.totalRevenue)}
-            type="revenue"
+            icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
+            color="#00A76F"
+            bgColor="#E8F8F2"
+            borderColor="#E8F8F2"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Orders"
             value={summary?.totalOrders ?? "—"}
-            type="orders"
+            icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
+            color="#1565C0"
+            bgColor="#E3F2FD"
+            borderColor="#E3F2FD"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Profit"
             value={fmt(summary?.totalProfit)}
-            type="profit"
+            icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
+            color="#FFAB00"
+            bgColor="#FFF8E1"
+            borderColor="#FFF8E1"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Avg Order Value"
             value={fmt(summary?.avgOrderValue?.toFixed(2))}
-            type="total"
+            icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
+            color="#B71D2B"
+            bgColor="#FFEBEE"
+            borderColor="#FFEBEE"
           />
         </Grid>
       </Grid>

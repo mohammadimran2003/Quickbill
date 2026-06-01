@@ -1,5 +1,6 @@
 import ExpenseTable from "../components/expenses_comp/ExpenseTable";
 import ExpenseModal from "../components/expenses_comp/ExpenseModal";
+import ExpenseStats from "../components/expenses_comp/ExpenseStats";
 import PageHeader from "../components/shared/PageHeader";
 import { Box } from "@mui/material";
 import { useState } from "react";
@@ -17,6 +18,7 @@ function Expenses() {
     mutationFn: createExpense,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["expense-stats"] });
       handleModalClose();
     },
     onError: (err) => {
@@ -28,6 +30,7 @@ function Expenses() {
     mutationFn: ({ id, data }) => updateExpense(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["expense-stats"] });
       handleModalClose();
     },
     onError: (err) => {
@@ -72,6 +75,7 @@ function Expenses() {
         onBtnClick={handleAddClick}
       />
 
+      <ExpenseStats />
       <ExpenseTable onEditClick={handleEditClick} />
       <ExpenseModal
         open={modalOpen}

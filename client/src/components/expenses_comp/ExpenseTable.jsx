@@ -51,6 +51,7 @@ function ExpenseTable({ onEditClick = () => {} }) {
     mutationFn: deleteExpense,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["expense-stats"] });
       setDeleteDialogOpen(false);
       setExpenseToDelete(null);
       toast.success("Expense deleted successfully");

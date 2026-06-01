@@ -6,6 +6,7 @@ import {
   getExpensesCategories,
   updateExpense,
   deleteExpense,
+  getExpenseStats,
 } from "../controllers/expenseControllers.js";
 import {
   createExpenseCategorySchema,
@@ -33,5 +34,6 @@ expenseRouter.put(
 );
 expenseRouter.delete("/:id", deleteExpense);
 expenseRouter.get("/", getExpenses);
+expenseRouter.get("/stats", getExpenseStats);
 
 export default expenseRouter;

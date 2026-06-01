@@ -1,12 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  Grid,
-  CircularProgress,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import PrintIcon from "@mui/icons-material/Print";
+import { Box, Grid, CircularProgress, Typography } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import dayjs from "dayjs";
@@ -20,6 +13,10 @@ import MostProfitableProducts from "../../components/profits_report_comp/MostPro
 import ProfitReportPrint from "../../components/print/ProfitReportPrint";
 import ProfitByCategoryChart from "../../components/charts/ProfitByCategoryChart";
 import PrintBtn from "../../components/shared/PrintBtn";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 function ProfitReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -133,30 +130,40 @@ function ProfitReportPage() {
           <StatCard
             title="Total Revenue"
             value={fmt(summary?.totalRevenue)}
-            type="revenue"
+            icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
+            color="#00A76F"
+            bgColor="#E8F8F2"
+            borderColor="#E8F8F2"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Orders"
             value={summary?.totalOrders ?? "—"}
-            type="orders"
+            icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
+            color="#1565C0"
+            bgColor="#E3F2FD"
+            borderColor="#E3F2FD"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Profit"
             value={fmt(summary?.totalProfit)}
-            type="profit"
-            badgeText={`${profitMargin}% Margin`}
+            icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
+            color="#FFAB00"
+            bgColor="#FFF8E1"
+            borderColor="#FFF8E1"
           />
         </Grid>
         <Grid size={3}>
           <StatCard
             title="Total Cost Price"
             value={fmt(summary?.totalCostPrice)}
-            type="total"
-            badgeText={`${markupPercentage}% Markup`}
+            icon={<LocalOfferIcon sx={{ fontSize: 28 }} />}
+            color="#FFAB00"
+            bgColor="#FFF8E1"
+            borderColor="#FFF8E1"
           />
         </Grid>
       </Grid>
