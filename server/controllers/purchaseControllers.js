@@ -127,19 +127,20 @@ const getPurchases = async (req, res) => {
     ...(status ? { status } : {}),
   };
 
-  const purchases = await prisma.purchase.findMany({
-    where,
-    include: {
-      supplier: true,
-    },
-    orderBy: {
-      [sortBy]: sortOrder,
-    },
-    skip: skip,
-    take: Number(limit),
-  });
-
-  const totalPurchases = await prisma.purchase.count({ where });
+  const [purchases, totalPurchases] = await Promise.all([
+    prisma.purchase.findMany({
+      where,
+      include: {
+        supplier: true,
+      },
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+      skip: skip,
+      take: Number(limit),
+    }),
+    prisma.purchase.count({ where }),
+  ]);
 
   res.status(200).json({
     success: true,

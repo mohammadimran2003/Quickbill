@@ -13,34 +13,31 @@ const getSalesReport = async (req, res) => {
     createdAt: { gte: startDate, lte: endDate },
   };
 
-  // Summary — group by te changte hoy na
-  const summary = await prisma.order.aggregate({
-    where,
-    _sum: { total: true, totalCostPrice: true },
-    _count: true,
-  });
-
-  // Chart data — group by onujayi
-  const orders = await prisma.order.findMany({
-    where,
-    select: {
-      total: true,
-      totalCostPrice: true,
-      createdAt: true,
-      paymentMethod: true,
-      amountPaid: true,
-    },
-    orderBy: { createdAt: "asc" },
-  });
-
-  // top selling products
-  const topProductsGrouped = await prisma.orderItem.groupBy({
-    by: ["productId", "productName"],
-    where: { createdAt: { gte: startDate, lte: endDate } },
-    _sum: { quantity: true },
-    orderBy: { _sum: { quantity: "desc" } },
-    take: 5,
-  });
+  const [summary, orders, topProductsGrouped] = await Promise.all([
+    prisma.order.aggregate({
+      where,
+      _sum: { total: true, totalCostPrice: true },
+      _count: true,
+    }),
+    prisma.order.findMany({
+      where,
+      select: {
+        total: true,
+        totalCostPrice: true,
+        createdAt: true,
+        paymentMethod: true,
+        amountPaid: true,
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.orderItem.groupBy({
+      by: ["productId", "productName"],
+      where: { createdAt: { gte: startDate, lte: endDate } },
+      _sum: { quantity: true },
+      orderBy: { _sum: { quantity: "desc" } },
+      take: 5,
+    }),
+  ]);
 
   // top productIds
   const productIds = topProductsGrouped.map((item) => item.productId);
@@ -148,32 +145,30 @@ const getProfitReport = async (req, res) => {
     createdAt: { gte: startDate, lte: endDate },
   };
 
-  // summary
-  const summary = await prisma.order.aggregate({
-    where,
-    _sum: { total: true, totalCostPrice: true },
-    _count: true,
-  });
-
-  const totalExpenses = await prisma.expense.aggregate({
-    where: {
-      createdAt: { gte: startDate, lte: endDate },
-    },
-    _sum: { amount: true },
-  });
-
-  // Fetch orders for charting
-  const orders = await prisma.order.findMany({
-    where,
-    select: {
-      total: true,
-      totalCostPrice: true,
-      createdAt: true,
-      paymentMethod: true,
-      amountPaid: true,
-    },
-    orderBy: { createdAt: "asc" },
-  });
+  const [summary, totalExpenses, orders] = await Promise.all([
+    prisma.order.aggregate({
+      where,
+      _sum: { total: true, totalCostPrice: true },
+      _count: true,
+    }),
+    prisma.expense.aggregate({
+      where: {
+        createdAt: { gte: startDate, lte: endDate },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.order.findMany({
+      where,
+      select: {
+        total: true,
+        totalCostPrice: true,
+        createdAt: true,
+        paymentMethod: true,
+        amountPaid: true,
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
 
   const chartData = groupOrders(orders, groupBy);
 

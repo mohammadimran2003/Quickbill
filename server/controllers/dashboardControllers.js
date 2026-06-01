@@ -7,29 +7,30 @@ const getDashboardSummery = async (req, res) => {
   const todayEnd = new Date();
   todayEnd.setHours(23, 59, 59, 999);
 
-  const todayOrders = await prisma.order.aggregate({
-    where: {
-      status: "COMPLETED",
-      createdAt: {
-        gte: todayStart,
-        lte: todayEnd,
+  const [todayOrders, allTimeOrders] = await Promise.all([
+    prisma.order.aggregate({
+      where: {
+        status: "COMPLETED",
+        createdAt: {
+          gte: todayStart,
+          lte: todayEnd,
+        },
       },
-    },
-    _sum: {
-      total: true,
-      totalCostPrice: true,
-    },
-    _count: true,
-  });
-
-  const allTimeOrders = await prisma.order.aggregate({
-    where: { status: "COMPLETED" },
-    _sum: {
-      total: true,
-      totalCostPrice: true,
-    },
-    _count: true,
-  });
+      _sum: {
+        total: true,
+        totalCostPrice: true,
+      },
+      _count: true,
+    }),
+    prisma.order.aggregate({
+      where: { status: "COMPLETED" },
+      _sum: {
+        total: true,
+        totalCostPrice: true,
+      },
+      _count: true,
+    }),
+  ]);
 
   const todaySales = todayOrders._sum.total || 0;
   const todayCost = todayOrders._sum.totalCostPrice || 0;

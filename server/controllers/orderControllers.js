@@ -202,20 +202,21 @@ const getOrders = async (req, res) => {
     ...(status ? { status: status } : {}),
   };
 
-  const orders = await prisma.order.findMany({
-    where,
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip: Number(skip),
-    take: Number(limit),
-    include: {
-      items: true,
-      customer: true,
-    },
-  });
-
-  const totalOrders = await prisma.order.count({ where });
+  const [orders, totalOrders] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: Number(skip),
+      take: Number(limit),
+      include: {
+        items: true,
+        customer: true,
+      },
+    }),
+    prisma.order.count({ where }),
+  ]);
 
   res.status(200).json({
     success: true,

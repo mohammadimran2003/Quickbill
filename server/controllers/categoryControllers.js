@@ -24,21 +24,22 @@ const getAllCategories = async (req, res) => {
     ...(isActive !== undefined ? { isActive: isActive === "true" } : {}),
   };
 
-  const categories = await prisma.category.findMany({
-    where,
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip,
-    take: Number(limit),
-  });
-
-  const totalCategories = await prisma.category.count({ where });
+  const [categories, total] = await Promise.all([
+    prisma.category.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: Number(limit),
+    }),
+    prisma.category.count({ where }),
+  ]);
 
   res.status(200).json({
     success: true,
     message: "Categories retrieved successfully",
-    count: totalCategories,
+    count: total,
     data: categories,
   });
 };

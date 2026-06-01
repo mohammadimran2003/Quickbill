@@ -15,6 +15,7 @@ const createCustomer = async (req, res) => {
     data: newCustomer,
   });
 };
+
 const getCustomers = async (req, res) => {
   const {
     page = 1,

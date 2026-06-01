@@ -26,21 +26,22 @@ const getAllBrands = async (req, res) => {
       : {}),
   };
 
-  const brands = await prisma.brand.findMany({
-    where,
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip: skip,
-    take: Number(limit),
-  });
-
-  const totalBrands = await prisma.brand.count({ where });
+  const [brands, total] = await Promise.all([
+    prisma.brand.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: skip,
+      take: Number(limit),
+    }),
+    prisma.brand.count({ where }),
+  ]);
 
   res.status(200).json({
     success: true,
     message: "brands retrieved successfully",
-    count: totalBrands,
+    count: total,
     data: brands,
   });
 };

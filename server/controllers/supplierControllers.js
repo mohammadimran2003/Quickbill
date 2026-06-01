@@ -49,23 +49,24 @@ const getSuppliers = async (req, res) => {
     where.isActive = isActive === "true";
   }
 
-  const suppliers = await prisma.supplier.findMany({
-    where,
-    include: {
-      purchases: {
-        include: {
-          items: true,
+  const [suppliers, total] = await Promise.all([
+    prisma.supplier.findMany({
+      where,
+      include: {
+        purchases: {
+          include: {
+            items: true,
+          },
         },
       },
-    },
-    orderBy: {
-      [sortBy]: sortOrder,
-    },
-    skip: skipNum,
-    take: limitNum,
-  });
-
-  const total = await prisma.supplier.count({ where });
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+      skip: skipNum,
+      take: limitNum,
+    }),
+    prisma.supplier.count({ where }),
+  ]);
 
   res.status(200).json({
     success: true,
