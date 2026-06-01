@@ -211,6 +211,8 @@ model PriceTier {
   user     User     @relation(fields: [createdBy], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@unique([productId, name])
 }
 
 model Supplier {

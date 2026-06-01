@@ -1,154 +1,97 @@
-import prisma from '../lib/prisma.js';
+import prisma from "../lib/prisma.js";
 
 const createBrand = async (req, res) => {
-	try {
-		const { name } = req.body;
+  // creat brand and push db
+  const result = await prisma.brand.create({
+    data: { ...req.body, createdBy: req.user.id },
+  });
 
-		// ei data ti ki db te already ache kina ta check kora
-		const existingBrand = await prisma.brand.findUnique({ where: { name } });
-
-		if (existingBrand) {
-			return res
-				.status(409)
-				.json({ success: false, message: 'This brand already exists' });
-		}
-
-		// creat brand and push db
-		const result = await prisma.brand.create({
-			data: { ...req.body, createdBy: req.user.id },
-		});
-
-		res.status(201).json({
-			success: true,
-			message: 'Brand created successfully',
-			data: result,
-		});
-	} catch (err) {
-		console.log(err);
-
-		res.status(500).json({ success: false, message: 'Server internal error' });
-	}
+  res.status(201).json({
+    success: true,
+    message: "Brand created successfully",
+    data: result,
+  });
 };
 
 const getAllBrands = async (req, res) => {
-	try {
-		const { search, isActive, page = 1, limit = 10 } = req.query;
+  const { search, isActive, page = 1, limit = 10 } = req.query;
 
-		const skip = (Number(page) - 1) * Number(limit);
+  const skip = (Number(page) - 1) * Number(limit);
 
-		const where = {
-			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
-			...(isActive !== undefined && isActive !== '' ?
-				{ isActive: isActive === 'true' }
-			:	{}),
-		};
+  const where = {
+    ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+    ...(isActive !== undefined && isActive !== ""
+      ? { isActive: isActive === "true" }
+      : {}),
+  };
 
-		const brands = await prisma.brand.findMany({
-			where,
-			orderBy: {
-				createdAt: 'desc',
-			},
-			skip: skip,
-			take: Number(limit),
-		});
+  const brands = await prisma.brand.findMany({
+    where,
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: skip,
+    take: Number(limit),
+  });
 
-		const totalBrands = await prisma.brand.count({ where });
+  const totalBrands = await prisma.brand.count({ where });
 
-		res.status(200).json({
-			success: true,
-			message: 'brands retrieved successfully',
-			count: totalBrands,
-			data: brands,
-		});
-	} catch (err) {
-		console.error('Error fetching brand:', err);
-		res.status(500).json({
-			success: false,
-			message: 'Failed to fetch brands',
-		});
-	}
+  res.status(200).json({
+    success: true,
+    message: "brands retrieved successfully",
+    count: totalBrands,
+    data: brands,
+  });
 };
 
 const getBrandById = async (req, res) => {
-	try {
-		const { id } = req.params;
+  const { id } = req.params;
 
-		const brand = await prisma.brand.findUnique({
-			where: { id },
-			include: {
-				_count: {
-					select: { products: true },
-				},
-			},
-		});
+  const brand = await prisma.brand.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: { products: true },
+      },
+    },
+  });
 
-		if (!brand) {
-			return res.status(404).json({
-				success: false,
-				message: 'Brand not found',
-			});
-		}
+  if (!brand) {
+    return res.status(404).json({
+      success: false,
+      message: "Brand not found",
+    });
+  }
 
-		res.status(200).json({
-			success: true,
-			message: 'Brand retrieved successfully',
-			data: brand,
-		});
-	} catch (err) {
-		console.error('Error fetching brand:', err);
-		res.status(500).json({
-			success: false,
-			message: 'Failed to fetch brand',
-		});
-	}
+  res.status(200).json({
+    success: true,
+    message: "Brand retrieved successfully",
+    data: brand,
+  });
 };
 
 const deleteBrand = async (req, res) => {
-	try {
-		const id = req.params.id;
+  const id = req.params.id;
 
-		const result = await prisma.brand.delete({ where: { id } });
+  const result = await prisma.brand.delete({ where: { id } });
 
-		res.status(200).json({
-			success: true,
-			message: 'Brand deleted successfully',
-			data: result,
-		});
-	} catch (err) {
-		console.log(err);
-		if (err.code === 'P2025') {
-			return res.status(404).json({
-				success: false,
-				message: 'Brnd not found or already deleted',
-			});
-		}
-		res.status(500).json({ success: false, message: 'Internal server error' });
-	}
+  res.status(200).json({
+    success: true,
+    message: "Brand deleted successfully",
+    data: result,
+  });
 };
 
 const editBrand = async (req, res) => {
-	try {
-		const id = req.params.id;
+  const id = req.params.id;
 
-		const existingBrand = await prisma.brand.findUnique({ where: { id } });
+  const result = await prisma.brand.update({ where: { id }, data: req.body });
 
-		if (!existingBrand) {
-			return res
-				.status(404)
-				.json({ success: false, message: 'Brand not found!' });
-		}
-
-		const result = await prisma.brand.update({ where: { id }, data: req.body });
-
-		res.status(200).json({
-			success: true,
-			message: 'Brand updated successfully',
-			data: result,
-		});
-	} catch (err) {
-		console.log(err);
-		res.status(500).json({ success: false, message: 'Server internal error!' });
-	}
+  res.status(200).json({
+    success: true,
+    message: "Brand updated successfully",
+    data: result,
+  });
 };
 
 export { createBrand, getAllBrands, getBrandById, deleteBrand, editBrand };
