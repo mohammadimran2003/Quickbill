@@ -33,296 +33,304 @@ import useAuth from "./hooks/useAuth";
 import Users from "./pages/Users";
 import StoreInfo from "./pages/settings_pages/StoreInfo";
 import Expenses from "./pages/Expenses";
+import { useContext } from "react";
+import { ThemeContext } from "./context/ThemeContext";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import getTheme from "./theme";
 
 function App() {
   const { user } = useAuth();
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            user ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-        <Route element={<DashboardLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <PrivateRoute>
-                <Customers />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customers/create-customer"
-            element={
-              <PrivateRoute>
-                <CustomerForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customers/:id"
-            element={
-              <PrivateRoute>
-                <CustomerDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/products"
-            element={
-              <PrivateRoute>
-                <Products />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/products/create-products"
-            element={
-              <PrivateRoute>
-                <ProductForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/products/edit-products/:id"
-            element={
-              <PrivateRoute>
-                <ProductForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/products/:id"
-            element={
-              <PrivateRoute>
-                <ProductDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/categories"
-            element={
-              <PrivateRoute>
-                <Categories />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/categories/:id"
-            element={
-              <PrivateRoute>
-                <CategoryDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/categories/create-category"
-            element={
-              <PrivateRoute>
-                <CategoryForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/categories/edit-category/:id"
-            element={
-              <PrivateRoute>
-                <CategoryForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/brands"
-            element={
-              <PrivateRoute>
-                <Brands />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/brands/:id"
-            element={
-              <PrivateRoute>
-                <BrandDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/brands/create-brand"
-            element={
-              <PrivateRoute>
-                <BrandForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/brands/edit-brand/:id"
-            element={
-              <PrivateRoute>
-                <BrandForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <PrivateRoute>
-                <Orders />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/orders/:id"
-            element={
-              <PrivateRoute>
-                <OrderDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/suppliers"
-            element={
-              <PrivateRoute>
-                <Suppliers />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/suppliers/:id"
-            element={
-              <PrivateRoute>
-                <SupplierDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/suppliers/create-supplier"
-            element={
-              <PrivateRoute>
-                <SupplierForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/suppliers/edit-supplier/:id"
-            element={
-              <PrivateRoute>
-                <SupplierForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/purchases"
-            element={
-              <PrivateRoute>
-                <Purchases />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/purchases/:id"
-            element={
-              <PrivateRoute>
-                <PurchaseDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/purchases/create-purchase"
-            element={
-              <PrivateRoute>
-                <PurchaseForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/purchases/edit-purchase/:id"
-            element={
-              <PrivateRoute>
-                <PurchaseForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pos"
-            element={
-              <PrivateRoute>
-                <POS />
-              </PrivateRoute>
-            }
-          />
+  const { mode } = useContext(ThemeContext);
 
+  return (
+    <MuiThemeProvider theme={getTheme(mode)}>
+      <BrowserRouter>
+        <Routes>
           <Route
-            path="/reports/sales"
+            path="/"
             element={
-              <PrivateRoute>
-                <SalesReportPage />
-              </PrivateRoute>
+              user ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
-          <Route
-            path="/reports/profit"
-            element={
-              <PrivateRoute>
-                <ProfitReportPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/reports/stock"
-            element={
-              <PrivateRoute>
-                <StockReportPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/settings/users"
-            element={
-              <PrivateRoute>
-                <Users />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/settings/store"
-            element={
-              <PrivateRoute>
-                <StoreInfo />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/expenses"
-            element={
-              <PrivateRoute>
-                <Expenses />
-              </PrivateRoute>
-            }
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+          <Route element={<DashboardLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
+                <PrivateRoute>
+                  <Customers />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/customers/create-customer"
+              element={
+                <PrivateRoute>
+                  <CustomerForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/customers/:id"
+              element={
+                <PrivateRoute>
+                  <CustomerDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <PrivateRoute>
+                  <Products />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products/create-products"
+              element={
+                <PrivateRoute>
+                  <ProductForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products/edit-products/:id"
+              element={
+                <PrivateRoute>
+                  <ProductForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products/:id"
+              element={
+                <PrivateRoute>
+                  <ProductDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <PrivateRoute>
+                  <Categories />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories/:id"
+              element={
+                <PrivateRoute>
+                  <CategoryDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories/create-category"
+              element={
+                <PrivateRoute>
+                  <CategoryForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories/edit-category/:id"
+              element={
+                <PrivateRoute>
+                  <CategoryForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/brands"
+              element={
+                <PrivateRoute>
+                  <Brands />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/brands/:id"
+              element={
+                <PrivateRoute>
+                  <BrandDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/brands/create-brand"
+              element={
+                <PrivateRoute>
+                  <BrandForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/brands/edit-brand/:id"
+              element={
+                <PrivateRoute>
+                  <BrandForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <PrivateRoute>
+                  <Orders />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/orders/:id"
+              element={
+                <PrivateRoute>
+                  <OrderDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/suppliers"
+              element={
+                <PrivateRoute>
+                  <Suppliers />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/suppliers/:id"
+              element={
+                <PrivateRoute>
+                  <SupplierDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/suppliers/create-supplier"
+              element={
+                <PrivateRoute>
+                  <SupplierForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/suppliers/edit-supplier/:id"
+              element={
+                <PrivateRoute>
+                  <SupplierForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/purchases"
+              element={
+                <PrivateRoute>
+                  <Purchases />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/purchases/:id"
+              element={
+                <PrivateRoute>
+                  <PurchaseDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/purchases/create-purchase"
+              element={
+                <PrivateRoute>
+                  <PurchaseForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/purchases/edit-purchase/:id"
+              element={
+                <PrivateRoute>
+                  <PurchaseForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/pos"
+              element={
+                <PrivateRoute>
+                  <POS />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/reports/sales"
+              element={
+                <PrivateRoute>
+                  <SalesReportPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/profit"
+              element={
+                <PrivateRoute>
+                  <ProfitReportPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/stock"
+              element={
+                <PrivateRoute>
+                  <StockReportPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/settings/users"
+              element={
+                <PrivateRoute>
+                  <Users />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/settings/store"
+              element={
+                <PrivateRoute>
+                  <StoreInfo />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/expenses"
+              element={
+                <PrivateRoute>
+                  <Expenses />
+                </PrivateRoute>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </MuiThemeProvider>
   );
 }
 

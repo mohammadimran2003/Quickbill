@@ -25,6 +25,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import SalesStats from "../../components/sales_report_comp/SalesStats";
 
 function SalesReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -71,7 +72,7 @@ function SalesReportPage() {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, color: "text.primary" }}>
       {/* Hidden Print Template */}
       <div style={{ display: "none" }}>
         <SalesReportPrint
@@ -104,48 +105,7 @@ function SalesReportPage() {
       </Box>
 
       {/* Stat Cards */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={3}>
-          <StatCard
-            title="Total Revenue"
-            value={fmt(summary?.totalRevenue)}
-            icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
-            color="#00A76F"
-            bgColor="#E8F8F2"
-            borderColor="#E8F8F2"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Orders"
-            value={summary?.totalOrders ?? "—"}
-            icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
-            color="#1565C0"
-            bgColor="#E3F2FD"
-            borderColor="#E3F2FD"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Profit"
-            value={fmt(summary?.totalProfit)}
-            icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
-            color="#FFAB00"
-            bgColor="#FFF8E1"
-            borderColor="#FFF8E1"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Avg Order Value"
-            value={fmt(summary?.avgOrderValue?.toFixed(2))}
-            icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-            color="#B71D2B"
-            bgColor="#FFEBEE"
-            borderColor="#FFEBEE"
-          />
-        </Grid>
-      </Grid>
+      <SalesStats summary={summary} />
 
       {/* Chart + Table */}
       {isLoading ? (

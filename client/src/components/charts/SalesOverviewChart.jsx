@@ -42,7 +42,6 @@ const SalesOverviewChart = () => {
       sx={{
         p: 3,
         borderRadius: 4,
-        bgcolor: "#fff",
         border: "1px solid",
         borderColor: "divider",
         width: "100%",

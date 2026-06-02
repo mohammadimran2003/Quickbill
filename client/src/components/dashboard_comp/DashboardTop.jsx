@@ -38,9 +38,7 @@ const DashboardTop = () => {
           title="Today Sales"
           value={today.sales}
           icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
-          color="#00A76F"
-          bgColor="#E8F8F2"
-          borderColor="#E8F8F2"
+          type="sales"
         />
       </Grid>
 
@@ -49,9 +47,7 @@ const DashboardTop = () => {
           title="Today Orders"
           value={today.orders}
           icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
-          color="#1565C0"
-          bgColor="#E3F2FD"
-          borderColor="#E3F2FD"
+          type="orders"
         />
       </Grid>
 
@@ -60,9 +56,7 @@ const DashboardTop = () => {
           title="Today Profit"
           value={today.profit}
           icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
-          color="#FFAB00"
-          bgColor="#FFF8E1"
-          borderColor="#FFF8E1"
+          type="profit"
         />
       </Grid>
       <Grid size={3}>
@@ -70,9 +64,7 @@ const DashboardTop = () => {
           title="All Time Sales"
           value={Math.round(allTime.revenue)}
           icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-          color="#B71D2B"
-          bgColor="#FFEBEE"
-          borderColor="#FFEBEE"
+          type="allTime"
         />
       </Grid>
       <Grid size={3}>
@@ -80,9 +72,7 @@ const DashboardTop = () => {
           title="Expense This month"
           value={Math.round(allTime.revenue)}
           icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-          color="#B71D2B"
-          bgColor="#FFEBEE"
-          borderColor="#FFEBEE"
+          type="expense"
         />
       </Grid>
     </Grid>

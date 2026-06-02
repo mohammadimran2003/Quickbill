@@ -95,7 +95,7 @@ function StockReportPage() {
   }
 
   return (
-    <Box>
+    <Box sx={{ p: 3, color: "text.primary" }}>
       {/* Hidden Print Template */}
       <div style={{ display: "none" }}>
         <StockReportPrint
@@ -132,9 +132,7 @@ function StockReportPage() {
             title="Total Stock Value"
             value={fmt(summary?.totalStockValue)}
             icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-            color="#B71D2B"
-            bgColor="#FFEBEE"
-            borderColor="#FFEBEE"
+            type="positive"
           />
         </Grid>
         <Grid size={3}>
@@ -142,9 +140,7 @@ function StockReportPage() {
             title="Total Products"
             value={summary?.totalProducts ?? "—"}
             icon={<Inventory2Icon sx={{ fontSize: 28 }} />}
-            color="#283593"
-            bgColor="#E8EAF6"
-            borderColor="#E8EAF6"
+            type="positive"
           />
         </Grid>
         <Grid size={3}>
@@ -152,9 +148,7 @@ function StockReportPage() {
             title="Low Stock Products"
             value={summary?.lowStockItems ?? "—"}
             icon={<WarningAmberIcon sx={{ fontSize: 28 }} />}
-            color="#E65100"
-            bgColor="#FFF3E0"
-            borderColor="#FFF3E0"
+            type="warning"
           />
         </Grid>
         <Grid size={3}>
@@ -162,9 +156,7 @@ function StockReportPage() {
             title="Out of Stock"
             value={summary?.outOfStockItems ?? "—"}
             icon={<ErrorOutlineOutlinedIcon sx={{ fontSize: 28 }} />}
-            color="#C62828"
-            bgColor="#FFEBEE"
-            borderColor="#FFEBEE"
+            type="negative"
           />
         </Grid>
       </Grid>

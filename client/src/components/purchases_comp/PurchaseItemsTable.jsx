@@ -24,7 +24,7 @@ const PurchaseItemsTable = ({ purchase, onReturnItem }) => {
         </Typography>
       </Box>
       <Table sx={{ minWidth: 650 }}>
-        <TableHead sx={{ bgcolor: "action.hover" }}>
+        <TableHead sx={{ bgcolor: "background.neutral" }}>
           <TableRow>
             <TableCell sx={{ fontWeight: "bold" }}>Product Name</TableCell>
             <TableCell align="center" sx={{ fontWeight: "bold" }}>

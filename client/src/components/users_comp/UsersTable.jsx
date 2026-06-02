@@ -114,7 +114,7 @@ function UsersTable({
         }}
       >
         <Table sx={{ minWidth: 650 }}>
-          <TableHead>
+          <TableHead sx={{ bgcolor: "background.neutral" }}>
             <TableRow>
               {table.getHeaderGroups()[0].headers.map((header) => (
                 <TableCell

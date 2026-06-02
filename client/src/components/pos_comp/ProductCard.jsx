@@ -69,7 +69,7 @@ const ProductCard = ({ product, onAddToCart }) => {
           product.images?.[0] || "https://placehold.co/200x200?text=No+Image"
         }
         alt={product.name}
-        sx={{ objectFit: "cover", p: 1, bgcolor: "#f5f5f5" }}
+        sx={{ objectFit: "cover", p: 1, bgcolor: "background.main" }}
       />
 
       {/* Product Details */}

@@ -41,7 +41,11 @@ function SidebarHeader({ sidebarOpen, toggleSidebar }) {
           sx={{ fontSize: 32, color: theme.palette.primary.main }}
         />
         {sidebarOpen && (
-          <Typography variant="h6" fontWeight={700} color="text.primary">
+          <Typography
+            variant="h6"
+            fontWeight={700}
+            sx={{ color: "text.primary" }}
+          >
             Quickbill
           </Typography>
         )}
@@ -53,8 +57,7 @@ function SidebarHeader({ sidebarOpen, toggleSidebar }) {
           left: sidebarOpen ? 260 - 16 : 72 - 16,
           top: 20,
           zIndex: 1000,
-
-          bgcolor: "#fff",
+          bgcolor: "background.paper",
           border: `1px solid ${theme.palette.divider}`,
           boxShadow: 1,
           width: 32,
@@ -62,9 +65,9 @@ function SidebarHeader({ sidebarOpen, toggleSidebar }) {
         }}
       >
         {sidebarOpen ? (
-          <ChevronLeftOutlinedIcon />
+          <ChevronLeftOutlinedIcon sx={{ color: "text.primary" }} />
         ) : (
-          <ChevronRightOutlinedIcon />
+          <ChevronRightOutlinedIcon sx={{ color: "text.primary" }} />
         )}
       </IconButton>
     </Box>

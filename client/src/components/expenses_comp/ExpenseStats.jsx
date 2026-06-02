@@ -22,16 +22,14 @@ function ExpenseStats() {
   };
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ mb: 4, color: "text.primary" }}>
       <Grid container spacing={2}>
         <Grid size={4}>
           <StatCard
             title="This Month"
             value={formatCurrency(stats.thisMonth || 0)}
             icon={<CalendarMonthIcon sx={{ fontSize: 28 }} />}
-            color="#1565C0"
-            bgColor="#E3F2FD"
-            borderColor="#E3F2FD"
+            type="expenseThisMonth"
           />
         </Grid>
         <Grid size={4}>
@@ -39,9 +37,7 @@ function ExpenseStats() {
             title="All Time"
             value={formatCurrency(stats.allTime || 0)}
             icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-            color="#B71D2B"
-            bgColor="#FFEBEE"
-            borderColor="#FFEBEE"
+            type="expenseAllTime"
           />
         </Grid>
         <Grid size={4}>
@@ -49,9 +45,7 @@ function ExpenseStats() {
             title="By Category"
             value={`${Object.keys(stats.byCategory || {}).length} Categories`}
             icon={<CategoryIcon sx={{ fontSize: 28 }} />}
-            color="#FFAB00"
-            bgColor="#FFF8E1"
-            borderColor="#FFF8E1"
+            type="expenseByCategory"
           />
         </Grid>
       </Grid>
@@ -75,11 +69,12 @@ function ExpenseStats() {
                 key={category}
                 label={`${category}: ${formatCurrency(amount)}`}
                 sx={{
-                  bgcolor: "#E3F2FD",
-                  color: "#1565C0",
+                  bgcolor: "statCard.expenseByCategory.bg",
+                  color: "statCard.expenseByCategory.color",
                   fontWeight: 600,
                   fontSize: "0.875rem",
                   height: 32,
+                  mx: 0.5,
                 }}
               />
             ))}

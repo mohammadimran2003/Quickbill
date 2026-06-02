@@ -80,7 +80,7 @@ function StoreInfo() {
   }
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", p: 3 }}>
+    <Box sx={{ maxWidth: 900, mx: "auto", p: 3, color: "text.primary" }}>
       <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 1 }}>
         Store Information
       </Typography>

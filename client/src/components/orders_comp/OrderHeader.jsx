@@ -28,6 +28,7 @@ const OrderHeader = ({ order, printRef }) => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
+        color: "text.primary",
       }}
     >
       <Stack spacing={1}>

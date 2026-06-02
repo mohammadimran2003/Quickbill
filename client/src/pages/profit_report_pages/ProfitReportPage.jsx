@@ -17,6 +17,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import ProfitsStats from "../../components/profits_report_comp/ProfitsStats";
 
 function ProfitReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -94,7 +95,7 @@ function ProfitReportPage() {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, color: "text.primary" }}>
       {/* Hidden Print Template */}
       <div style={{ display: "none" }}>
         <ProfitReportPrint
@@ -125,48 +126,7 @@ function ProfitReportPage() {
         <DateRangeFilter onFilterChange={handleFilterChange} />
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={3}>
-          <StatCard
-            title="Total Revenue"
-            value={fmt(summary?.totalRevenue)}
-            icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
-            color="#00A76F"
-            bgColor="#E8F8F2"
-            borderColor="#E8F8F2"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Orders"
-            value={summary?.totalOrders ?? "—"}
-            icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
-            color="#1565C0"
-            bgColor="#E3F2FD"
-            borderColor="#E3F2FD"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Profit"
-            value={fmt(summary?.totalProfit)}
-            icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
-            color="#FFAB00"
-            bgColor="#FFF8E1"
-            borderColor="#FFF8E1"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Cost Price"
-            value={fmt(summary?.totalCostPrice)}
-            icon={<LocalOfferIcon sx={{ fontSize: 28 }} />}
-            color="#FFAB00"
-            bgColor="#FFF8E1"
-            borderColor="#FFF8E1"
-          />
-        </Grid>
-      </Grid>
+      <ProfitsStats summary={summary} />
 
       {/* Profit vs Revenue Trend Chart */}
       <Box sx={{ mt: 4 }}>
