@@ -1,29 +1,32 @@
+import React from "react";
 import {
-  AreaChart,
-  Area,
+  Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  // ResponsiveContainer,
+  Legend,
+  ComposedChart,
 } from "recharts";
-import { Box, Typography, Paper, useTheme } from "@mui/material";
-
-import getLast30DaysSales from "../../api/dashboard_api/getLast30DaysSales";
+import { Box, Typography, useTheme } from "@mui/material";
+import getSalesPurchaseYearOverview from "../../api/dashboard_api/getSalesPurchaseYearOverview";
 import { useQuery } from "@tanstack/react-query";
 
-const SalesOverviewChart = () => {
+function YearlyOverview() {
   const theme = useTheme();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["last30DaysSales"],
-    queryFn: () => getLast30DaysSales(),
+    queryKey: ["monthlyPurchaseSales"],
+    queryFn: () => getSalesPurchaseYearOverview(),
   });
+
+  const chartData = data?.data || yearlyData;
 
   if (isLoading) {
     return (
       <Box sx={{ p: 4 }}>
-        <Typography>Loading sales data...</Typography>
+        <Typography>Loading yearly data...</Typography>
       </Box>
     );
   }
@@ -31,17 +34,17 @@ const SalesOverviewChart = () => {
   if (isError) {
     return (
       <Box sx={{ p: 4 }}>
-        <Typography color="error">Failed to load sales data</Typography>
+        <Typography color="error">Failed to load yearly data</Typography>
       </Box>
     );
   }
 
   return (
     <Box sx={{ width: "100%", height: 350 }}>
-      <AreaChart
+      <ComposedChart
         width="100%"
         height={350}
-        data={data?.data}
+        data={chartData}
         margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
       >
         <CartesianGrid
@@ -49,21 +52,18 @@ const SalesOverviewChart = () => {
           strokeDasharray="3 3"
           stroke="#f0f0f0"
         />
-
         <XAxis
-          dataKey="date"
+          dataKey="month"
           axisLine={false}
           tickLine={false}
           tick={{ fill: "#9e9e9e", fontSize: 12 }}
           dy={10}
         />
-
         <YAxis
           axisLine={false}
           tickLine={false}
           tick={{ fill: "#9e9e9e", fontSize: 12 }}
         />
-
         <Tooltip
           contentStyle={{
             borderRadius: "8px",
@@ -71,20 +71,25 @@ const SalesOverviewChart = () => {
             boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
           }}
         />
-
-        <Area
-          type="monotone"
+        <Legend />
+        <Bar
           dataKey="sales"
-          stroke={theme.palette.primary.main}
+          fill={theme.palette.primary.main}
+          name="Sales"
+          radius={[4, 4, 0, 0]}
+        />
+        <Line
+          type="monotone"
+          dataKey="purchase"
+          stroke="#FF6B6B"
           strokeWidth={3}
-          fillOpacity={1}
-          fill="url(#colorSales)"
-          dot={{ r: 4, fill: "#4CAF50", strokeWidth: 2, stroke: "#fff" }}
+          name="Purchase"
+          dot={{ r: 4, fill: "#FF6B6B", strokeWidth: 2, stroke: "#fff" }}
           activeDot={{ r: 6, strokeWidth: 0 }}
         />
-      </AreaChart>
+      </ComposedChart>
     </Box>
   );
-};
+}
 
-export default SalesOverviewChart;
+export default YearlyOverview;

@@ -7,11 +7,20 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import getExpenseStats from "../../api/expenses_api/getExpenseStats";
 
 const DashboardTop = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardSummery"],
     queryFn: () => getDashboardSummery(),
+  });
+  const {
+    data: expenseData,
+    isLoading: expenseLoading,
+    isError: expenseError,
+  } = useQuery({
+    queryKey: ["expenseStats"],
+    queryFn: () => getExpenseStats(),
   });
 
   const { today, allTime } = data?.data || {};
@@ -64,13 +73,13 @@ const DashboardTop = () => {
           title="All Time Sales"
           value={Math.round(allTime.revenue)}
           icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-          type="allTime"
+          type="sales"
         />
       </Grid>
       <Grid size={3}>
         <StatCard
           title="Expense This month"
-          value={Math.round(allTime.revenue)}
+          value={Math.round(expenseData?.data?.thisMonth || 0)}
           icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
           type="expense"
         />

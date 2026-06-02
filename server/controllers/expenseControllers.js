@@ -123,6 +123,46 @@ const getExpenseStats = async (req, res) => {
   });
 };
 
+const getExpensesChart = async (req, res) => {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const expenses = await prisma.expense.findMany({
+    where: {
+      date: {
+        gte: startOfMonth,
+      },
+    },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const formattedChartData = Object.values(
+    expenses.reduce((acc, expense) => {
+      const categoryName = expense.category?.name || "অন্যান্য";
+
+      if (!acc[categoryName]) {
+        acc[categoryName] = { name: categoryName, value: 0 };
+      }
+
+      acc[categoryName].value += expense.amount || 0;
+
+      return acc;
+    }, {}),
+  );
+
+  return res.status(200).json({
+    success: true,
+    chartData: formattedChartData,
+    message: "Expenses retrieved successfully",
+  });
+};
+
 export {
   createExpense,
   getExpenses,
@@ -131,4 +171,5 @@ export {
   deleteExpense,
   getExpensesCategories,
   getExpenseStats,
+  getExpensesChart,
 };

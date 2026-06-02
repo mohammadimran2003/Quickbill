@@ -266,6 +266,12 @@ model Purchase {
   createdBy      String         @db.ObjectId
   user           User           @relation(fields: [createdBy], references: [id])
 
+  // date
+  date      DateTime @default(now())
+  
+  month     String   // "Jan", "Feb", "Mar"
+  year      Int      // 2026
+
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -342,6 +348,12 @@ model Order {
   amountPaid     Float
   changeAmount   Float         @default(0)
   dueAmount      Float         @default(0)
+
+  // date
+  date      DateTime @default(now())
+  
+  month     String   // "Jan", "Feb", "Mar"
+  year      Int      // 2026
 
   // return 
   returns        Return[]
@@ -485,7 +497,12 @@ model Expense {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String          // "May maser bhara", "Kormochari beton"
   amount        Float
-  date          DateTime        @default(now())
+
+  // date
+  date      DateTime @default(now())
+  month     String   // "Jan", "Feb", "Mar"
+  year      Int      // 2026
+
   categoryId    String          @db.ObjectId
   category      ExpenseCategory @relation(fields: [categoryId], references: [id])
   paymentMethod ExpensePaymentMethod

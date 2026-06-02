@@ -125,6 +125,11 @@ const createOrder = async (req, res) => {
     const status =
       dueAmount > 0 ? (amountPaid > 0 ? "PARTIAL" : "PENDING") : "COMPLETED";
 
+    const orderDate = new Date();
+    orderDate.setHours(0, 0, 0, 0);
+    const monthLabel = orderDate.toLocaleString("en-US", { month: "short" });
+    const currentYear = orderDate.getFullYear();
+
     // order create
     const order = await tx.order.create({
       data: {
@@ -147,6 +152,9 @@ const createOrder = async (req, res) => {
         status,
         createdBy: req.user.id,
         items: { create: orderItems },
+        date: orderDate,
+        month: monthLabel,
+        year: currentYear,
       },
       include: {
         items: true,

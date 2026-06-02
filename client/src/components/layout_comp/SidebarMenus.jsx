@@ -88,6 +88,7 @@ function SidebarMenus({
                       minHeight: 48,
                       px: sidebarOpen ? 2 : 0,
                       mx: sidebarOpen ? 0 : 1,
+                      my: 1,
                       justifyContent: sidebarOpen ? "initial" : "center",
                       borderRadius: 2,
                       "&:hover": {

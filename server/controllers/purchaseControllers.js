@@ -73,6 +73,11 @@ const createPurchase = async (req, res) => {
       },
     });
 
+    const orderDate = new Date();
+    orderDate.setHours(0, 0, 0, 0);
+    const monthLabel = orderDate.toLocaleString("en-US", { month: "short" });
+    const currentYear = orderDate.getFullYear();
+
     // create purchase
     const purchase = await tx.purchase.create({
       data: {
@@ -90,6 +95,9 @@ const createPurchase = async (req, res) => {
             total: item.unitCost * item.quantity,
           })),
         },
+        date: orderDate,
+        month: monthLabel,
+        year: currentYear,
       },
     });
 

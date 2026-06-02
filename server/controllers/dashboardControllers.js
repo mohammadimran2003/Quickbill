@@ -82,4 +82,89 @@ const getTopProducts = async (req, res) => {
   });
 };
 
-export { getDashboardSummery, getTopProducts };
+const getMonthlyPurchaseSales = async (req, res) => {
+  try {
+    // 🧠 ১. গত ১২ মাসের শুরুর তারিখ জেনারেট করা (টাইম জিরো করে)
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 11);
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
+
+    // 🚀 ২. ডাটাবেজ লেভেলে এগ্রিগেশন (groupBy) রান করা
+    // প্রিজমাই সরাসরি ডাটা যোগ (Sum) করে শুধু মাসের রেজাল্টটুকু রিটার্ন করবে
+    const [salesData, purchaseData] = await Promise.all([
+      prisma.order.groupBy({
+        by: ["year", "month"],
+        where: { date: { gte: startDate }, status: "COMPLETED" }, // শুধু কমপ্লিটেড অর্ডার
+        _sum: { total: true },
+      }),
+      prisma.purchase.groupBy({
+        by: ["year", "month"],
+        where: { date: { gte: startDate }, status: "RECEIVED" },
+        _sum: { total: true },
+      }),
+    ]);
+
+    console.log(salesData, "Sales data");
+    console.log(purchaseData, "Purchase data");
+
+    const chartDataMap = {};
+    const monthsOrder = [];
+
+    for (let i = 0; i < 12; i++) {
+      const currentMonthDate = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth() + i,
+        1,
+      );
+      const monthLabel = currentMonthDate.toLocaleString("en-US", {
+        month: "short",
+      }); // "Jan", "Feb"
+      const yearVal = currentMonthDate.getFullYear();
+      const uniqueKey = `${yearVal}-${monthLabel}`;
+
+      chartDataMap[uniqueKey] = {
+        month: monthLabel,
+        sales: 0,
+        purchase: 0,
+      };
+      monthsOrder.push(uniqueKey);
+    }
+
+    console.log(chartDataMap, "Chart data map");
+    console.log(monthsOrder, "Months order");
+
+    salesData.forEach((item) => {
+      const uniqueKey = `${item.year}-${item.month}`;
+      if (chartDataMap[uniqueKey]) {
+        chartDataMap[uniqueKey].sales = item._sum.total || 0;
+      }
+    });
+
+    purchaseData.forEach((item) => {
+      const uniqueKey = `${item.year}-${item.month}`;
+      if (chartDataMap[uniqueKey]) {
+        chartDataMap[uniqueKey].purchase = item._sum.total || 0;
+      }
+    });
+
+    const finalChartData = monthsOrder.map((key) => chartDataMap[key]);
+
+    console.log(finalChartData, "finalchart");
+
+    return res.status(200).json({
+      success: true,
+      chartData: finalChartData,
+      message: "Monthly purchase and sales data aggregated successfully",
+    });
+  } catch (error) {
+    console.error("Monthly Chart Fetch Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export { getDashboardSummery, getTopProducts, getMonthlyPurchaseSales };
