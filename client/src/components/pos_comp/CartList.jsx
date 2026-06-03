@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useCartStore from "../../store/cartStore";
 import {
   Box,
@@ -12,7 +12,7 @@ import {
 
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import getCustomers from "../../api/customers_api/getCustomers";
 import CartItem from "./CartItem";
 import CustomerModal from "../customers_comp/CustomerModal";
@@ -38,6 +38,7 @@ function CartList() {
     discountType,
     setCustomer,
     customer,
+    draftData,
   } = useCartStore();
   const [paymentMethod, setPaymentMethod] = useState("CASH");
   const [amountPaid, setAmountPaid] = useState("");
@@ -50,6 +51,8 @@ function CartList() {
     documentTitle: `Order_Details`,
   });
 
+  const queryClient = useQueryClient();
+
   const { data: walkInCustomer } = useQuery({
     queryKey: ["walk-in-customer"],
     queryFn: () => getCustomerByPhone("walk-in"),
@@ -61,7 +64,6 @@ function CartList() {
       setSelectedCustomer(customer ? customer : walkInCustomer.data);
     }
   }, [walkInCustomer, customer]);
-  console.log(customer, "cusomer");
 
   useEffect(() => {
     if (order && order.id) {
@@ -95,6 +97,7 @@ function CartList() {
         setAmountPaid("");
         setPaymentMethod("CASH");
         setSelectedCustomer(walkInCustomer.data);
+        queryClient.invalidateQueries({ queryKey: ["drafts"] });
       },
     });
 
@@ -126,6 +129,7 @@ function CartList() {
         customerId: selectedCustomer?.id,
         paymentMethod,
         amountPaid: paymentMethod === "UNPAID" ? 0 : Number(amountPaid),
+        draftId: draftData?.id,
       };
 
       toast.promise(createOrderMutation(orderData), {

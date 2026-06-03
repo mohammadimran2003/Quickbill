@@ -5,8 +5,18 @@ import getPrice from "../lib/utils/getPrice.js";
 
 const createOrder = async (req, res) => {
   const orderData = req.body;
-  const { items, amountPaid, customerId, discountType, discountValue } =
-    orderData;
+  const {
+    items,
+    amountPaid,
+    customerId,
+    discountType,
+    discountValue,
+    draftId,
+  } = orderData;
+
+  console.log(req.body, "req.body upd");
+
+  console.log(draftId, "draft id");
 
   if (!items || items.length === 0) {
     return res.status(400).json({
@@ -160,6 +170,14 @@ const createOrder = async (req, res) => {
         items: true,
       },
     });
+
+    if (draftId) {
+      const draftDelete = await tx.draftOrder.delete({
+        where: { id: draftId },
+      });
+
+      console.log("Draft deleted:", draftDelete);
+    }
 
     const stockUpdates = items.map((item) =>
       tx.product.update({
