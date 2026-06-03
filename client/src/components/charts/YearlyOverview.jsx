@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Bar,
   Line,
@@ -20,8 +19,9 @@ function YearlyOverview() {
     queryKey: ["monthlyPurchaseSales"],
     queryFn: () => getSalesPurchaseYearOverview(),
   });
+  console.log(data, "data");
 
-  const chartData = data?.data || yearlyData;
+  const chartData = data?.chartData || [];
 
   if (isLoading) {
     return (

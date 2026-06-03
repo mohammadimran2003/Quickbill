@@ -25,6 +25,8 @@ import { OrderPrintTemplate } from "../print/OrderPrintTemplate";
 import CartSummary from "./CartSummary";
 import getDiscountAmount from "../../utils/getDiscountAmount";
 import CartCheckout from "./CartCheckout";
+import Drafts from "./Drafts";
+import DraftList from "./DraftList";
 
 function CartList() {
   const {
@@ -34,6 +36,8 @@ function CartList() {
     clearCart,
     discountValue,
     discountType,
+    setCustomer,
+    customer,
   } = useCartStore();
   const [paymentMethod, setPaymentMethod] = useState("CASH");
   const [amountPaid, setAmountPaid] = useState("");
@@ -54,9 +58,10 @@ function CartList() {
 
   useEffect(() => {
     if (walkInCustomer?.data) {
-      setSelectedCustomer(walkInCustomer.data);
+      setSelectedCustomer(customer ? customer : walkInCustomer.data);
     }
-  }, [walkInCustomer]);
+  }, [walkInCustomer, customer]);
+  console.log(customer, "cusomer");
 
   useEffect(() => {
     if (order && order.id) {
@@ -182,9 +187,13 @@ function CartList() {
           <ShoppingCartOutlinedIcon />
           Current Order
         </Typography>
-        <Typography variant="subtitle1" fontWeight="bold">
-          {items.length} {items.length === 1 ? "Item" : "Items"}
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+          {" "}
+          <Typography variant="subtitle1" fontWeight="bold">
+            {items.length} {items.length === 1 ? "Item" : "Items"}
+          </Typography>{" "}
+          <Drafts /> <DraftList />
+        </Box>
       </Box>
 
       {/* Cart Items List */}
@@ -235,7 +244,10 @@ function CartList() {
               getOptionLabel={(option) => option.name || ""}
               getOptionKey={(option) => option.id}
               value={selectedCustomer}
-              onChange={(event, newValue) => setSelectedCustomer(newValue)}
+              onChange={(event, newValue) => {
+                setSelectedCustomer(newValue);
+                setCustomer(newValue);
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}

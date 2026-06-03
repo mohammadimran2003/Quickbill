@@ -10,7 +10,10 @@ import debounce from "lodash/debounce";
 import PosFilterSection from "../components/pos_comp/PosFilterSection";
 import { useSearchParams } from "react-router-dom";
 import ProductNotFound from "../components/pos_comp/ProductNotFound";
+import { useTheme } from "@mui/material";
+
 function POS() {
+  const theme = useTheme();
   const addItem = useCartStore((state) => state.addItem);
   const loadMoreRef = useRef(null);
 
@@ -93,12 +96,24 @@ function POS() {
         bgcolor: "background.default",
       }}
     >
+      {/* eta keno position fixed thakche na top a? */}
       <Box
         sx={{
-          width: "100%",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          position: "sticky",
+          top: 100,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? "rgba(33, 43, 54, 0.8)"
+              : "rgba(255,255,255,0.5)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          p: 2,
         }}
       >
         <PosFilterSection hasFilters={hasFilters} />
@@ -111,35 +126,65 @@ function POS() {
           />
         </Box>
       </Box>
-      <Grid container spacing={3} sx={{ mt: "20px" }}>
-        <Grid size={8}>
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        <Grid
+          size={8}
+          sx={{
+            overflowY: "auto",
+            maxHeight: "90vh",
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              borderRadius: "3px",
+            },
+            "&::-webkit-scrollbar-thumb:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
+            },
+          }}
+        >
           {allProducts.length > 0 ? (
-            <Grid container spacing={2}>
-              {allProducts.map((product) => (
-                <Grid size={3} key={product.id}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                  />
-                </Grid>
-              ))}
+            <Grid>
+              <Grid container spacing={2}>
+                {allProducts.map((product) => (
+                  <Grid size={3} key={product.id}>
+                    <ProductCard
+                      product={product}
+                      onAddToCart={handleAddToCart}
+                    />
+                  </Grid>
+                ))}{" "}
+              </Grid>{" "}
+              <Box ref={loadMoreRef} sx={{ py: 2, textAlign: "center" }}>
+                {isFetchingNextPage && <CircularProgress size={24} />}
+                {!hasNextPage && allProducts.length > 0 && (
+                  <Typography variant="body2" color="text.secondary">
+                    All products displayed
+                  </Typography>
+                )}
+              </Box>
             </Grid>
           ) : (
             <ProductNotFound />
           )}
         </Grid>
-        <Grid size={4}>
+        <Grid
+          size={4}
+          sx={{
+            overflowY: "auto",
+            maxHeight: "90%",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            pb: 10,
+          }}
+        >
           <CartList />
         </Grid>
       </Grid>
-      <Box ref={loadMoreRef} sx={{ py: 2, textAlign: "center" }}>
-        {isFetchingNextPage && <CircularProgress size={24} />}
-        {!hasNextPage && allProducts.length > 0 && (
-          <Typography variant="body2" color="text.secondary">
-            All products displayed
-          </Typography>
-        )}
-      </Box>
     </Box>
   );
 }

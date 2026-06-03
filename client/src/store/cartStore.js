@@ -1,6 +1,7 @@
 // store/cartStore.js
 import { toast } from "sonner";
 import { create } from "zustand";
+import getCustomerById from "../api/customers_api/getCustomerById";
 
 const useCartStore = create((set, get) => ({
   // State
@@ -9,6 +10,8 @@ const useCartStore = create((set, get) => ({
   discountType: "NONE",
   discountValue: 0,
   paymentMethod: "CASH",
+  isDraftLoading: false,
+  draftData: null,
 
   // Actions
   addItem: (product) => {
@@ -60,7 +63,31 @@ const useCartStore = create((set, get) => ({
       discountType: "FLAT",
       discountValue: 0,
       paymentMethod: "CASH",
+      draftData: null,
     }),
+
+  loadDraft: async (draft) => {
+    if (!draft) return;
+    set({ isDraftLoading: true });
+
+    try {
+      let customerData = null;
+
+      if (draft?.customerId) {
+        customerData = await getCustomerById(draft?.customerId);
+      }
+      set({
+        items: draft.items || [],
+        customer: customerData?.data,
+        draftData: draft,
+      });
+    } catch (error) {
+      console.error("Draft loading error:", error);
+      toast.error("Draft load error");
+    } finally {
+      set({ isDraftLoading: false });
+    }
+  },
 }));
 
 export default useCartStore;

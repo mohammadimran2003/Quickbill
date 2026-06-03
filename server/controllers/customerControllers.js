@@ -86,6 +86,8 @@ const getCustomerByPhone = async (req, res) => {
 
 const getCustomerById = async (req, res) => {
   const id = req.params.id;
+  console.log(req.body, "req.body");
+
   const customer = await prisma.customer.findUnique({
     where: { id },
   });

@@ -84,18 +84,15 @@ const getTopProducts = async (req, res) => {
 
 const getMonthlyPurchaseSales = async (req, res) => {
   try {
-    // 🧠 ১. গত ১২ মাসের শুরুর তারিখ জেনারেট করা (টাইম জিরো করে)
     const startDate = new Date();
     startDate.setMonth(startDate.getMonth() - 11);
     startDate.setDate(1);
     startDate.setHours(0, 0, 0, 0);
 
-    // 🚀 ২. ডাটাবেজ লেভেলে এগ্রিগেশন (groupBy) রান করা
-    // প্রিজমাই সরাসরি ডাটা যোগ (Sum) করে শুধু মাসের রেজাল্টটুকু রিটার্ন করবে
     const [salesData, purchaseData] = await Promise.all([
       prisma.order.groupBy({
         by: ["year", "month"],
-        where: { date: { gte: startDate }, status: "COMPLETED" }, // শুধু কমপ্লিটেড অর্ডার
+        where: { date: { gte: startDate }, status: "COMPLETED" },
         _sum: { total: true },
       }),
       prisma.purchase.groupBy({
@@ -104,9 +101,6 @@ const getMonthlyPurchaseSales = async (req, res) => {
         _sum: { total: true },
       }),
     ]);
-
-    console.log(salesData, "Sales data");
-    console.log(purchaseData, "Purchase data");
 
     const chartDataMap = {};
     const monthsOrder = [];

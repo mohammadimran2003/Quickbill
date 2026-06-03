@@ -50,7 +50,7 @@ function PosFilterSection({ hasFilters }) {
 
   return (
     <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-      {/* 🏷️ Brands Autocomplete */}
+      {/*  Brands Autocomplete */}
       <Autocomplete
         options={brands}
         value={selectedBrand}
@@ -64,7 +64,7 @@ function PosFilterSection({ hasFilters }) {
         )}
       />
 
-      {/* 🗂️ Categories Autocomplete */}
+      {/* Categories Autocomplete */}
       <Autocomplete
         options={categories}
         value={selectedCategory}
