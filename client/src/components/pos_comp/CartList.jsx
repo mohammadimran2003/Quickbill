@@ -1,14 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import useCartStore from "../../store/cartStore";
-import {
-  Box,
-  Typography,
-  IconButton,
-  Button,
-  Paper,
-  Autocomplete,
-  TextField,
-} from "@mui/material";
+import { Box, Typography, IconButton, Button, Paper } from "@mui/material";
 
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
