@@ -72,8 +72,6 @@ const ExpenseModal = ({ open, onClose, onSave, initialData = null }) => {
     mode: "onChange",
   });
 
-  console.log(errors, "errors");
-
   useEffect(() => {
     if (open) {
       if (initialData) {

@@ -11,8 +11,13 @@ import {
   Typography,
 } from "@mui/material";
 import fmt from "../../utils/fmt";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
-function DataTable({ chartData }) {
+function DataTable({ chartData, isLoading }) {
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <Box
       sx={{

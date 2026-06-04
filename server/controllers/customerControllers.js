@@ -25,6 +25,7 @@ const getCustomers = async (req, res) => {
     sortBy = "createdAt",
     sortOrder = "desc",
     customerType = "",
+    search = "",
   } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
@@ -41,6 +42,14 @@ const getCustomers = async (req, res) => {
         }
       : {}),
     ...(customerType ? { customerType } : {}),
+    ...(search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { phone: { contains: search } },
+          ],
+        }
+      : {}),
   };
 
   const [customers, total] = await Promise.all([

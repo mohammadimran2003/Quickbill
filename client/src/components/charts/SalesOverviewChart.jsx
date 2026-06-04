@@ -11,6 +11,7 @@ import { Box, Typography, Paper, useTheme } from "@mui/material";
 
 import getLast30DaysSales from "../../api/dashboard_api/getLast30DaysSales";
 import { useQuery } from "@tanstack/react-query";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
 
 const SalesOverviewChart = () => {
   const theme = useTheme();
@@ -21,11 +22,7 @@ const SalesOverviewChart = () => {
   });
 
   if (isLoading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography>Loading sales data...</Typography>
-      </Box>
-    );
+    return <ChartMenuSkeleton />;
   }
 
   if (isError) {

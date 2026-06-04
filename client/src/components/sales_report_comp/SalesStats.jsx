@@ -5,8 +5,13 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
 
-function SalesStats({ summary }) {
+function SalesStats({ summary, isLoading }) {
+  if (isLoading) {
+    return <StatsSkeleton />;
+  }
+
   return (
     <Grid container spacing={3} sx={{ mb: 3 }}>
       <Grid size={3}>

@@ -2,6 +2,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Paper, Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import getExpensesChart from "../../api/expenses_api/getExpensesChart";
+import PieChartSkeleton from "../shared/skeletons/PieChartSkeleton";
 
 // Professional Color Palette
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
@@ -13,11 +14,7 @@ const ExpensesChart = () => {
   });
 
   if (isLoading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography>Loading expenses data...</Typography>
-      </Box>
-    );
+    return <PieChartSkeleton />;
   }
 
   if (isError) {

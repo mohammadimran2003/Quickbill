@@ -8,7 +8,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import getExpenseStats from "../../api/expenses_api/getExpenseStats";
-
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
 const DashboardTop = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardSummery"],
@@ -26,11 +26,7 @@ const DashboardTop = () => {
   const { today, allTime } = data?.data || {};
 
   if (isLoading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography>Loading dashboard...</Typography>
-      </Box>
-    );
+    return <StatsSkeleton />;
   }
 
   if (isError) {

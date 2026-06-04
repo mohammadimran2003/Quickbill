@@ -30,6 +30,7 @@ import { toast } from "sonner";
 
 import useSupplierColumns from "./hooks/useSupplierColumns";
 import SupplierFilterSection from "./SupplierFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function SupplierTable() {
   const [rowSelection, setRowSelection] = useState({});
@@ -111,7 +112,7 @@ function SupplierTable() {
     getRowId: (row) => row.id,
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (

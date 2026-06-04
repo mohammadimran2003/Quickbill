@@ -1,10 +1,11 @@
-import { Box, Grid, Typography, Chip, Stack } from "@mui/material";
+import { Box, Grid, Typography, Chip, Stack, Skeleton } from "@mui/material";
 import StatCard from "../shared/StatCard";
 import { useQuery } from "@tanstack/react-query";
 import getExpenseStats from "../../api/expenses_api/getExpenseStats";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CategoryIcon from "@mui/icons-material/Category";
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
 
 function ExpenseStats() {
   const { data, isLoading, isError } = useQuery({
@@ -12,7 +13,15 @@ function ExpenseStats() {
     queryFn: getExpenseStats,
   });
 
-  if (isLoading) return null;
+  if (isLoading)
+    return (
+      <>
+        <StatsSkeleton />
+        <Box sx={{ my: 4 }}>
+          <Skeleton variant="rectangular" width="100%" height={200} />
+        </Box>
+      </>
+    );
   if (isError) return null;
 
   const stats = data?.data || {};
@@ -63,7 +72,7 @@ function ExpenseStats() {
           <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
             Expense Breakdown by Category
           </Typography>
-          <Stack direction="row" flexWrap="wrap" gap={1.5}>
+          <Stack direction="row" sx={{ flexWrap: "wrap" }} gap={1.5}>
             {Object.entries(stats.byCategory).map(([category, amount]) => (
               <Chip
                 key={category}

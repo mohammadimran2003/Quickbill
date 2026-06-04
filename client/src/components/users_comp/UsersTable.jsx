@@ -27,6 +27,7 @@ import { useSearchParams } from "react-router-dom";
 
 import useUserColumns from "./hooks/useUserColumns";
 import UserFilterSection from "./UserFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function UsersTable({
   onEditUser = () => {},
@@ -91,7 +92,7 @@ function UsersTable({
     getRowId: (row) => row.id,
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (

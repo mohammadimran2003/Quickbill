@@ -1,4 +1,3 @@
-import React from "react";
 import fmt from "../../../utils/fmt";
 
 const TopProductsTable = ({ products }) => {

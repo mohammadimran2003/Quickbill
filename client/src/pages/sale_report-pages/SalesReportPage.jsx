@@ -105,42 +105,26 @@ function SalesReportPage() {
       </Box>
 
       {/* Stat Cards */}
-      <SalesStats summary={summary} />
+      <SalesStats summary={summary} isLoading={isLoading} />
 
-      {/* Chart + Table */}
-      {isLoading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: 360,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      ) : isError ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Typography color="error">{error?.message}</Typography>
-        </Box>
-      ) : (
-        <>
-          <SalesReportChart data={chartData} groupBy={groupBy} />
+      <SalesReportChart
+        data={chartData}
+        groupBy={groupBy}
+        isLoading={isLoading}
+      />
 
-          {/* Data Table */}
-          <DataTable chartData={chartData} />
+      {/* Data Table */}
+      <DataTable chartData={chartData} isLoading={isLoading} />
 
-          {/* Top Products & Top Customers */}
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            <Grid size={6}>
-              <TopProductsTable products={products} />
-            </Grid>
-            <Grid size={6}>
-              <TopCustomersTable customers={customers} />
-            </Grid>
-          </Grid>
-        </>
-      )}
+      {/* Top Products & Top Customers */}
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        <Grid size={6}>
+          <TopProductsTable products={products} isLoading={isLoading} />
+        </Grid>
+        <Grid size={6}>
+          <TopCustomersTable customers={customers} isLoading={isLoading} />
+        </Grid>
+      </Grid>
     </Box>
   );
 }

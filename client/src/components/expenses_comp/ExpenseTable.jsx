@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import getExpenses from "../../api/expenses_api/getExpenses";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CircularProgress from "@mui/material/CircularProgress";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -27,8 +26,9 @@ import { useSearchParams } from "react-router-dom";
 import deleteExpense from "../../api/expenses_api/deleteExpense";
 import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
 import { toast } from "sonner";
-
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 import useExpenseColumns from "./hooks/useExpenseColumns";
+import ExpenseFilterSection from "./ExpenseFilterSection";
 
 function ExpenseTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});
@@ -111,9 +111,8 @@ function ExpenseTable({ onEditClick = () => {} }) {
     },
     getRowId: (row) => row.id,
   });
-  console.log(data, "data");
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (
@@ -125,6 +124,7 @@ function ExpenseTable({ onEditClick = () => {} }) {
         overflowX: "auto",
       }}
     >
+      <ExpenseFilterSection />
       <TableContainer
         component={Box}
         sx={{

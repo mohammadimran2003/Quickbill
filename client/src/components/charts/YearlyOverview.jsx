@@ -11,6 +11,7 @@ import {
 import { Box, Typography, useTheme } from "@mui/material";
 import getSalesPurchaseYearOverview from "../../api/dashboard_api/getSalesPurchaseYearOverview";
 import { useQuery } from "@tanstack/react-query";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
 
 function YearlyOverview() {
   const theme = useTheme();
@@ -24,11 +25,7 @@ function YearlyOverview() {
   const chartData = data?.chartData || [];
 
   if (isLoading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography>Loading yearly data...</Typography>
-      </Box>
-    );
+    return <ChartMenuSkeleton />;
   }
 
   if (isError) {

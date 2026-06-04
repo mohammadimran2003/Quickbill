@@ -61,17 +61,28 @@ const deleteExpense = async (req, res) => {
 };
 
 const getExpenses = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, search = "", categoryId = "" } = req.query;
+
+  const where = {};
+  if (categoryId) {
+    where.categoryId = categoryId;
+  }
+  if (search) {
+    where.title = { contains: search, mode: "insensitive" };
+  }
 
   const [expenses, total] = await Promise.all([
     prisma.expense.findMany({
       include: {
         category: true,
       },
+      where,
       skip: (page - 1) * limit,
       take: parseInt(limit),
     }),
-    prisma.expense.count(),
+    prisma.expense.count({
+      where,
+    }),
   ]);
 
   res.status(200).json({

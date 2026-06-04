@@ -31,6 +31,7 @@ import getBrands from "../../api/brands_api/getBrands";
 import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
 import ProductFilterSection from "./ProductFilterSection";
 import useProductColumns from "./hooks/useProductColumns";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function ProductTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});
@@ -124,7 +125,7 @@ function ProductTable({ onEditClick = () => {} }) {
   });
 
   // ── Render ─────────────────────────────────────────────────
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (

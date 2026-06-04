@@ -18,6 +18,7 @@ import {
 import getRecentOrders from "../../api/dashboard_api/getRecentOrders";
 import { useQuery } from "@tanstack/react-query";
 import getRecentOrderTableColumn from "./getRecentOrderTableColumn";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 const RecentOrders = () => {
   const { data, isLoading, isError } = useQuery({
@@ -34,13 +35,7 @@ const RecentOrders = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (isLoading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography>Loading recent orders data...</Typography>
-      </Box>
-    );
-  }
+  if (isLoading) return <TableSkeleton />;
 
   if (isError) {
     return (

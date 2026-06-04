@@ -27,6 +27,7 @@ import getDiscountAmount from "../../utils/getDiscountAmount";
 import CartCheckout from "./CartCheckout";
 import Drafts from "./Drafts";
 import DraftList from "./DraftList";
+import CustomerSelect from "./CustomerSelect";
 
 function CartList() {
   const {
@@ -126,7 +127,7 @@ function CartList() {
         })),
         discountType,
         discountValue,
-        customerId: selectedCustomer?.id,
+        customerId: selectedCustomer ? selectedCustomer.id : walkInCustomer?.id,
         paymentMethod,
         amountPaid: paymentMethod === "UNPAID" ? 0 : Number(amountPaid),
         draftId: draftData?.id,
@@ -243,25 +244,10 @@ function CartList() {
         <Box sx={{ mb: 2 }}>
           {/* Customer Search */}
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-            <Autocomplete
-              options={customers}
-              getOptionLabel={(option) => option.name || ""}
-              getOptionKey={(option) => option.id}
-              value={selectedCustomer}
-              onChange={(event, newValue) => {
-                setSelectedCustomer(newValue);
-                setCustomer(newValue);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Search Customer"
-                  size="small"
-                  fullWidth
-                />
-              )}
-              sx={{ flexGrow: 1 }}
-              size="small"
+            <CustomerSelect
+              selectedCustomer={selectedCustomer}
+              setSelectedCustomer={setSelectedCustomer}
+              setCustomer={setCustomer}
             />
             <IconButton
               color="primary"

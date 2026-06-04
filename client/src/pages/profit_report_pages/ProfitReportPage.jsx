@@ -126,20 +126,30 @@ function ProfitReportPage() {
         <DateRangeFilter onFilterChange={handleFilterChange} />
       </Box>
 
-      <ProfitsStats summary={summary} />
+      <ProfitsStats summary={summary} isLoading={isLoading} />
 
       {/* Profit vs Revenue Trend Chart */}
       <Box sx={{ mt: 4 }}>
-        <ProfitVsRevenueChart data={chartData} groupBy={groupBy} />
+        <ProfitVsRevenueChart
+          data={chartData}
+          groupBy={groupBy}
+          isLoading={isLoading}
+        />
       </Box>
 
       {/* Most Profitable Products Table + Profit by Category Chart */}
       <Grid container spacing={3} sx={{ mt: 4 }}>
         <Grid size={8}>
-          <MostProfitableProducts products={profitableProducts} />
+          <MostProfitableProducts
+            products={profitableProducts}
+            isLoading={isLoading}
+          />
         </Grid>
         <Grid size={4}>
-          <ProfitByCategoryChart data={profitByCategory} />
+          <ProfitByCategoryChart
+            data={profitByCategory}
+            isLoading={isLoading}
+          />
         </Grid>
       </Grid>
     </Box>

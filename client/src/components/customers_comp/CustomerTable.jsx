@@ -31,6 +31,7 @@ import { toast } from "sonner";
 
 import useCustomerColumns from "./hooks/useCustomerColumns";
 import CustomerFilterSection from "./CustomerFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function CustomerTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});
@@ -115,7 +116,7 @@ function CustomerTable({ onEditClick = () => {} }) {
     getRowId: (row) => row.id,
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
   return (
     <Paper

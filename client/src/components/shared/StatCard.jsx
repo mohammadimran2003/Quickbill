@@ -6,7 +6,6 @@ const StatCard = ({ title, value, badgeText, icon, type = "order" }) => {
 
   const colors = theme.palette.statCard[type];
 
-  console.log(colors, "color");
   return (
     <Card
       sx={{

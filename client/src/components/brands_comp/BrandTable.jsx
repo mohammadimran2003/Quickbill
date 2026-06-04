@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import getBrands from "../../api/brands_api/getBrands";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CircularProgress from "@mui/material/CircularProgress";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -30,6 +29,7 @@ import { toast } from "sonner";
 
 import useBrandColumns from "./hooks/useBrandColumns";
 import BrandFilterSection from "./BrandFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function BrandTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});
@@ -112,7 +112,7 @@ function BrandTable({ onEditClick = () => {} }) {
     getRowId: (row) => row.id,
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (

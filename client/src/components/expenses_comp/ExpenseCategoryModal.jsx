@@ -48,19 +48,7 @@ const ExpenseCategoryModal = ({ open, onClose, onSave }) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="sm"
-      fullWidth
-      slotProps={{
-        paper: {
-          sx: {
-            borderRadius: 2,
-          },
-        },
-      }}
-    >
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle
         sx={{
           fontWeight: 700,

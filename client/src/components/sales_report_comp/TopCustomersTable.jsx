@@ -11,8 +11,13 @@ import {
   Box,
 } from "@mui/material";
 import fmt from "../../utils/fmt";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
-function TopCustomersTable({ customers }) {
+function TopCustomersTable({ customers, isLoading }) {
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <TableContainer
       component={Paper}

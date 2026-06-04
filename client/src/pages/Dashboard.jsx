@@ -15,6 +15,7 @@ function Dashboard() {
   return (
     <>
       <DashboardTop />
+
       <Grid container spacing={3}>
         <Grid size={8}>{isAdmin && <ChartMenu />}</Grid>
         <Grid size={4}>{(isAdmin || isManager) && <TopProductChart />}</Grid>

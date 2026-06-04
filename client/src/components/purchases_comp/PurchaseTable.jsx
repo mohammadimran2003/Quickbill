@@ -30,6 +30,7 @@ import { toast } from "sonner";
 
 import usePurchaseColumns from "./hooks/usePurchaseColumns";
 import PurchaseFilterSection from "./PurchaseFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
 function PurchaseTable() {
   const [rowSelection, setRowSelection] = useState({});
@@ -103,7 +104,7 @@ function PurchaseTable() {
     getRowId: (row) => row.id,
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <Typography>Something went wrong</Typography>;
 
   return (

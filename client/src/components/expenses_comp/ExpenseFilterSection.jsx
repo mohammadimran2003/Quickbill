@@ -11,20 +11,29 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ResetIcon from "@mui/icons-material/RestartAlt";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import getExpenseCategories from "../../api/expenses_api/getExpenseCategories";
 
-function PurchaseFilterSection({ onSetSorting }) {
-  const [purchaseAnchorEl, setPurchaseAnchorEl] = useState(null);
-  const [purchaseFilter, setPurchaseFilter] = useState("");
+function ExpenseFilterSection({ onSetSorting }) {
+  const [expenseAnchorEl, setExpenseAnchorEl] = useState(null);
+  const [expenseFilter, setExpenseFilter] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const handlePurchaseApply = () => {
+  const { data: categoriesData } = useQuery({
+    queryKey: ["expense-categories"],
+    queryFn: () => getExpenseCategories(),
+  });
+
+  const categories = categoriesData?.data || [];
+
+  const handleExpenseApply = () => {
     setSearchParams((prev) => ({
       ...Object.fromEntries(prev),
-      search: purchaseFilter,
+      search: expenseFilter,
       page: 1,
     }));
-    setPurchaseFilter("");
-    setPurchaseAnchorEl(null);
+    setExpenseFilter("");
+    setExpenseAnchorEl(null);
   };
 
   const hasFilters = Boolean(searchParams.toString());
@@ -36,14 +45,13 @@ function PurchaseFilterSection({ onSetSorting }) {
           display: "flex",
           justifyContent: "space-between",
           gap: 2,
-          flexWrap: "wrap",
         }}
       >
-        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+        <Box sx={{ display: "flex", gap: 2 }}>
           <Button
             variant="outlined"
             startIcon={<AddCircleIcon />}
-            onClick={(e) => setPurchaseAnchorEl(e.currentTarget)}
+            onClick={(e) => setExpenseAnchorEl(e.currentTarget)}
             sx={{
               color: "text.primary",
               borderColor: "divider",
@@ -61,7 +69,7 @@ function PurchaseFilterSection({ onSetSorting }) {
               startIcon={<ResetIcon />}
               onClick={() => {
                 setSearchParams({});
-                setPurchaseFilter("");
+                setExpenseFilter("");
                 if (onSetSorting) onSetSorting([]);
               }}
             >
@@ -70,11 +78,11 @@ function PurchaseFilterSection({ onSetSorting }) {
           )}
         </Box>
         <Select
-          value={searchParams.get("status") || ""}
+          value={searchParams.get("categoryId") || ""}
           onChange={(e) =>
             setSearchParams((prev) => ({
               ...Object.fromEntries(prev),
-              status: e.target.value,
+              categoryId: e.target.value,
               page: 1,
             }))
           }
@@ -83,16 +91,18 @@ function PurchaseFilterSection({ onSetSorting }) {
           size="small"
           sx={{ minWidth: 170 }}
         >
-          <MenuItem value="">All Status</MenuItem>
-          <MenuItem value="RECEIVED">Received</MenuItem>
-          <MenuItem value="ORDERED">Ordered</MenuItem>
-          <MenuItem value="CANCELLED">Cancelled</MenuItem>
+          <MenuItem value="">All Categories</MenuItem>
+          {categories.map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
         </Select>
       </Box>
       <Popover
-        open={Boolean(purchaseAnchorEl)}
-        anchorEl={purchaseAnchorEl}
-        onClose={() => setPurchaseAnchorEl(null)}
+        open={Boolean(expenseAnchorEl)}
+        anchorEl={expenseAnchorEl}
+        onClose={() => setExpenseAnchorEl(null)}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
@@ -100,17 +110,17 @@ function PurchaseFilterSection({ onSetSorting }) {
       >
         <Box sx={{ p: 3, minWidth: 300 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Search Purchases
+            Search Expenses
           </Typography>
           <TextField
             fullWidth
-            placeholder="Purchase Number or Supplier"
-            value={purchaseFilter}
-            onChange={(e) => setPurchaseFilter(e.target.value)}
+            placeholder="Title"
+            value={expenseFilter}
+            onChange={(e) => setExpenseFilter(e.target.value)}
             size="small"
             sx={{ mb: 2 }}
           />
-          <Button variant="contained" fullWidth onClick={handlePurchaseApply}>
+          <Button variant="contained" fullWidth onClick={handleExpenseApply}>
             Apply
           </Button>
         </Box>
@@ -119,4 +129,4 @@ function PurchaseFilterSection({ onSetSorting }) {
   );
 }
 
-export default PurchaseFilterSection;
+export default ExpenseFilterSection;

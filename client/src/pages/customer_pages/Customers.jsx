@@ -54,20 +54,17 @@ function Customers() {
     setSelectedCustomer(null);
   };
 
-  const handleSave = async (formData) => {
+  const handleSave = (formData) => {
     if (selectedCustomer) {
       // edit mode
-      await toast.promise(
-        updateMutate({ id: selectedCustomer.id, data: formData }),
-        {
-          loading: "Updating customer...",
-          success: "Customer updated successfully!",
-          error: (err) => err.response?.data?.message || "Something went wrong",
-        },
-      );
+      toast.promise(updateMutate({ id: selectedCustomer.id, data: formData }), {
+        loading: "Updating customer...",
+        success: "Customer updated successfully!",
+        error: (err) => err.response?.data?.message || "Something went wrong",
+      });
     } else {
       // add mode
-      await toast.promise(mutate(formData), {
+      toast.promise(mutate(formData), {
         loading: "Saving customer...",
         success: "Customer created successfully!",
         error: (err) => err.response?.data?.message || "Something went wrong",

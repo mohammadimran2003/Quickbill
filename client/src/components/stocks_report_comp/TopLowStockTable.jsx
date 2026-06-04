@@ -13,8 +13,13 @@ import {
   Tooltip,
 } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
-const TopLowStockTable = ({ topLowStockProducts }) => {
+const TopLowStockTable = ({ topLowStockProducts, isLoading }) => {
+  if (isLoading) {
+    return <TableSkeleton rows={2} cols={5} />;
+  }
+
   if (!topLowStockProducts || topLowStockProducts.length === 0) {
     return (
       <Paper

@@ -11,14 +11,19 @@ import {
   Chip,
   Box,
 } from "@mui/material";
+import TableSkeleton from "../shared/skeletons/TableSkeleton";
 
-const StockReportTable = ({ stockDetails }) => {
+const StockReportTable = ({ stockDetails, isLoading }) => {
   if (!stockDetails || stockDetails.length === 0) {
     return (
       <Paper sx={{ p: 3, textAlign: "center", borderRadius: 2 }}>
         <Typography color="text.secondary">Stock not Available</Typography>
       </Paper>
     );
+  }
+
+  if (isLoading) {
+    return <TableSkeleton />;
   }
 
   return (

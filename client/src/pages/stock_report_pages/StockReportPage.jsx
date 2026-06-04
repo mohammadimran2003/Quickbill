@@ -25,6 +25,7 @@ import TopLowStockTable from "../../components/stocks_report_comp/TopLowStockTab
 import StockByCategoryChart from "../../components/charts/StockByCategoryChart";
 import StockReportPrint from "../../components/print/StockReportPrint";
 import PrintBtn from "../../components/shared/PrintBtn";
+import StockReportStats from "../../components/stocks_report_comp/StockReportStats";
 
 function StockReportPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -126,40 +127,7 @@ function StockReportPage() {
         <DateRangeFilter onFilterChange={handleFilterChange} />
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={3}>
-          <StatCard
-            title="Total Stock Value"
-            value={fmt(summary?.totalStockValue)}
-            icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
-            type="positive"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Total Products"
-            value={summary?.totalProducts ?? "—"}
-            icon={<Inventory2Icon sx={{ fontSize: 28 }} />}
-            type="positive"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Low Stock Products"
-            value={summary?.lowStockItems ?? "—"}
-            icon={<WarningAmberIcon sx={{ fontSize: 28 }} />}
-            type="warning"
-          />
-        </Grid>
-        <Grid size={3}>
-          <StatCard
-            title="Out of Stock"
-            value={summary?.outOfStockItems ?? "—"}
-            icon={<ErrorOutlineOutlinedIcon sx={{ fontSize: 28 }} />}
-            type="negative"
-          />
-        </Grid>
-      </Grid>
+      <StockReportStats summary={summary} isLoading={isLoading} />
 
       <StockReportTable stockDetails={data?.data?.stockDetails} />
 
@@ -167,10 +135,14 @@ function StockReportPage() {
         <Grid size={6}>
           <TopLowStockTable
             topLowStockProducts={data?.data?.topLowStockProducts}
+            isLoading={isLoading}
           />
         </Grid>
         <Grid size={6}>
-          <StockByCategoryChart stockByCategory={data?.data?.stockByCategory} />
+          <StockByCategoryChart
+            stockByCategory={data?.data?.stockByCategory}
+            isLoading={isLoading}
+          />
         </Grid>
       </Grid>
     </Box>
