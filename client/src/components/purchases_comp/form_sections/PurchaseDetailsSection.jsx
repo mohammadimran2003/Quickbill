@@ -16,7 +16,9 @@ const PurchaseDetailsSection = ({ suppliersData }) => {
     register,
     formState: { errors },
   } = useFormContext();
-  console.log(errors, "erroes");
+  console.log(errors, "errors");
+
+  console.log(suppliersData?.data, "d s");
 
   return (
     <FormSection title="Purchase Details">
@@ -24,34 +26,36 @@ const PurchaseDetailsSection = ({ suppliersData }) => {
         <Controller
           name="supplierId"
           control={control}
-          render={({ field, fieldState: { error } }) => (
-            <Autocomplete
-              {...field}
-              options={suppliersData?.data || []}
-              getOptionLabel={(option) => option.name || ""}
-              isOptionEqualToValue={(option, value) =>
-                option.id === value?.id || option.id === value
-              }
-              onChange={(_, data) => field.onChange(data ? data.id : "")}
-              onBlur={field.onBlur}
-              value={
-                field.value
-                  ? suppliersData?.data?.find((s) => s.id === field.value) ||
-                    null
-                  : null
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Supplier"
-                  variant="outlined"
-                  size="small"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-          )}
+          render={({ field, fieldState: { error } }) => {
+            return (
+              <Autocomplete
+                {...field}
+                options={suppliersData?.data || []}
+                getOptionLabel={(option) => option.name || ""}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value?.id || option.id === value
+                }
+                onChange={(_, data) => field.onChange(data ? data.id : "")}
+                onBlur={field.onBlur}
+                value={
+                  field.value
+                    ? suppliersData?.data?.find((s) => s.id === field.value) ||
+                      null
+                    : ""
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Supplier"
+                    variant="outlined"
+                    size="small"
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                )}
+              />
+            );
+          }}
         />
       </Grid>
       <Grid size={4}>

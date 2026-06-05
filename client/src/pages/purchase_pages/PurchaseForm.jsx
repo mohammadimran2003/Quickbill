@@ -24,7 +24,7 @@ import PurchaseItemsSection from "../../components/purchases_comp/form_sections/
 import PurchaseSummarySection from "../../components/purchases_comp/form_sections/PurchaseSummarySection";
 
 const defaultValues = {
-  supplierId: null,
+  supplierId: "",
   items: [],
   subTotal: 0,
   total: 0,
@@ -108,7 +108,7 @@ function PurchaseForm() {
     if (purchaseData?.data) {
       const purchase = purchaseData.data;
       reset({
-        supplierId: purchase.supplierId || null,
+        supplierId: purchase.supplierId || "",
         items: purchase.items || [],
         subTotal: purchase.subTotal || 0,
         total: purchase.total || 0,
@@ -122,6 +122,8 @@ function PurchaseForm() {
   }, [purchaseData, reset]);
 
   const handleSave = (formData) => {
+    console.log(formData, "form data");
+
     const action = isEditMode
       ? updateMutation.mutateAsync(formData)
       : createMutation.mutateAsync(formData);

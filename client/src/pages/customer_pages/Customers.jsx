@@ -27,7 +27,7 @@ function Customers() {
   });
 
   const { mutate: updateMutate } = useMutation({
-    mutationFn: ({ id, data }) => updateCustomer(id, data),
+    mutationFn: ({ id, data }) => updateCustomer({ id, data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       handleModalClose();

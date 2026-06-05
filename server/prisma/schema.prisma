@@ -91,7 +91,6 @@ model Customer {
   draftOrders DraftOrder[]
 }
 
-
 model DraftOrder {
   id         String      @id @default(auto()) @map("_id") @db.ObjectId
   name       String?     
@@ -211,7 +210,6 @@ enum TierName {
   VIP
   SPECIAL
 }
-
 
 model PriceTier {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId

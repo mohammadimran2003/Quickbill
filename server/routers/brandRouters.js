@@ -12,7 +12,12 @@ import restrictTo from "../middlewares/restrictTo.js";
 
 const brandRouter = express.Router();
 
-brandRouter.post("/", validatorsMiddleware(createBrandSchema), createBrand);
+brandRouter.post(
+  "/",
+  validatorsMiddleware(createBrandSchema),
+  restrictTo("ADMIN", "MANAGER"),
+  createBrand,
+);
 brandRouter.get("/", getAllBrands);
 brandRouter.get("/:id", getBrandById);
 brandRouter.delete("/:id", restrictTo("ADMIN", "MANAGER"), deleteBrand);

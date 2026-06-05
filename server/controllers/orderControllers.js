@@ -14,10 +14,6 @@ const createOrder = async (req, res) => {
     draftId,
   } = orderData;
 
-  console.log(req.body, "req.body upd");
-
-  console.log(draftId, "draft id");
-
   if (!items || items.length === 0) {
     return res.status(400).json({
       success: false,

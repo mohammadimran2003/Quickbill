@@ -22,6 +22,7 @@ priceTierRouter.delete(
   restrictTo("ADMIN", "MANAGER"),
   deletePriceTier,
 );
+
 priceTierRouter.put(
   "/:tierId",
   validatorsMiddleware(priceTierSchema),

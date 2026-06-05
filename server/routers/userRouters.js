@@ -21,13 +21,21 @@ userRouter.post(
   createUser,
 );
 userRouter.get("/", getUsers);
-userRouter.post("/reset-password/:id", resetPassword);
+userRouter.post(
+  "/reset-password/:id",
+  restrictTo("ADMIN", "MANAGER"),
+  resetPassword,
+);
 userRouter.put(
   "/:id",
   validatorsMiddleware(updateUserSchema),
   restrictTo("ADMIN", "MANAGER"),
   updateUser,
 );
-userRouter.patch("/reset-password/:id", resetPassword);
+userRouter.patch(
+  "/reset-password/:id",
+  restrictTo("ADMIN", "MANAGER"),
+  resetPassword,
+);
 
 export default userRouter;

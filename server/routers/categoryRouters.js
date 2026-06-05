@@ -16,6 +16,7 @@ const categoryRouter = express.Router();
 categoryRouter.post(
   "/",
   validatorsMiddleware(createCategorySchema),
+  restrictTo("ADMIN", "MANAGER"),
   createCategory,
 );
 

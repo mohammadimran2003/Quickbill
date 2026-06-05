@@ -1,311 +1,300 @@
 import {
-	Box,
-	Typography,
-	Grid,
-	Paper,
-	Divider,
-	Chip,
-	Stack,
-	IconButton,
-	Button,
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogActions,
-	TextField,
-} from '@mui/material';
+  Box,
+  Typography,
+  Grid,
+  Paper,
+  Divider,
+  Chip,
+  Stack,
+  IconButton,
+  Button,
+} from "@mui/material";
 import {
-	ArrowBack as ArrowBackIcon,
-	Edit as EditIcon,
-	Phone as PhoneIcon,
-	Email as EmailIcon,
-	LocationOn as LocationOnIcon,
-	History as HistoryIcon,
-} from '@mui/icons-material';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import getCustomerById from '../../api/customers_api/getCustomerById';
-import RechargeWalletModal from './RechargeWalletModal';
+  ArrowBack as ArrowBackIcon,
+  Edit as EditIcon,
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  LocationOn as LocationOnIcon,
+  History as HistoryIcon,
+} from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import getCustomerById from "../../api/customers_api/getCustomerById";
+import RechargeWalletModal from "./RechargeWalletModal";
+import { useMutation } from "@tanstack/react-query";
+import CustomerModal from "../../components/customers_comp/CustomerModal";
+import { toast } from "sonner";
+import updateCustomer from "../../api/customers_api/updateCustomer";
+
+const infoItem = (icon, label, value) => (
+  <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+    <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
+    <Box>
+      <Typography variant="caption" color="text.secondary" display="block">
+        {label}
+      </Typography>
+      <Typography variant="body1" fontWeight={500}>
+        {value || "N/A"}
+      </Typography>
+    </Box>
+  </Stack>
+);
+
+const statCard = (label, value, color) => (
+  <Paper
+    variant="outlined"
+    sx={{
+      p: 2,
+      textAlign: "center",
+      bgcolor: `${color}.50`,
+      borderColor: `${color}.200`,
+    }}
+  >
+    <Typography variant="caption" color="text.secondary" gutterBottom>
+      {label}
+    </Typography>
+    <Typography variant="h6" color={`${color}.main`} fontWeight="bold">
+      ৳{value?.toLocaleString()}
+    </Typography>
+  </Paper>
+);
 
 const CustomerDetailsPage = () => {
-	const navigate = useNavigate();
-	const { id } = useParams();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-	const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
-	const { data: customerData } = useQuery({
-		queryFn: () => getCustomerById(id),
-		queryKey: ['customers'],
-	});
+  const queryClient = useQueryClient();
 
-	// Jodi data load hote thake ba na thake
-	if (!customerData)
-		return <Typography>Loading customer details...</Typography>;
+  const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
+  const { data: customerData } = useQuery({
+    queryFn: () => getCustomerById(id),
+    queryKey: ["customers"],
+  });
 
-	const {
-		name,
-		email,
-		customerType,
-		isActive,
-		phone,
-		address,
-		totalSpent,
-		totalDue,
-		walletBalance,
-		creditLimit,
-		note,
-		createdAt,
-	} = customerData.data;
+  const { mutate: updateMutationCustomer } = useMutation({
+    mutationFn: ({ id, data }) => updateCustomer({ id, data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
 
-	const infoItem = (icon, label, value) => (
-		<Stack
-			direction='row'
-			spacing={2}
-			sx={{ mb: 2 }}>
-			<Box sx={{ color: 'primary.main', display: 'flex' }}>{icon}</Box>
-			<Box>
-				<Typography
-					variant='caption'
-					color='text.secondary'
-					display='block'>
-					{label}
-				</Typography>
-				<Typography
-					variant='body1'
-					fontWeight={500}>
-					{value || 'N/A'}
-				</Typography>
-			</Box>
-		</Stack>
-	);
+  // Jodi data load hote thake ba na thake
+  if (!customerData)
+    return <Typography>Loading customer details...</Typography>;
 
-	const statCard = (label, value, color) => (
-		<Paper
-			variant='outlined'
-			sx={{
-				p: 2,
-				textAlign: 'center',
-				bgcolor: `${color}.50`,
-				borderColor: `${color}.200`,
-			}}>
-			<Typography
-				variant='caption'
-				color='text.secondary'
-				gutterBottom>
-				{label}
-			</Typography>
-			<Typography
-				variant='h6'
-				color={`${color}.main`}
-				fontWeight='bold'>
-				৳{value?.toLocaleString()}
-			</Typography>
-		</Paper>
-	);
+  const {
+    name,
+    email,
+    customerType,
+    isActive,
+    phone,
+    address,
+    totalSpent,
+    totalDue,
+    walletBalance,
+    creditLimit,
+    note,
+    createdAt,
+  } = customerData.data;
 
-	return (
-		<Box sx={{ p: 3 }}>
-			{/* Header Section */}
-			<Stack
-				direction='row'
-				sx={{
-					mb: 3,
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-				}}>
-				<Stack
-					direction='row'
-					spacing={2}>
-					<IconButton
-						onClick={() => navigate(-1)}
-						color='primary'>
-						<ArrowBackIcon />
-					</IconButton>
-					<Box>
-						<Typography
-							variant='h5'
-							fontWeight='bold'>
-							{name}
-						</Typography>
-						<Stack
-							direction='row'
-							spacing={1}>
-							<Chip
-								label={customerType}
-								size='small'
-								color={customerType === 'WHOLESALE' ? 'secondary' : 'default'}
-							/>
-							<Chip
-								label={isActive ? 'Active' : 'Inactive'}
-								size='small'
-								color={isActive ? 'success' : 'error'}
-								variant='outlined'
-							/>
-						</Stack>
-					</Box>
-				</Stack>
-				<Button
-					variant='contained'
-					startIcon={<EditIcon />}
-					onClick={() => navigate(`/customers/edit/${id}`)}>
-					Edit Customer
-				</Button>
-			</Stack>
+  //handler
+  const handleEditCustomer = () => {
+    setIsModalOpen(true);
+  };
 
-			<Grid
-				container
-				spacing={3}>
-				{/* Contact Information & Wallet Actions */}
-				<Grid
-					xs={12}
-					md={4}>
-					<Stack
-						spacing={3}
-						sx={{ height: '100%' }}>
-						{/* Wallet Recharge Card */}
-						<Paper sx={{ p: 3 }}>
-							<Typography
-								variant='h6'
-								gutterBottom
-								sx={{ fontWeight: 'bold' }}>
-								{name}
-							</Typography>
-							<Stack
-								spacing={1.5}
-								sx={{ mb: 2 }}>
-								<Typography variant='body1'>
-									<strong>Phone:</strong> {phone || 'N/A'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Wallet:</strong> ৳
-									{walletBalance?.toLocaleString() || 0}
-								</Typography>
-								<Typography
-									variant='body1'
-									color='error'>
-									<strong>Due:</strong> ৳{totalDue?.toLocaleString() || 0}
-								</Typography>
-							</Stack>
-							<Divider sx={{ mb: 2 }} />
-							<Button
-								variant='outlined'
-								color='primary'
-								fullWidth
-								onClick={() => setIsRechargeModalOpen(true)}>
-								+ Recharge Wallet
-							</Button>
-						</Paper>
+  const handleSave = (formData) => {
+    toast.promise(updateMutationCustomer({ id, data: formData }), {
+      pending: "Updating customer...",
+      success: (data) => {
+        console.log(data);
+        return "Customer updated successfully";
+      },
+      error: (err) => {
+        console.log(err);
+        return "Customer edit error";
+      },
+    });
+    setIsModalOpen(false);
+  };
 
-						{/* Contact Info */}
-						<Paper sx={{ p: 3, flex: 1 }}>
-							<Typography
-								variant='h6'
-								gutterBottom
-								sx={{ mb: 2 }}>
-								Contact Info
-							</Typography>
-							<Divider sx={{ mb: 2 }} />
-							{infoItem(<PhoneIcon />, 'Phone Number', phone)}
-							{infoItem(<EmailIcon />, 'Email Address', email)}
-							{infoItem(<LocationOnIcon />, 'Address', address)}
+  return (
+    <Box sx={{ p: 3, maxWidth: 1400, mx: "auto" }}>
+      {/* Header Section */}
+      <Stack
+        direction="row"
+        sx={{
+          mb: 3,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Stack direction="row" spacing={2}>
+          <IconButton onClick={() => navigate(-1)} color="primary">
+            <ArrowBackIcon />
+          </IconButton>
+          <Box>
+            <Typography variant="h5" fontWeight="bold">
+              {name}
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              <Chip
+                label={customerType}
+                size="small"
+                color={customerType === "WHOLESALE" ? "secondary" : "default"}
+              />
+              <Chip
+                label={isActive ? "Active" : "Inactive"}
+                size="small"
+                color={isActive ? "success" : "error"}
+                variant="outlined"
+              />
+            </Stack>
+          </Box>
+        </Stack>
+        <Button
+          variant="contained"
+          startIcon={<EditIcon />}
+          onClick={handleEditCustomer}
+        >
+          Edit Customer
+        </Button>
+      </Stack>
 
-							<Typography
-								variant='caption'
-								color='text.secondary'
-								sx={{ mt: 2, display: 'block' }}>
-								Created At: {new Date(createdAt).toLocaleDateString()}
-							</Typography>
-						</Paper>
-					</Stack>
-				</Grid>
+      <Grid container spacing={3}>
+        {/* Contact Information & Wallet Actions */}
+        <Grid size={3}>
+          <Stack spacing={3} sx={{ height: "100%" }}>
+            {/* Wallet Recharge Card */}
+            <Paper sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+                {name}
+              </Typography>
+              <Stack spacing={1.5} sx={{ mb: 2 }}>
+                <Typography variant="body1">
+                  <strong>Phone:</strong> {phone || "N/A"}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Wallet:</strong> ৳
+                  {walletBalance?.toLocaleString() || 0}
+                </Typography>
+                <Typography variant="body1" color="error">
+                  <strong>Due:</strong> ৳{totalDue?.toLocaleString() || 0}
+                </Typography>
+              </Stack>
+              <Divider sx={{ mb: 2 }} />
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={() => setIsRechargeModalOpen(true)}
+              >
+                + Recharge Wallet
+              </Button>
+            </Paper>
 
-				{/* Financial Summary */}
-				<Grid
-					xs={12}
-					md={8}>
-					<Paper sx={{ p: 3, height: '100%' }}>
-						<Typography
-							variant='h6'
-							gutterBottom
-							sx={{ mb: 2 }}>
-							Financial Summary
-						</Typography>
-						<Divider sx={{ mb: 3 }} />
+            {/* Contact Info */}
+            <Paper sx={{ p: 3, flex: 1 }}>
+              <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+                Contact Info
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              {infoItem(<PhoneIcon />, "Phone Number", phone)}
+              {infoItem(<EmailIcon />, "Email Address", email)}
+              {infoItem(<LocationOnIcon />, "Address", address)}
 
-						<Grid
-							container
-							spacing={2}>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Total Spent', totalSpent, 'primary')}
-							</Grid>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Total Due', totalDue, 'error')}
-							</Grid>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Wallet Balance', walletBalance, 'success')}
-							</Grid>
-							<Grid
-								xs={6}
-								sm={3}>
-								{statCard('Credit Limit', creditLimit, 'warning')}
-							</Grid>
-						</Grid>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 2, display: "block" }}
+              >
+                Created At: {new Date(createdAt).toLocaleDateString()}
+              </Typography>
+            </Paper>
+          </Stack>
+        </Grid>
 
-						<Box sx={{ mt: 4 }}>
-							<Typography
-								variant='subtitle2'
-								gutterBottom
-								color='text.secondary'>
-								Internal Note
-							</Typography>
-							<Paper
-								variant='outlined'
-								sx={{ p: 2, bgcolor: 'grey.50', minHeight: '80px' }}>
-								<Typography variant='body2'>
-									{note || 'No internal notes added for this customer.'}
-								</Typography>
-							</Paper>
-						</Box>
-					</Paper>
-				</Grid>
+        {/* Financial Summary */}
+        <Grid size={5}>
+          <Paper sx={{ p: 3, height: "100%" }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+              Financial Summary
+            </Typography>
+            <Divider sx={{ mb: 3 }} />
 
-				{/* Placeholder for Transactions/Orders */}
-				<Grid xs={12}>
-					<Paper sx={{ p: 3 }}>
-						<Stack
-							direction='row'
-							spacing={1}
-							sx={{ mb: 2 }}>
-							<HistoryIcon color='action' />
-							<Typography variant='h6'>Recent Activity</Typography>
-						</Stack>
-						<Divider />
-						<Box sx={{ py: 4, textAlign: 'center' }}>
-							<Typography color='text.secondary'>
-								Transaction history and Order list will be displayed here.
-							</Typography>
-						</Box>
-					</Paper>
-				</Grid>
-			</Grid>
+            <Grid container spacing={2}>
+              <Grid xs={6} sm={3}>
+                {statCard("Total Spent", totalSpent, "primary")}
+              </Grid>
+              <Grid xs={6} sm={3}>
+                {statCard("Total Due", totalDue, "error")}
+              </Grid>
+              <Grid xs={6} sm={3}>
+                {statCard("Wallet Balance", walletBalance, "success")}
+              </Grid>
+              <Grid xs={6} sm={3}>
+                {statCard("Credit Limit", creditLimit, "warning")}
+              </Grid>
+            </Grid>
 
-			{/* Recharge Wallet Modal */}
-			<RechargeWalletModal
-				isRechargeModalOpen={isRechargeModalOpen}
-				setIsRechargeModalOpen={setIsRechargeModalOpen}
-				walletBalance={walletBalance}
-				totalDue={totalDue}
-				id={id}
-			/>
-		</Box>
-	);
+            <Box sx={{ mt: 4 }}>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                color="text.secondary"
+              >
+                Internal Note
+              </Typography>
+              <Paper
+                variant="outlined"
+                sx={{ p: 2, bgcolor: "grey.50", minHeight: "80px" }}
+              >
+                <Typography variant="body2">
+                  {note || "No internal notes added for this customer."}
+                </Typography>
+              </Paper>
+            </Box>
+          </Paper>
+        </Grid>
+
+        {/* Placeholder for Transactions/Orders */}
+        <Grid size={4}>
+          <Paper sx={{ p: 3 }}>
+            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+              <HistoryIcon color="action" />
+              <Typography variant="h6">Recent Activity</Typography>
+            </Stack>
+            <Divider />
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">
+                Transaction history and Order list will be displayed here.
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      {/* Recharge Wallet Modal */}
+      <RechargeWalletModal
+        isRechargeModalOpen={isRechargeModalOpen}
+        setIsRechargeModalOpen={setIsRechargeModalOpen}
+        walletBalance={walletBalance}
+        totalDue={totalDue}
+        id={id}
+      />
+
+      {isModalOpen && (
+        <CustomerModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
+          initialData={customerData.data}
+        />
+      )}
+    </Box>
+  );
 };
 
 export default CustomerDetailsPage;

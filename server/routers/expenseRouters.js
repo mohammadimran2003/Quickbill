@@ -21,21 +21,28 @@ const expenseRouter = express.Router();
 expenseRouter.post(
   "/categories",
   validatorsMiddleware(createExpenseCategorySchema),
+  restrictTo("ADMIN", "MANAGER"),
   createExpenseCategory,
 );
+
 expenseRouter.get("/categories", getExpensesCategories);
+
 expenseRouter.post(
   "/",
   validatorsMiddleware(createExpenseSchema),
+  restrictTo("ADMIN", "MANAGER"),
   createExpense,
 );
+
 expenseRouter.put(
   "/:id",
   validatorsMiddleware(createExpenseSchema),
   restrictTo("ADMIN", "MANAGER"),
   updateExpense,
 );
+
 expenseRouter.delete("/:id", restrictTo("ADMIN", "MANAGER"), deleteExpense);
+
 expenseRouter.get("/", getExpenses);
 expenseRouter.get("/stats", getExpenseStats);
 expenseRouter.get("/chart", getExpensesChart);
