@@ -1,12 +1,9 @@
-import React from "react";
 import { thStyleSimple, tdStyleSimple } from "./TableStyles";
 
 const LowStockTable = ({ topLowStockProducts }) => {
   if (!topLowStockProducts || topLowStockProducts.length === 0) {
     return (
-      <p style={{ color: "#888", fontSize: "12px" }}>
-        No low stock products.
-      </p>
+      <p style={{ color: "#888", fontSize: "12px" }}>No low stock products.</p>
     );
   }
 
@@ -33,7 +30,9 @@ const LowStockTable = ({ topLowStockProducts }) => {
               backgroundColor: i % 2 === 0 ? "#fff" : "#fafafa",
             }}
           >
-            <td style={tdStyleSimple("left", { fontWeight: 500 })}>{row.name}</td>
+            <td style={tdStyleSimple("left", { fontWeight: 500 })}>
+              {row.name}
+            </td>
             <td style={tdStyleSimple("center", { fontWeight: "bold" })}>
               {row.stock}
             </td>

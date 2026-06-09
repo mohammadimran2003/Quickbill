@@ -53,7 +53,6 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
         phone={phone}
         orderNumber={orderNumber}
       />
-
       <Divider sx={{ mb: 3 }} />
 
       {/* Customer & Order Info */}

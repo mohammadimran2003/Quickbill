@@ -2,10 +2,10 @@ import React from "react";
 import { Stack, Paper, Typography, Box, Divider, Chip } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import PersonIcon from "@mui/icons-material/Person";
+import useFmt from "../../hooks/useFmt";
 
 const OrderSummary = ({ order }) => {
-  console.log(order, "order from order summary");
-
+  const fmt = useFmt();
   return (
     <Stack spacing={3}>
       {/* Summary Card */}
@@ -16,19 +16,19 @@ const OrderSummary = ({ order }) => {
         <Stack spacing={1.5}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">Subtotal</Typography>
-            <Typography fontWeight="medium">৳{order?.subtotal}</Typography>
+            <Typography fontWeight="medium">{order?.subtotal}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">
               Discount ({order?.discountType})
             </Typography>
             <Typography color="error.main">
-              - ৳{order?.discountAmount}
+              - {fmt(order?.discountAmount)}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">Tax</Typography>
-            <Typography>+ ৳{order?.taxAmount}</Typography>
+            <Typography>+ {fmt(order?.taxAmount)}</Typography>
           </Box>
           <Divider />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -36,7 +36,7 @@ const OrderSummary = ({ order }) => {
               Total
             </Typography>
             <Typography variant="h6" fontWeight="bold" color="primary">
-              ৳{order?.total}
+              {fmt(order?.total)}
             </Typography>
           </Box>
         </Stack>
@@ -62,7 +62,7 @@ const OrderSummary = ({ order }) => {
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">Paid Amount</Typography>
             <Typography color="success.main" fontWeight="bold">
-              ৳{order?.amountPaid}
+              {fmt(order?.amountPaid)}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -70,13 +70,13 @@ const OrderSummary = ({ order }) => {
             <Typography
               color={order?.dueAmount > 0 ? "error.main" : "text.primary"}
             >
-              ৳{order?.dueAmount}
+              {fmt(order?.dueAmount)}
             </Typography>
           </Box>
           {order?.changeAmount > 0 && (
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography color="text.secondary">Change</Typography>
-              <Typography>৳{order?.changeAmount}</Typography>
+              <Typography>{fmt(order?.changeAmount)}</Typography>
             </Box>
           )}
         </Stack>

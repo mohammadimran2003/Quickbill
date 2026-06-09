@@ -9,12 +9,14 @@ import {
   Box,
   Typography,
   Slider,
-  Chip,
 } from "@mui/material";
+import useFmt from "../../hooks/useFmt";
 
 const ReturnDialog = ({ open, onClose, item, order, purchase, onConfirm }) => {
   const [quantity, setQuantity] = useState(1);
   const [reason, setReason] = useState("");
+
+  const fmt = useFmt();
 
   const handleQuantityChange = (event, newValue) => {
     setQuantity(newValue);
@@ -118,10 +120,8 @@ const ReturnDialog = ({ open, onClose, item, order, purchase, onConfirm }) => {
 
           <Box sx={{ mt: 3 }}>
             <Typography variant="subtitle2" gutterBottom>
-              Refund Amount: ৳
-              {(quantity * (order ? item?.unitPrice : item?.unitCost)).toFixed(
-                2,
-              )}
+              Refund Amount:{" "}
+              {fmt(quantity * (order ? item?.unitPrice : item?.unitCost))}
             </Typography>
           </Box>
 

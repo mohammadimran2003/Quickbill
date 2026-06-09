@@ -44,8 +44,6 @@ function SalesReportPage() {
     enabled: !!searchParams.get("from"),
   });
 
-  console.log(data, "data");
-
   const summary = data?.data?.summary ?? null;
   const chartData = data?.data?.chartData ?? [];
   const products = data?.data?.products ?? [];

@@ -13,8 +13,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import useFmt from "../../hooks/useFmt";
 
 const OrderItemsTable = ({ order, onReturnItem }) => {
+  const fmt = useFmt();
   return (
     <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 2 }}>
       <Box sx={{ p: 2 }}>
@@ -50,14 +52,14 @@ const OrderItemsTable = ({ order, onReturnItem }) => {
           {order?.items?.map((item) => (
             <TableRow key={item.id} hover>
               <TableCell>{item.productName}</TableCell>
-              <TableCell align="center">৳{item.unitPrice}</TableCell>
+              <TableCell align="center">{fmt(item.unitPrice)}</TableCell>
               <TableCell align="center">{item.quantity}</TableCell>
               <TableCell align="center">
                 {item.totalAlreadyReturned || 0}
               </TableCell>
-              <TableCell align="center">৳{item.discount}</TableCell>
+              <TableCell align="center">{fmt(item.discount)}</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                ৳{item.total}
+                {fmt(item.total)}
               </TableCell>
               <TableCell align="center">
                 <Tooltip title="Return Item">
