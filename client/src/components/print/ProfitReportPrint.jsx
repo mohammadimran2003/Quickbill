@@ -1,11 +1,11 @@
 import React from "react";
-import fmt from "../../utils/fmt";
 import ReportHeader from "../shared/ReportHeader";
 import ReportFooter from "../shared/ReportFooter";
 import SummaryCard from "./components/SummaryCard";
 import ProfitTrendTable from "./components/ProfitTrendTable";
 import ProfitableProductsTable from "./components/ProfitableProductsTable";
 import ProfitByCategoryTable from "./components/ProfitByCategoryTable";
+import useFmt from "../../hooks/useFmt";
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
@@ -14,6 +14,8 @@ const ProfitReportPrint = React.forwardRef(
     { summary, chartData, profitableProducts, profitByCategory, dateRange },
     ref,
   ) => {
+    const fmt = useFmt();
+
     const totalRevenue = summary?.totalRevenue || 0;
     const totalProfit = summary?.totalProfit || 0;
     const totalCostPrice = summary?.totalCostPrice || 0;

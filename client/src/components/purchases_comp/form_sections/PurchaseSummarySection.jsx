@@ -1,16 +1,9 @@
-import { useFormContext } from "react-hook-form";
 import { Grid, Typography, Stack, Divider, TextField } from "@mui/material";
 import FormSection from "./FormSection";
+import usePurchaseStore from "../../../store/purchaseStore";
 
 const PurchaseSummarySection = () => {
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useFormContext();
-
-  const total = watch("total") || 0;
-  const dueAmount = watch("dueAmount") || 0;
+  const { total, dueAmount, paidAmount, setPaidAmount } = usePurchaseStore();
 
   return (
     <FormSection title="Summary & Payment">
@@ -41,11 +34,11 @@ const PurchaseSummarySection = () => {
           >
             <Typography fontWeight={500}>Paid Amount:</Typography>
             <TextField
-              {...register("paidAmount", { valueAsNumber: true })}
               type="number"
               size="small"
-              error={!!errors.paidAmount}
-              helperText={errors.paidAmount?.message}
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               sx={{ width: 150 }}
               slotProps={{
                 htmlInput: {
@@ -70,6 +63,15 @@ const PurchaseSummarySection = () => {
               color={dueAmount > 0 ? "error.main" : "success.main"}
             >
               {dueAmount.toFixed(2)}
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            sx={{ display: "flex", justifyContent: "space-between" }}
+          >
+            <Typography fontWeight={600}>Change Amount:</Typography>
+            <Typography fontWeight={600}>
+              {paidAmount > total ? (paidAmount - total).toFixed(2) : 0}
             </Typography>
           </Stack>
         </Stack>

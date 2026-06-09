@@ -1,8 +1,9 @@
-import React from "react";
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 import { thStyle, tdStyle } from "./TableStyles";
 
 const ProfitTrendTable = ({ chartData }) => {
+  const fmt = useFmt();
+
   if (!chartData || chartData.length === 0) return null;
 
   return (

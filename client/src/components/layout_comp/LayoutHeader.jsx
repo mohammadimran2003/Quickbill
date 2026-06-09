@@ -83,7 +83,9 @@ function LayoutHeader() {
       <Box
         sx={{
           flex: 1,
-
+          width: "100%",
+          maxWidth: theme.layout.maxWidth,
+          mx: "auto",
           p: 4,
         }}
       >

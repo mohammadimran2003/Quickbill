@@ -1,8 +1,9 @@
-import React from "react";
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 import { thStyle, tdStyle } from "./TableStyles";
 
 const ProfitByCategoryTable = ({ profitByCategory }) => {
+  const fmt = useFmt();
+
   if (!profitByCategory || profitByCategory.length === 0) {
     return (
       <p style={{ color: "#888", fontSize: "12px" }}>
@@ -84,8 +85,7 @@ const ProfitByCategoryTable = ({ profitByCategory }) => {
                     style={{
                       backgroundColor:
                         cat.profitMargin >= 20 ? "#E8F8F2" : "#FFF8E1",
-                      color:
-                        cat.profitMargin >= 20 ? "#00A76F" : "#FFAB00",
+                      color: cat.profitMargin >= 20 ? "#00A76F" : "#FFAB00",
                       padding: "2px 7px",
                       borderRadius: "999px",
                       fontSize: "11px",
@@ -114,9 +114,7 @@ const ProfitByCategoryTable = ({ profitByCategory }) => {
                 profitByCategory.reduce((s, c) => s + (c.totalRevenue || 0), 0),
               )}
             </td>
-            <td
-              style={tdStyle("right", { fontWeight: 700, color: "#888" })}
-            >
+            <td style={tdStyle("right", { fontWeight: 700, color: "#888" })}>
               {fmt(
                 profitByCategory.reduce((s, c) => s + (c.totalCost || 0), 0),
               )}

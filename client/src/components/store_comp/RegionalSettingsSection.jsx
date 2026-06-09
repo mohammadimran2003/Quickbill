@@ -6,8 +6,11 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+
 import { Controller } from "react-hook-form";
+
 import FormSection from "../shared/FormSection";
+
 import {
   timeZoneOptions,
   currencyOptions,
@@ -19,6 +22,7 @@ const RegionalSettingsSection = ({ register, control }) => {
       <Grid size={6}>
         <FormControl fullWidth size="small">
           <InputLabel>Time Zone</InputLabel>
+
           <Controller
             name="timeZone"
             control={control}
@@ -44,6 +48,7 @@ const RegionalSettingsSection = ({ register, control }) => {
       <Grid size={6}>
         <FormControl fullWidth size="small">
           <InputLabel>Currency</InputLabel>
+
           <Controller
             name="currency"
             control={control}
@@ -55,9 +60,13 @@ const RegionalSettingsSection = ({ register, control }) => {
                 onChange={(e) => onChange(e.target.value)}
                 label="Currency"
               >
+                <MenuItem value="" disabled>
+                  Select currency
+                </MenuItem>
+
                 {currencyOptions.map((curr) => (
-                  <MenuItem key={curr.value} value={curr.value}>
-                    {curr.label}
+                  <MenuItem key={curr.code} value={curr.code}>
+                    {curr.code}
                   </MenuItem>
                 ))}
               </Select>

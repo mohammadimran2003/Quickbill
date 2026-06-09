@@ -1,23 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Box, Grid, CircularProgress, Typography } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import StatCard from "../../components/shared/StatCard";
-import fmt from "../../utils/fmt";
 import { getProfitReport } from "../../api/reports_api/getProfitReports";
 import ProfitVsRevenueChart from "../../components/charts/ProfitVsRevenueChart";
 import MostProfitableProducts from "../../components/profits_report_comp/MostProfitableProducts";
 import ProfitReportPrint from "../../components/print/ProfitReportPrint";
 import ProfitByCategoryChart from "../../components/charts/ProfitByCategoryChart";
 import PrintBtn from "../../components/shared/PrintBtn";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ProfitsStats from "../../components/profits_report_comp/ProfitsStats";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
 
 function ProfitReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -76,14 +71,6 @@ function ProfitReportPage() {
       ? ((totalProfit / totalCostPrice) * 100).toFixed(1)
       : "0.0";
 
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   if (isError) {
     return (
       <Box sx={{ p: 4 }}>
@@ -95,7 +82,7 @@ function ProfitReportPage() {
   }
 
   return (
-    <Box sx={{ p: 4, color: "text.primary" }}>
+    <Box sx={{ p: 3, color: "text.primary" }}>
       {/* Hidden Print Template */}
       <div style={{ display: "none" }}>
         <ProfitReportPrint
@@ -126,7 +113,9 @@ function ProfitReportPage() {
         <DateRangeFilter onFilterChange={handleFilterChange} />
       </Box>
 
-      <ProfitsStats summary={summary} isLoading={isLoading} />
+      <Suspense fallback={<StatsSkeleton />}>
+        <ProfitsStats summary={summary} isLoading={isLoading} />
+      </Suspense>
 
       {/* Profit vs Revenue Trend Chart */}
       <Box sx={{ mt: 4 }}>

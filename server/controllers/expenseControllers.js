@@ -22,6 +22,8 @@ const getExpensesCategories = async (req, res) => {
 const createExpense = async (req, res) => {
   const userId = req.user.id;
 
+  console.log(req.body, "expense req.body");
+
   const expense = await prisma.expense.create({
     data: { ...req.body, createdBy: userId },
   });

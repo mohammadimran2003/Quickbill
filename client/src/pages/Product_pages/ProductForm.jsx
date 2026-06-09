@@ -57,7 +57,7 @@ function ProductForm() {
   const methods = useForm({
     defaultValues,
     resolver: zodResolver(productsSchema),
-    mode: "onChange",
+    mode: "all",
   });
 
   const {
@@ -119,8 +119,8 @@ function ProductForm() {
         brandId: product.brandId || "",
         costPrice: product.costPrice ?? 0,
         basePrice: product.basePrice ?? 0,
-        discountType: product.discountType ?? undefined,
-        discountValue: product.discountValue ?? undefined,
+        discountType: product.discountType ?? "NONE",
+        discountValue: product.discountValue ?? 0,
         stock: product.stock ?? 0,
         lowStockAlert: product.lowStockAlert ?? 5,
         unit: product.unit || "PCS",
@@ -131,7 +131,7 @@ function ProductForm() {
     }
   }, [productData, reset]);
 
-  const handleSave = async (formData) => {
+  const handleSave = (formData) => {
     const payload = {
       ...formData,
       images: formData.images || [],
@@ -142,7 +142,7 @@ function ProductForm() {
       ? updateMutation.mutateAsync(payload)
       : createMutation.mutateAsync(payload);
 
-    await toast.promise(action, {
+    toast.promise(action, {
       loading: isEditMode ? "Updating product..." : "Creating product...",
       success: isEditMode
         ? "Product updated successfully"
@@ -160,7 +160,7 @@ function ProductForm() {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: 3, color: "text.primary" }}>
+    <Box sx={{ color: "text.primary" }}>
       <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 1 }}>
         {isEditMode ? "Edit Product" : "Create Product"}
       </Typography>

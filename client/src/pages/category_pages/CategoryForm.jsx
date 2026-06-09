@@ -127,7 +127,7 @@ function CategoryForm() {
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", p: 3, color: "text.primary" }}>
+    <Box sx={{ maxWidth: 1000, mx: "auto", p: 3, color: "text.primary" }}>
       <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 1 }}>
         {isEditMode ? "Edit Category" : "Create Category"}
       </Typography>

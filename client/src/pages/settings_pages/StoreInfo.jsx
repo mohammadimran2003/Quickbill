@@ -8,23 +8,30 @@ import { toast } from "sonner";
 import StoreForm from "../../components/store_comp/StoreForm";
 import getStore from "../../api/stores_api/getStore";
 import updateStore from "../../api/stores_api/updateStore";
+import { currencyOptions } from "../../constants/storeConstants";
 
 const mapStoreToFormValues = (store) => ({
-  name: store.name || "",
-  phone: store.phone || "",
-  email: store.email || "",
-  address: store.address || "",
-  logo: store.logo || "",
-  receiptFooter: store.receiptFooter || "",
-  binNumber: store.binNumber || "",
-  invoicePrefix: store.invoicePrefix || "INV-",
-  timeZone: store.timeZone || "Asia/Dhaka",
-  currency: store.currency || "৳",
-  taxRate: store.taxRate ?? 0,
+  name: store?.name || "",
+  phone: store?.phone || "",
+  email: store?.email || "",
+  address: store?.address || "",
+  logo: store?.logo || "",
+  receiptFooter: store?.receiptFooter || "",
+  binNumber: store?.binNumber || "",
+  invoicePrefix: store?.invoicePrefix || "INV-",
+  timeZone: store?.timeZone || "Asia/Dhaka",
+  currency: store?.currency?.code || "৳",
+  taxRate: store?.taxRate ?? 0,
 });
 
 function StoreInfo() {
   const queryClient = useQueryClient();
+
+  // Store Query - Get store info
+  const { data: storeData, isLoading: storeLoading } = useQuery({
+    queryKey: ["store"],
+    queryFn: getStore,
+  });
 
   const {
     register,
@@ -35,19 +42,16 @@ function StoreInfo() {
   } = useForm({
     resolver: zodResolver(createStoreSchema),
     mode: "all",
-  });
-
-  // Store Query - Get store info
-  const { data: storeData, isLoading: storeLoading } = useQuery({
-    queryKey: ["store"],
-    queryFn: getStore,
+    resetOptions: {
+      keepDirtyValues: true,
+    },
   });
 
   // Update Mutation
   const { mutateAsync: updateStoreMutation, isPending } = useMutation({
     mutationFn: (data) => updateStore(data),
     onSuccess: () => {
-      queryClient.setQueryData(["store"]);
+      queryClient.invalidateQueries({ queryKey: ["store"] });
     },
     onError: (error) => {
       toast.error(
@@ -58,12 +62,27 @@ function StoreInfo() {
 
   useEffect(() => {
     if (storeData?.data) {
-      reset(mapStoreToFormValues(storeData.data));
+      reset(mapStoreToFormValues(storeData?.data));
     }
   }, [storeData]);
 
   const handleSave = (formData) => {
-    toast.promise(updateStoreMutation(formData), {
+    console.log(formData, "formdata");
+
+    const currencyData = currencyOptions.find(
+      (option) => option.code === formData.currency,
+    );
+
+    const updatedFormData = {
+      ...formData,
+      currency: {
+        code: currencyData.code,
+        symbol: currencyData.symbol,
+        name: currencyData.name,
+      },
+    };
+
+    toast.promise(updateStoreMutation(updatedFormData), {
       loading: "Updating store information...",
       success: "Store information updated successfully",
       error: (error) =>
@@ -80,7 +99,7 @@ function StoreInfo() {
   }
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", p: 3, color: "text.primary" }}>
+    <Box sx={{ maxWidth: 1000, mx: "auto", color: "text.primary" }}>
       <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 1 }}>
         Store Information
       </Typography>

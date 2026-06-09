@@ -12,13 +12,13 @@ export const timeZoneOptions = [
 ];
 
 export const currencyOptions = [
-  { value: "৳", label: "৳ (Bangladeshi Taka)" },
-  { value: "$", label: "$ (US Dollar)" },
-  { value: "€", label: "€ (Euro)" },
-  { value: "£", label: "£ (British Pound)" },
-  { value: "₹", label: "₹ (Indian Rupee)" },
-  { value: "₨", label: "₨ (Pakistani Rupee)" },
-  { value: "¥", label: "¥ (Japanese Yen)" },
-  { value: "SAR", label: "SAR (Saudi Riyal)" },
-  { value: "AED", label: "AED (UAE Dirham)" },
+  { symbol: "৳", name: "Bangladeshi Taka", code: "BDT" },
+  { symbol: "$", name: "US Dollar", code: "USD" },
+  { symbol: "€", name: "Euro", code: "EUR" },
+  { symbol: "£", name: "British Pound", code: "GBP" },
+  { symbol: "₹", name: "Indian Rupee", code: "INR" },
+  { symbol: "₨", name: "Pakistani Rupee", code: "PKR" },
+  { symbol: "¥", name: "Japanese Yen", code: "JPY" },
+  { symbol: "SAR", name: "Saudi Riyal", code: "SAR" },
+  { symbol: "AED", name: "UAE Dirham", code: "AED" },
 ];

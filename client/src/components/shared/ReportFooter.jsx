@@ -10,6 +10,9 @@ const ReportFooter = React.forwardRef(({ showCurrency = true }, ref) => {
 
   const { receiptFooter, binNumber, currency } = storeData?.data || {};
 
+  const currencySymbol = currency?.symbol || currency || "৳";
+  const currencyCode = currency?.code || (currency === "৳" ? "BDT" : currency);
+
   return (
     <div
       ref={ref}
@@ -25,19 +28,18 @@ const ReportFooter = React.forwardRef(({ showCurrency = true }, ref) => {
       {receiptFooter && (
         <div style={{ marginBottom: "4px" }}>{receiptFooter}</div>
       )}
-      {binNumber && (
-        <div style={{ marginBottom: "4px" }}>BIN: {binNumber}</div>
-      )}
+      {binNumber && <div style={{ marginBottom: "4px" }}>BIN: {binNumber}</div>}
       <div>
         Report generated automatically by{" "}
         <strong style={{ color: "#555" }}>Quickbill Billing System</strong>
         {showCurrency && currency && (
           <span>
             {" "}
-            &nbsp;·&nbsp; All monetary values are in {currency} ({currency === "৳" ? "BDT" : currency})
+            &nbsp;·&nbsp; All monetary values are in {currencySymbol} (
+            {currencyCode})
           </span>
-        )}
-        {" "}&nbsp;·&nbsp; {new Date().toLocaleString()}
+        )}{" "}
+        &nbsp;·&nbsp; {new Date().toLocaleString()}
       </div>
     </div>
   );

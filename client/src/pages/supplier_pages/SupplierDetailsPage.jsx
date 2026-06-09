@@ -21,38 +21,10 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import getSupplierById from "../../api/suppliers_api/getSupplierById";
-const infoItem = (icon, label, value) => (
-  <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-    <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
-    <Box>
-      <Typography variant="caption" color="text.secondary" display="block">
-        {label}
-      </Typography>
-      <Typography variant="body1" fontWeight={500}>
-        {value || "N/A"}
-      </Typography>
-    </Box>
-  </Stack>
-);
+import InfoItem from "../../components/shared/InfoItem";
+import DetailsStatCard from "../../components/shared/DetailsStatCard";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
 
-const statCard = (label, value, color) => (
-  <Paper
-    variant="outlined"
-    sx={{
-      p: 2,
-      textAlign: "center",
-      bgcolor: `${color}.50`,
-      borderColor: `${color}.200`,
-    }}
-  >
-    <Typography variant="caption" color="text.secondary" gutterBottom>
-      {label}
-    </Typography>
-    <Typography variant="h6" color={`${color}.main`} fontWeight="bold">
-      {value}
-    </Typography>
-  </Paper>
-);
 const SupplierDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -69,71 +41,39 @@ const SupplierDetailsPage = () => {
     supplierData.data;
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1400, mx: "auto" }}>
+    <Box>
       {/* Header Section */}
-      <Stack
-        direction="row"
-        sx={{
-          mb: 3,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Stack direction="row" spacing={2}>
-          <IconButton onClick={() => navigate(-1)} color="primary">
-            <ArrowBackIcon />
-          </IconButton>
-          <Box>
-            <Typography variant="h5" fontWeight="bold">
-              {name}
-            </Typography>
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label={isActive ? "Active" : "Inactive"}
-                size="small"
-                color={isActive ? "success" : "error"}
-                variant="outlined"
-              />
-            </Stack>
-          </Box>
-        </Stack>
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          onClick={() => navigate(`/suppliers/edit-supplier/${id}`)}
-        >
-          Edit Supplier
-        </Button>
-      </Stack>
+      <DetailsPageHeader
+        name={name}
+        isActive={isActive ? "Active" : "Inactive"}
+        onEdit={() => navigate(`/suppliers/edit-supplier/${id}`)}
+      />
+      {/* Supplier Information */}
+      <Box sx={{ mb: 3 }}>
+        <Paper sx={{ p: 3, height: "100%" }}>
+          <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+            Supplier Information
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
 
+          {InfoItem(<PhoneIcon />, "Phone", phone)}
+          {InfoItem(<EmailIcon />, "Email", email)}
+          {InfoItem(<LocationOnIcon />, "Address", address)}
+          {InfoItem(<NoteIcon />, "Note", note)}
+
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 2, display: "block" }}
+          >
+            Created At:{" "}
+            {createdAt ? new Date(createdAt).toLocaleDateString() : "N/A"}
+          </Typography>
+        </Paper>
+      </Box>
       <Grid container spacing={3}>
-        {/* Supplier Information */}
-        <Grid size={3}>
-          <Paper sx={{ p: 3, height: "100%" }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-              Supplier Information
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-
-            {infoItem(<PhoneIcon />, "Phone", phone)}
-            {infoItem(<EmailIcon />, "Email", email)}
-            {infoItem(<LocationOnIcon />, "Address", address)}
-            {infoItem(<NoteIcon />, "Note", note)}
-
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ mt: 2, display: "block" }}
-            >
-              Created At:{" "}
-              {createdAt ? new Date(createdAt).toLocaleDateString() : "N/A"}
-            </Typography>
-          </Paper>
-        </Grid>
-
         {/* Statistics */}
-        <Grid size={5}>
+        <Grid size={7}>
           <Paper sx={{ p: 3, height: "100%" }}>
             <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
               Statistics
@@ -142,10 +82,14 @@ const SupplierDetailsPage = () => {
 
             <Grid container spacing={2}>
               <Grid xs={12} sm={6}>
-                {statCard("Total Purchases", _count?.purchases || 0, "primary")}
+                {DetailsStatCard(
+                  "Total Purchases",
+                  _count?.purchases || 0,
+                  "primary",
+                )}
               </Grid>
               <Grid xs={12} sm={6}>
-                {statCard(
+                {DetailsStatCard(
                   "Status",
                   isActive ? "Active" : "Inactive",
                   isActive ? "success" : "error",
@@ -156,7 +100,7 @@ const SupplierDetailsPage = () => {
         </Grid>
 
         {/* Associated Purchases */}
-        <Grid size={4}>
+        <Grid size={5}>
           <Paper sx={{ p: 3 }}>
             <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
               <InventoryIcon color="action" />

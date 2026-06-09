@@ -456,6 +456,12 @@ model ReturnItem {
   total      Float    // quantity * price
 }
 
+type StoreCurrency {
+  code   String @default("BDT")
+  name   String @default("Bangladeshi Taka")
+  symbol String @default("৳")
+}
+
 model Store {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -469,7 +475,7 @@ model Store {
   invoicePrefix String   @default("INV-") 
   timeZone      String   @default("Asia/Dhaka")
 
-  currency      String   @default("৳")
+  currency      StoreCurrency 
   taxRate       Float    @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -513,8 +519,6 @@ model Expense {
 
   // date
   date      DateTime @default(now())
-  month     String   // "Jan", "Feb", "Mar"
-  year      Int      // 2026
 
   categoryId    String          @db.ObjectId
   category      ExpenseCategory @relation(fields: [categoryId], references: [id])

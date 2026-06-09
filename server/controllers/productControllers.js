@@ -99,7 +99,14 @@ const deleteProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
   const id = req.params.id;
-  const product = await prisma.product.findUnique({ where: { id } });
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      category: { select: { name: true } },
+      priceTiers: true,
+      brand: { select: { name: true, id: true } },
+    },
+  });
 
   res.status(200).json({
     success: true,

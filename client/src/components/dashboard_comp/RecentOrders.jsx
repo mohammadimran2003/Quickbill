@@ -90,19 +90,41 @@ const RecentOrders = () => {
             ))}
           </TableHead>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                hover
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} sx={{ py: 2 }}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  hover
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} sx={{ py: 2 }}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  align="center"
+                  sx={{ py: 8, color: "text.secondary" }}
+                >
+                  <Box sx={{ textAlign: "center" }}>
+                    <Typography variant="h6" fontWeight={600}>
+                      No Recent Orders Found
+                    </Typography>
+                    <Typography variant="body2">
+                      No orders were created
+                    </Typography>
+                  </Box>
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>

@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -8,7 +8,6 @@ import {
   Grid,
   Paper,
   Typography,
-  Stack,
   CircularProgress,
 } from "@mui/material";
 import getOrderById from "../../api/orders_api/getOrderById";
@@ -22,7 +21,6 @@ import { toast } from "sonner";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const printRef = useRef();
   const queryClient = useQueryClient();
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
@@ -32,8 +30,8 @@ const OrderDetailsPage = () => {
     queryKey: ["order", id],
     queryFn: () => getOrderById(id),
   });
-  const order = data?.data;
-  console.log(data, "data");
+  const order = data?.data || {};
+  console.log(order, "data");
 
   const returnMutation = useMutation({
     mutationFn: createReturn,

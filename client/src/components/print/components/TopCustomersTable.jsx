@@ -1,6 +1,8 @@
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 
 const TopCustomersTable = ({ customers }) => {
+  const fmt = useFmt();
+
   return (
     <table
       style={{

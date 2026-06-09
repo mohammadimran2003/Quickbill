@@ -13,6 +13,8 @@ const ExpensesChart = () => {
     queryFn: () => getExpensesChart(),
   });
 
+  const hasData = data?.chartData && data.chartData.length > 0;
+
   if (isLoading) {
     return <PieChartSkeleton />;
   }
@@ -45,51 +47,59 @@ const ExpensesChart = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ width: "100%", height: 350 }}>
-        <PieChart width="100%" height={350}>
-          <Pie
-            data={data?.chartData}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={100}
-            paddingAngle={5}
-            dataKey="value"
-          >
-            {data?.chartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
+      {hasData ? (
+        <Box sx={{ width: "100%", height: 350 }}>
+          <PieChart width="100%" height={350}>
+            <Pie
+              data={data?.chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={100}
+              paddingAngle={5}
+              dataKey="value"
+            >
+              {data?.chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
 
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "none",
-              boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
-            }}
-          />
+            <Tooltip
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
+              }}
+            />
 
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            iconType="circle"
-            formatter={(value) => (
-              <span
-                style={{
-                  color: "#555",
-                  fontWeight: 500,
-                  fontSize: "13px",
-                }}
-              >
-                {value}
-              </span>
-            )}
-          />
-        </PieChart>
-      </Box>
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              formatter={(value) => (
+                <span
+                  style={{
+                    color: "#555",
+                    fontWeight: 500,
+                    fontSize: "13px",
+                  }}
+                >
+                  {value}
+                </span>
+              )}
+            />
+          </PieChart>
+        </Box>
+      ) : (
+        <Box sx={{ p: 4, textAlign: "center" }}>
+          <Typography color="text.secondary">
+            No expense data available
+          </Typography>
+        </Box>
+      )}
     </Paper>
   );
 };

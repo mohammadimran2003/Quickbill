@@ -26,39 +26,8 @@ import { useMutation } from "@tanstack/react-query";
 import CustomerModal from "../../components/customers_comp/CustomerModal";
 import { toast } from "sonner";
 import updateCustomer from "../../api/customers_api/updateCustomer";
-
-const infoItem = (icon, label, value) => (
-  <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-    <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
-    <Box>
-      <Typography variant="caption" color="text.secondary" display="block">
-        {label}
-      </Typography>
-      <Typography variant="body1" fontWeight={500}>
-        {value || "N/A"}
-      </Typography>
-    </Box>
-  </Stack>
-);
-
-const statCard = (label, value, color) => (
-  <Paper
-    variant="outlined"
-    sx={{
-      p: 2,
-      textAlign: "center",
-      bgcolor: `${color}.50`,
-      borderColor: `${color}.200`,
-    }}
-  >
-    <Typography variant="caption" color="text.secondary" gutterBottom>
-      {label}
-    </Typography>
-    <Typography variant="h6" color={`${color}.main`} fontWeight="bold">
-      ৳{value?.toLocaleString()}
-    </Typography>
-  </Paper>
-);
+import InfoItem from "../../components/shared/InfoItem";
+import DetailsStatCard from "../../components/shared/DetailsStatCard";
 
 const CustomerDetailsPage = () => {
   const navigate = useNavigate();
@@ -120,7 +89,7 @@ const CustomerDetailsPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1400, mx: "auto" }}>
+    <Box>
       {/* Header Section */}
       <Stack
         direction="row"
@@ -201,9 +170,9 @@ const CustomerDetailsPage = () => {
                 Contact Info
               </Typography>
               <Divider sx={{ mb: 2 }} />
-              {infoItem(<PhoneIcon />, "Phone Number", phone)}
-              {infoItem(<EmailIcon />, "Email Address", email)}
-              {infoItem(<LocationOnIcon />, "Address", address)}
+              {InfoItem(<PhoneIcon />, "Phone Number", phone)}
+              {InfoItem(<EmailIcon />, "Email Address", email)}
+              {InfoItem(<LocationOnIcon />, "Address", address)}
 
               <Typography
                 variant="caption"
@@ -226,16 +195,16 @@ const CustomerDetailsPage = () => {
 
             <Grid container spacing={2}>
               <Grid xs={6} sm={3}>
-                {statCard("Total Spent", totalSpent, "primary")}
+                {DetailsStatCard("Total Spent", totalSpent, "primary")}
               </Grid>
               <Grid xs={6} sm={3}>
-                {statCard("Total Due", totalDue, "error")}
+                {DetailsStatCard("Total Due", totalDue, "error")}
               </Grid>
               <Grid xs={6} sm={3}>
-                {statCard("Wallet Balance", walletBalance, "success")}
+                {DetailsStatCard("Wallet Balance", walletBalance, "success")}
               </Grid>
               <Grid xs={6} sm={3}>
-                {statCard("Credit Limit", creditLimit, "warning")}
+                {DetailsStatCard("Credit Limit", creditLimit, "warning")}
               </Grid>
             </Grid>
 

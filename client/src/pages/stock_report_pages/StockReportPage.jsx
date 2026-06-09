@@ -14,23 +14,26 @@ import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import { useQuery } from "@tanstack/react-query";
 import { get } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useReactToPrint } from "react-to-print";
 import dayjs from "dayjs";
 import getStockReports from "../../api/reports_api/getStockReports";
 import StatCard from "../../components/shared/StatCard";
-import fmt from "../../utils/fmt";
 import StockReportTable from "../../components/stocks_report_comp/StockReportTable";
 import TopLowStockTable from "../../components/stocks_report_comp/TopLowStockTable";
 import StockByCategoryChart from "../../components/charts/StockByCategoryChart";
 import StockReportPrint from "../../components/print/StockReportPrint";
 import PrintBtn from "../../components/shared/PrintBtn";
 import StockReportStats from "../../components/stocks_report_comp/StockReportStats";
+import useFmt from "../../hooks/useFmt";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
 
 function StockReportPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [groupBy, setGroupBy] = useState("daily");
   const contentRef = useRef(null);
+
+  const fmt = useFmt();
 
   const handlePrint = useReactToPrint({
     contentRef: contentRef,
@@ -64,20 +67,6 @@ function StockReportPage() {
 
   const { summary } = data?.data || {};
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
   if (isError) {
     return (
       <Box
@@ -127,7 +116,9 @@ function StockReportPage() {
         <DateRangeFilter onFilterChange={handleFilterChange} />
       </Box>
 
-      <StockReportStats summary={summary} isLoading={isLoading} />
+      <Suspense fallback={<StatsSkeleton />}>
+        <StockReportStats summary={summary} isLoading={isLoading} />
+      </Suspense>
 
       <StockReportTable stockDetails={data?.data?.stockDetails} />
 

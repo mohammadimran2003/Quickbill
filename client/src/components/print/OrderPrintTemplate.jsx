@@ -11,34 +11,24 @@ import {
   Divider,
   Stack,
   Grid,
-  TableFooter,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import getStore from "../../api/stores_api/getStore";
 import PrintHeader from "../shared/PrintHeader";
 import PrintFooter from "../shared/PrintFooter";
+import useFmt from "../../hooks/useFmt";
 
 export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
-  if (!order) return null;
-
   const { data: storeData } = useQuery({
     queryKey: ["store"],
     queryFn: () => getStore(),
   });
+  const fmt = useFmt();
 
-  const {
-    name,
-    address,
-    phone,
-    receiptFooter,
-    invoicePrefix,
-    logo,
-    currency,
-    binNumber,
-    taxRate,
-    timeZone,
-    email,
-  } = storeData?.data || {};
+  if (!order) return null;
+
+  const { name, address, phone, receiptFooter, binNumber } =
+    storeData?.data || {};
 
   const {
     orderNumber,
@@ -132,12 +122,8 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
               <TableRow key={item.id}>
                 <TableCell>{item.productName}</TableCell>
                 <TableCell align="center">{item.quantity}</TableCell>
-                <TableCell align="center">
-                  {currency} {item.unitPrice}
-                </TableCell>
-                <TableCell align="right">
-                  {currency} {item.total}
-                </TableCell>
+                <TableCell align="center">{fmt(item.unitPrice)}</TableCell>
+                <TableCell align="right">{fmt(item.total)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -149,21 +135,15 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
         <Stack spacing={1} sx={{ width: "250px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography>Subtotal:</Typography>
-            <Typography>
-              {currency} {subtotal || 0}
-            </Typography>
+            <Typography>{fmt(subtotal || 0)}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography>Discount:</Typography>
-            <Typography>
-              - {currency} {discountAmount}
-            </Typography>
+            <Typography>- {fmt(discountAmount)}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography>Tax:</Typography>
-            <Typography>
-              + {currency} {taxAmount}
-            </Typography>
+            <Typography>+ {fmt(taxAmount)}</Typography>
           </Box>
           <Divider />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -171,15 +151,13 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
               Total:
             </Typography>
             <Typography variant="h6" fontWeight="bold">
-              {currency} {total}
+              {fmt(total)}
             </Typography>
           </Box>
           <Divider />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body2">Paid:</Typography>
-            <Typography variant="body2">
-              {currency} {amountPaid}
-            </Typography>
+            <Typography variant="body2">{fmt(amountPaid)}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body2">Due:</Typography>
@@ -187,7 +165,7 @@ export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
               variant="body2"
               color={dueAmount > 0 ? "error" : "inherit"}
             >
-              {currency} {dueAmount}
+              {fmt(dueAmount)}
             </Typography>
           </Box>
         </Stack>

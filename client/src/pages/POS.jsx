@@ -1,16 +1,23 @@
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import getProducts from "../api/products_api/getProducts";
 import ProductCard from "../components/pos_comp/ProductCard";
 import useCartStore from "../store/cartStore";
 import CartList from "../components/pos_comp/CartList";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";
 import PosFilterSection from "../components/pos_comp/PosFilterSection";
 import { useSearchParams } from "react-router-dom";
 import ProductNotFound from "../components/pos_comp/ProductNotFound";
 import { useTheme } from "@mui/material";
+import ProductSkeleton from "../components/shared/skeletons/ProductSkeleton";
 
 function POS() {
   const theme = useTheme();
@@ -25,9 +32,9 @@ function POS() {
 
   const hasFilters = brandId || categoryId || search;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["pos-products", search, brandId, categoryId],
+      queryKey: ["products", search, brandId, categoryId],
       queryFn: ({ pageParam = 1 }) =>
         getProducts({
           page: pageParam,
@@ -96,7 +103,6 @@ function POS() {
         bgcolor: "background.default",
       }}
     >
-      {/* eta keno position fixed thakche na top a? */}
       <Box
         sx={{
           display: "flex",
@@ -132,22 +138,22 @@ function POS() {
           sx={{
             overflowY: "auto",
             maxHeight: "90vh",
-            "&::-webkit-scrollbar": {
-              width: "6px",
-            },
-            "&::-webkit-scrollbar-track": {
-              backgroundColor: "transparent",
-            },
+            "&::-webkit-scrollbar": { width: "6px" },
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: "rgba(0, 0, 0, 0.2)",
               borderRadius: "3px",
             },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-            },
           }}
         >
-          {allProducts.length > 0 ? (
+          {isLoading ? (
+            <Grid container spacing={2}>
+              {[...Array(12)].map((_, i) => (
+                <Grid size={3} key={i}>
+                  <ProductSkeleton />
+                </Grid>
+              ))}
+            </Grid>
+          ) : allProducts.length > 0 ? (
             <Grid>
               <Grid container spacing={2}>
                 {allProducts.map((product) => (
@@ -157,12 +163,16 @@ function POS() {
                       onAddToCart={handleAddToCart}
                     />
                   </Grid>
-                ))}{" "}
-              </Grid>{" "}
+                ))}
+              </Grid>
+
               <Box ref={loadMoreRef} sx={{ py: 2, textAlign: "center" }}>
                 {isFetchingNextPage && <CircularProgress size={24} />}
                 {!hasNextPage && allProducts.length > 0 && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "text.secondary", mt: 4 }}
+                  >
                     All products displayed
                   </Typography>
                 )}
@@ -172,16 +182,8 @@ function POS() {
             <ProductNotFound />
           )}
         </Grid>
-        <Grid
-          size={4}
-          sx={{
-            overflowY: "auto",
-            maxHeight: "90%",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            pb: 10,
-          }}
-        >
+
+        <Grid size={4} sx={{ overflowY: "auto", maxHeight: "90%", pb: 10 }}>
           <CartList />
         </Grid>
       </Grid>

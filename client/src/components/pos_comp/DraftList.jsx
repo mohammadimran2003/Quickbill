@@ -42,10 +42,6 @@ function DraftList() {
   });
 
   const handleOpen = () => {
-    if (draftsData?.data?.length === 0) {
-      toast.warning("No drafts found");
-      return;
-    }
     setOpen(true);
   };
 

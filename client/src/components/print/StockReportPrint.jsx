@@ -1,18 +1,19 @@
 import React from "react";
-import fmt from "../../utils/fmt";
 import ReportHeader from "../shared/ReportHeader";
 import ReportFooter from "../shared/ReportFooter";
 import SummaryCard from "./components/SummaryCard";
 import StockReportTable from "./components/StockReportTable";
 import LowStockTable from "./components/LowStockTable";
 import StockByCategoryTable from "./components/StockByCategoryTable";
-import { thStyle } from "./components/TableStyles";
+import useFmt from "../../hooks/useFmt";
 
 const StockReportPrint = React.forwardRef(
   (
     { summary, stockDetails, topLowStockProducts, stockByCategory, dateRange },
     ref,
   ) => {
+    const fmt = useFmt();
+
     return (
       <div
         ref={ref}

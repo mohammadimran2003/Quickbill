@@ -1,31 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import SalesReportChart from "../../components/sales_report_comp/SalesReportChart";
-import {
-  Box,
-  Grid,
-  CircularProgress,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import StatCard from "../../components/shared/StatCard";
+import { Box, Grid, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getSalesReport } from "../../api/reports_api/getSalesReports";
 import dayjs from "dayjs";
-import fmt from "../../utils/fmt";
 import DataTable from "../../components/sales_report_comp/DataTable";
 import TopProductsTable from "../../components/sales_report_comp/TopProductsTable";
 import TopCustomersTable from "../../components/sales_report_comp/TopCustomersTable";
-import PrintIcon from "@mui/icons-material/Print";
 import { useReactToPrint } from "react-to-print";
 import SalesReportPrint from "../../components/print/SalesReportPrint";
 import DateRangeFilter from "../../components/shared/DateRangeFilter";
 import PrintBtn from "../../components/shared/PrintBtn";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SalesStats from "../../components/sales_report_comp/SalesStats";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
 
 function SalesReportPage() {
   const [groupBy, setGroupBy] = useState("daily");
@@ -56,6 +44,8 @@ function SalesReportPage() {
     enabled: !!searchParams.get("from"),
   });
 
+  console.log(data, "data");
+
   const summary = data?.data?.summary ?? null;
   const chartData = data?.data?.chartData ?? [];
   const products = data?.data?.products ?? [];
@@ -70,6 +60,22 @@ function SalesReportPage() {
       groupBy: dateRange.groupBy,
     });
   };
+
+  if (isError && error?.response?.status === 404) {
+    return (
+      <Box sx={{ p: 3, color: "text.primary" }}>
+        <Typography variant="h6">No data found</Typography>
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Box sx={{ p: 4, color: "text.primary" }}>
+        <Typography variant="h6">Error: {error.message}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 4, color: "text.primary" }}>
@@ -105,8 +111,9 @@ function SalesReportPage() {
       </Box>
 
       {/* Stat Cards */}
-      <SalesStats summary={summary} isLoading={isLoading} />
-
+      <Suspense fallback={<StatsSkeleton />}>
+        <SalesStats summary={summary} isLoading={isLoading} />
+      </Suspense>
       <SalesReportChart
         data={chartData}
         groupBy={groupBy}

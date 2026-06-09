@@ -15,9 +15,9 @@ const StoreForm = ({
   isDirty,
 }) => {
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", p: 3 }}>
+    <Box>
       <Paper sx={{ p: 4, mt: 2 }}>
-        <form onSubmit={handleSubmit(handleSave)} noValidate>
+        <form onSubmit={handleSubmit(handleSave)}>
           <BasicInformationSection register={register} errors={errors} />
           <InvoiceSettingsSection register={register} />
           <RegionalSettingsSection register={register} control={control} />
@@ -42,7 +42,7 @@ const StoreForm = ({
               type="submit"
               variant="contained"
               color="primary"
-              disabled={isSubmitting || isPending}
+              disabled={isSubmitting || isPending || !isDirty}
             >
               {isSubmitting || isPending ? "Saving..." : "Save Changes"}
             </Button>

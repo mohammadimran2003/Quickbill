@@ -13,8 +13,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import fmt from "../../utils/fmt";
+
 import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useFmt from "../../hooks/useFmt";
 
 const RANK_LABELS = [
   "🥇",
@@ -50,6 +51,7 @@ export default function MostProfitableProducts({
   isLoading = false,
 }) {
   const isEmpty = !products || products.length === 0;
+  const fmt = useFmt();
 
   if (isLoading) {
     return <TableSkeleton />;

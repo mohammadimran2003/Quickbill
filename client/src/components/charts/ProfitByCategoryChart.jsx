@@ -8,8 +8,8 @@ import {
 } from "recharts";
 import { Box, Paper, Typography, Chip } from "@mui/material";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
-import fmt from "../../utils/fmt";
 import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useFmt from "../../hooks/useFmt";
 
 // Curated vibrant color palette
 const COLORS = [
@@ -172,6 +172,8 @@ export default function ProfitByCategoryChart({
   data = [],
   isLoading = false,
 }) {
+  const fmt = useFmt();
+
   const isEmpty = !data || data.length === 0;
 
   if (isLoading) {

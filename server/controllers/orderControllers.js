@@ -187,6 +187,7 @@ const createOrder = async (req, res) => {
       await tx.customer.update({
         where: { id: customerId },
         data: {
+          totalSpent: { increment: total },
           totalDue: { increment: dueAmount },
           walletBalance: { decrement: walletDeduction },
         },

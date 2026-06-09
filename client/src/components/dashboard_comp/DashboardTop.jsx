@@ -3,12 +3,13 @@ import { Box, Typography } from "@mui/material";
 import StatCard from "../shared/StatCard";
 import getDashboardSummery from "../../api/dashboard_api/getDashboardSummery";
 import { useQuery } from "@tanstack/react-query";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import getExpenseStats from "../../api/expenses_api/getExpenseStats";
 import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
+import TakaIcon from "../shared/TakaIcon";
 const DashboardTop = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardSummery"],
@@ -42,7 +43,7 @@ const DashboardTop = () => {
         <StatCard
           title="Today Sales"
           value={today.sales}
-          icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
+          icon={<TakaIcon sx={{ fontSize: 28 }} />}
           type="sales"
         />
       </Grid>

@@ -71,7 +71,7 @@ const CustomerForm = () => {
   return (
     <Box
       sx={{
-        maxWidth: 800,
+        maxWidth: 1000,
         mx: "auto",
         p: { xs: 2, md: 4 },
         color: "text.primary",

@@ -1,16 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Paper, Divider } from "@mui/material";
 import { purchaseSchema } from "../../validations/purchaseValidation";
 import createPurchase from "../../api/purchases_api/createPurchase";
 import getPurchaseById from "../../api/purchases_api/getPurchaseById";
@@ -22,14 +15,10 @@ import PageHeader from "../../components/shared/PageHeader";
 import PurchaseDetailsSection from "../../components/purchases_comp/form_sections/PurchaseDetailsSection";
 import PurchaseItemsSection from "../../components/purchases_comp/form_sections/PurchaseItemsSection";
 import PurchaseSummarySection from "../../components/purchases_comp/form_sections/PurchaseSummarySection";
+import usePurchaseStore from "../../store/purchaseStore";
 
 const defaultValues = {
   supplierId: "",
-  items: [],
-  subTotal: 0,
-  total: 0,
-  paidAmount: 0,
-  dueAmount: 0,
   status: "RECEIVED",
   note: "",
   paymentMethod: "CASH",
@@ -40,6 +29,15 @@ function PurchaseForm() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const isEditMode = Boolean(id);
+  const {
+    items,
+    setPurchaseData,
+    clearPurchase,
+    subTotal,
+    total,
+    paidAmount,
+    dueAmount,
+  } = usePurchaseStore();
 
   const methods = useForm({
     defaultValues,
@@ -47,28 +45,30 @@ function PurchaseForm() {
     mode: "all",
   });
 
+  const { setValue, clearErrors } = methods;
+  const prevItemsLength = useRef(0);
+
+  useEffect(() => {
+    setValue("items", items);
+    setValue("subTotal", subTotal);
+    setValue("total", total);
+    setValue("paidAmount", paidAmount);
+    setValue("dueAmount", dueAmount);
+
+    // Clear error when items are added (like supplier field behavior)
+    // Only clear when going from 0 to > 0 items
+    if (prevItemsLength.current === 0 && items.length > 0) {
+      clearErrors("items");
+    }
+    prevItemsLength.current = items.length;
+  }, [items, subTotal, total, paidAmount, dueAmount, setValue, clearErrors]);
+  console.log(paidAmount, "paid Amount");
+
   const {
     handleSubmit,
     reset,
-    watch,
-    setValue,
     formState: { isSubmitting },
   } = methods;
-
-  const items = watch("items");
-  const paidAmount = watch("paidAmount");
-  const total = watch("total");
-
-  // Recalculate Subtotal, Total, and Due Amount
-  useEffect(() => {
-    const newSubTotal = items.reduce((acc, item) => acc + (item.total || 0), 0);
-    setValue("subTotal", newSubTotal);
-    setValue("total", newSubTotal);
-  }, [items, setValue]);
-
-  useEffect(() => {
-    setValue("dueAmount", Math.max(0, total - (paidAmount || 0)));
-  }, [total, paidAmount, setValue]);
 
   // Fetch Data
   const { data: purchaseData, isLoading: purchaseLoading } = useQuery({
@@ -109,24 +109,39 @@ function PurchaseForm() {
       const purchase = purchaseData.data;
       reset({
         supplierId: purchase.supplierId || "",
+        status: purchase.status || "RECEIVED",
+        note: purchase.note || "",
+        paymentMethod: purchase.paymentMethod || "CASH",
+      });
+      setPurchaseData({
         items: purchase.items || [],
         subTotal: purchase.subTotal || 0,
         total: purchase.total || 0,
         paidAmount: purchase.paidAmount || 0,
         dueAmount: purchase.dueAmount || 0,
-        status: purchase.status || "RECEIVED",
-        note: purchase.note || "",
-        paymentMethod: purchase.paymentMethod || "CASH",
       });
     }
-  }, [purchaseData, reset]);
+  }, [purchaseData, reset, setPurchaseData]);
+
+  useEffect(() => {
+    return () => {
+      clearPurchase();
+    };
+  }, [clearPurchase]);
 
   const handleSave = (formData) => {
-    console.log(formData, "form data");
+    const finalData = {
+      ...formData,
+      items,
+      subTotal,
+      total,
+      paidAmount,
+      dueAmount,
+    };
 
     const action = isEditMode
-      ? updateMutation.mutateAsync(formData)
-      : createMutation.mutateAsync(formData);
+      ? updateMutation.mutateAsync(finalData)
+      : createMutation.mutateAsync(finalData);
 
     toast.promise(action, {
       loading: isEditMode ? "Updating purchase..." : "Creating purchase...",
@@ -187,7 +202,7 @@ function PurchaseForm() {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={isSubmitting || items.length === 0}
+                disabled={isSubmitting}
               >
                 {isEditMode ? "Update Purchase" : "Create Purchase"}
               </Button>

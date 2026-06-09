@@ -15,7 +15,7 @@ function Products() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: "auto", p: 3 }}>
+    <Box>
       <PageHeader
         title="Products"
         btnText="Add Product"

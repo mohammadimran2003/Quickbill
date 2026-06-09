@@ -1,5 +1,5 @@
 import React from "react";
-import fmt from "../../utils/fmt";
+
 import ReportHeader from "../shared/ReportHeader";
 import ReportFooter from "../shared/ReportFooter";
 import SalesSummaryCards from "./components/SalesSummaryCards";

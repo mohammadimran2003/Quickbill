@@ -1,5 +1,4 @@
-import React from "react";
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 import { thStyle, tdStyle } from "./TableStyles";
 
 const RANK_LABELS = [
@@ -16,6 +15,8 @@ const RANK_LABELS = [
 ];
 
 const ProfitableProductsTable = ({ profitableProducts }) => {
+  const fmt = useFmt();
+
   if (!profitableProducts || profitableProducts.length === 0) {
     return (
       <p style={{ color: "#888", fontSize: "12px" }}>
@@ -70,9 +71,7 @@ const ProfitableProductsTable = ({ profitableProducts }) => {
               <td style={tdStyle("left", { fontWeight: i < 3 ? 700 : 500 })}>
                 {p.name}
               </td>
-              <td style={tdStyle("right")}>
-                {p.quantitySold?.toLocaleString()}
-              </td>
+              <td style={tdStyle("right")}>{fmt(p.quantitySold)}</td>
               <td style={tdStyle("right")}>{fmt(p.totalRevenue)}</td>
               <td style={tdStyle("right", { color: "#888" })}>
                 {fmt(p.totalCost)}
@@ -110,7 +109,7 @@ const ProfitableProductsTable = ({ profitableProducts }) => {
                     fontWeight: 700,
                   }}
                 >
-                  {p.profitMargin}%
+                  {fmt(p.profitMargin)}%
                 </span>
               </td>
             </tr>

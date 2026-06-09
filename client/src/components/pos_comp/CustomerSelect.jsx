@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Autocomplete,
   TextField,
@@ -28,11 +28,10 @@ const CustomerSelect = ({
   const { data: customersData, isLoading } = useQuery({
     queryKey: ["customers", { search: searchTerm }],
     queryFn: () => getCustomers({ search: searchTerm }),
-    enabled: open,
+    enabled: true,
   });
 
   const customers = customersData?.data || [];
-  console.log(selectedCustomer, "selected customers");
 
   return (
     <Autocomplete
@@ -46,11 +45,11 @@ const CustomerSelect = ({
       }
       getOptionKey={(option) => option.id}
       value={selectedCustomer}
-      onChange={(event, newValue) => {
+      onChange={(_, newValue) => {
         setSelectedCustomer(newValue);
         setCustomer(newValue);
       }}
-      onInputChange={(event, newInputValue) => {
+      onInputChange={(_, newInputValue) => {
         debouncedSearch(newInputValue);
       }}
       renderOption={(props, option) => {
@@ -83,17 +82,6 @@ const CustomerSelect = ({
           label="Search Customer (Name or Phone)"
           size="small"
           fullWidth
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {isLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps?.endAdornment}
-              </>
-            ),
-          }}
         />
       )}
       sx={{ flexGrow: 1 }}

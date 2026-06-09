@@ -39,6 +39,8 @@ function CartList() {
   const [openCustomerModal, setOpenCustomerModal] = useState(false);
   const [order, setOrder] = useState(null);
   const printRef = useRef();
+
+  //HANDLER
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `Order_Details`,
@@ -65,11 +67,6 @@ function CartList() {
     }
   }, [order, handlePrint]);
 
-  const { data: customerData, refetch } = useQuery({
-    queryKey: ["customers"],
-    queryFn: () => getCustomers(),
-  });
-
   const { mutate } = useMutation({
     mutationFn: (customer) => createCustomer(customer),
     onSuccess: () => {
@@ -90,11 +87,10 @@ function CartList() {
         setAmountPaid("");
         setPaymentMethod("CASH");
         setSelectedCustomer(walkInCustomer.data);
+        queryClient.invalidateQueries({ queryKey: ["products"], exact: false });
         queryClient.invalidateQueries({ queryKey: ["drafts"] });
       },
     });
-
-  const customers = customerData?.data || customerData || [];
 
   //handler function
   const handleCreateCustomerSubmit = (data) => {
@@ -124,6 +120,8 @@ function CartList() {
         amountPaid: paymentMethod === "UNPAID" ? 0 : Number(amountPaid),
         draftId: draftData?.id,
       };
+
+      console.log(orderData, "orderData");
 
       toast.promise(createOrderMutation(orderData), {
         loading: "Creating order...",

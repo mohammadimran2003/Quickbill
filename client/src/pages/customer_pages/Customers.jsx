@@ -73,7 +73,7 @@ function Customers() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: "auto" }}>
+    <Box>
       <PageHeader title="Customer" btnText="Add" onBtnClick={handleAddClick} />
 
       <CustomerTable onEditClick={handleEditClick} />

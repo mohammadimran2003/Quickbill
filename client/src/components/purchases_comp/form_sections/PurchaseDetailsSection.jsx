@@ -11,14 +11,7 @@ import {
 import FormSection from "./FormSection";
 
 const PurchaseDetailsSection = ({ suppliersData }) => {
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = useFormContext();
-  console.log(errors, "errors");
-
-  console.log(suppliersData?.data, "d s");
+  const { control, register } = useFormContext();
 
   return (
     <FormSection title="Purchase Details">

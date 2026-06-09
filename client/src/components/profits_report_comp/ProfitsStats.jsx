@@ -1,14 +1,15 @@
 import { Grid } from "@mui/material";
-
-import fmt from "../../utils/fmt";
 import StatCard from "../shared/StatCard";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
+import TakaIcon from "../shared/TakaIcon";
+import useFmt from "../../hooks/useFmt";
 
 function ProfitsStats({ summary, isLoading }) {
+  const fmt = useFmt();
+
   if (isLoading) {
     return <StatsSkeleton />;
   }
@@ -18,7 +19,7 @@ function ProfitsStats({ summary, isLoading }) {
         <StatCard
           title="Total Revenue"
           value={fmt(summary?.totalRevenue)}
-          icon={<AttachMoneyIcon sx={{ fontSize: 28 }} />}
+          icon={<TakaIcon sx={{ fontSize: 28 }} />}
           type="revenue"
         />
       </Grid>

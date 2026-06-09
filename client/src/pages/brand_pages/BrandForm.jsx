@@ -104,12 +104,12 @@ function BrandForm() {
     }
   }, [brandData, reset]);
 
-  const handleSave = async (formData) => {
+  const handleSave = (formData) => {
     const action = isEditMode
       ? updateMutation.mutateAsync(formData)
       : createMutation.mutateAsync(formData);
 
-    await toast.promise(action, {
+    toast.promise(action, {
       loading: isEditMode ? "Updating brand..." : "Creating brand...",
       success: isEditMode
         ? "Brand updated successfully"
@@ -127,7 +127,7 @@ function BrandForm() {
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", p: 3, color: "text.primary" }}>
+    <Box sx={{ maxWidth: 1000, mx: "auto", p: 3, color: "text.primary" }}>
       <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 1 }}>
         {isEditMode ? "Edit Brand" : "Create Brand"}
       </Typography>

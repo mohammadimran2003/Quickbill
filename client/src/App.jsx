@@ -191,6 +191,14 @@ function App() {
               }
             />
             <Route
+              path="/brands/edit-brand/:id"
+              element={
+                <PrivateRoute>
+                  <BrandForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/orders"
               element={
                 <PrivateRoute>

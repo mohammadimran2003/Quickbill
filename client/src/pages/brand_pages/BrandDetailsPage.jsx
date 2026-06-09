@@ -19,39 +19,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import getBrandById from "../../api/brands_api/getBrandById";
-
-const infoItem = (icon, label, value) => (
-  <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-    <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
-    <Box>
-      <Typography variant="caption" color="text.secondary" display="block">
-        {label}
-      </Typography>
-      <Typography variant="body1" fontWeight={500}>
-        {value || "N/A"}
-      </Typography>
-    </Box>
-  </Stack>
-);
-
-const statCard = (label, value, color) => (
-  <Paper
-    variant="outlined"
-    sx={{
-      p: 2,
-      textAlign: "center",
-      bgcolor: `${color}.50`,
-      borderColor: `${color}.200`,
-    }}
-  >
-    <Typography variant="caption" color="text.secondary" gutterBottom>
-      {label}
-    </Typography>
-    <Typography variant="h6" color={`${color}.main`} fontWeight="bold">
-      {value}
-    </Typography>
-  </Paper>
-);
+import DetailsStatCard from "../../components/shared/DetailsStatCard";
+import InfoItem from "../../components/shared/InfoItem";
+import DetailsPageheader from "../../components/shared/DetailsPageHeader";
 
 const BrandDetailsPage = () => {
   const navigate = useNavigate();
@@ -69,91 +39,59 @@ const BrandDetailsPage = () => {
     brandData.data;
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1400, mx: "auto" }}>
-      {/* Header Section */}
-      <Stack
-        direction="row"
-        sx={{
-          mb: 3,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Stack direction="row" spacing={2}>
-          <IconButton onClick={() => navigate(-1)} color="primary">
-            <ArrowBackIcon />
-          </IconButton>
-          <Box>
-            <Typography variant="h5" fontWeight="bold">
-              {name}
-            </Typography>
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label={isActive ? "Active" : "Inactive"}
-                size="small"
-                color={isActive ? "success" : "error"}
-                variant="outlined"
+    <Box>
+      <DetailsPageheader
+        name={name}
+        isActive={isActive}
+        onEdit={() => navigate(`/brands/edit-brand/${id}`)}
+        editLabel="Brand"
+      />
+      {/* Brand Information */}
+      <Box>
+        <Paper sx={{ p: 3, mb: 4, height: "100%" }}>
+          <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+            Brand Information
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          {InfoItem(<DescriptionIcon />, "Description", description)}
+
+          {logo && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 1 }}
+              >
+                Logo
+              </Typography>
+              <Box
+                component="img"
+                src={logo}
+                alt={`${name} logo`}
+                sx={{
+                  maxWidth: "100px",
+                  maxHeight: "100px",
+                  borderRadius: 1,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
               />
-            </Stack>
-          </Box>
-        </Stack>
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          onClick={() => navigate(`/brands/edit/${id}`)}
-        >
-          Edit Brand
-        </Button>
-      </Stack>
+            </Box>
+          )}
 
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 2, display: "block" }}
+          >
+            Created At: {new Date(createdAt).toLocaleDateString()}
+          </Typography>
+        </Paper>
+      </Box>
       <Grid container spacing={3}>
-        {/* Brand Information */}
-        <Grid size={3}>
-          <Paper sx={{ p: 3, height: "100%" }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-              Brand Information
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-            {infoItem(<DescriptionIcon />, "Description", description)}
-
-            {logo && (
-              <Box sx={{ mb: 2 }}>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  display="block"
-                  sx={{ mb: 1 }}
-                >
-                  Logo
-                </Typography>
-                <Box
-                  component="img"
-                  src={logo}
-                  alt={`${name} logo`}
-                  sx={{
-                    maxWidth: "100px",
-                    maxHeight: "100px",
-                    borderRadius: 1,
-                    border: "1px solid",
-                    borderColor: "divider",
-                  }}
-                />
-              </Box>
-            )}
-
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ mt: 2, display: "block" }}
-            >
-              Created At: {new Date(createdAt).toLocaleDateString()}
-            </Typography>
-          </Paper>
-        </Grid>
-
         {/* Statistics */}
-        <Grid size={5}>
+        <Grid size={7}>
           <Paper sx={{ p: 3, height: "100%" }}>
             <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
               Statistics
@@ -162,10 +100,14 @@ const BrandDetailsPage = () => {
 
             <Grid container spacing={2}>
               <Grid xs={12} sm={6}>
-                {statCard("Total Products", _count?.products || 0, "primary")}
+                {DetailsStatCard(
+                  "Total Products",
+                  _count?.products || 0,
+                  "primary",
+                )}
               </Grid>
               <Grid xs={12} sm={6}>
-                {statCard(
+                {DetailsStatCard(
                   "Status",
                   isActive ? "Active" : "Inactive",
                   isActive ? "success" : "error",
@@ -176,7 +118,7 @@ const BrandDetailsPage = () => {
         </Grid>
 
         {/* Associated Products */}
-        <Grid size={4}>
+        <Grid size={5}>
           <Paper sx={{ p: 3 }}>
             <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
               <InventoryIcon color="action" />

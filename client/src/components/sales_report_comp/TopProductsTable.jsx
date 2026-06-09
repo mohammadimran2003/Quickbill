@@ -10,10 +10,12 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import fmt from "../../utils/fmt";
+
 import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useFmt from "../../hooks/useFmt";
 
 function TopProductsTable({ products, isLoading }) {
+  const fmt = useFmt();
   if (isLoading) {
     return <TableSkeleton />;
   }

@@ -1,26 +1,26 @@
-import PageHeader from '../../components/shared/PageHeader';
-import SupplierTable from '../../components/suppliers_comp/SupplierTable';
-import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import PageHeader from "../../components/shared/PageHeader";
+import SupplierTable from "../../components/suppliers_comp/SupplierTable";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function Suppliers() {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	const handleAddClick = () => {
-		navigate('/suppliers/create-supplier');
-	};
+  const handleAddClick = () => {
+    navigate("/suppliers/create-supplier");
+  };
 
-	return (
-		<Box sx={{ maxWidth: 1400, mx: 'auto', p: 3 }}>
-			<PageHeader
-				title='Suppliers'
-				btnText='Add Supplier'
-				onBtnClick={handleAddClick}
-			/>
+  return (
+    <Box>
+      <PageHeader
+        title="Suppliers"
+        btnText="Add Supplier"
+        onBtnClick={handleAddClick}
+      />
 
-			<SupplierTable />
-		</Box>
-	);
+      <SupplierTable />
+    </Box>
+  );
 }
 
 export default Suppliers;

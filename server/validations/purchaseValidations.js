@@ -13,6 +13,8 @@ const purchaseSchema = z.object({
     )
     .min(1, "Items are required"),
   note: z.string().optional(),
+  paidAmount: z.number().min(0, "Paid amount cannot be negative"),
+  paymentMethod: z.enum(["CASH", "CARD", "MOBILE_BANKING", "UNPAID"]),
 });
 
 export default purchaseSchema;

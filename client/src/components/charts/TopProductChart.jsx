@@ -21,6 +21,8 @@ const TopProductChart = () => {
     queryFn: () => getTopProducts(),
   });
 
+  const hasData = data?.data && data.data.length > 0;
+
   if (isLoading) {
     return <PieChartSkeleton />;
   }
@@ -53,55 +55,71 @@ const TopProductChart = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ width: "100%", height: 350 }}>
-        {/* <ResponsiveContainer
-						width='100%'
-						height='100%'
-						debounce={1}> */}
-        <PieChart width="100%" height={350}>
-          <Pie
-            data={data?.data}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={100}
-            paddingAngle={5}
-            dataKey="totalSales"
-          >
-            {data?.data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "none",
-              boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
-            }}
-          />
-
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            iconType="circle"
-            formatter={(value) => (
-              <span
-                style={{
-                  color: "#555",
-                  fontWeight: 500,
-                  fontSize: "13px",
-                }}
-              >
-                {value}
-              </span>
-            )}
-          />
-        </PieChart>
-        {/* </ResponsiveContainer> */}
+      <Box
+        sx={{
+          width: "100%",
+          height: 350,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {hasData ? (
+          <PieChart width={350} height={350}>
+            {" "}
+            {/* 💡 টিপ: PieChart এ width স্ট্রিং না দিয়ে নাম্বার দেওয়া ভালো */}
+            <Pie
+              data={data?.data}
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={100}
+              paddingAngle={5}
+              dataKey="totalSales"
+            >
+              {data?.data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
+              }}
+            />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              formatter={(value) => (
+                <span
+                  style={{ color: "#555", fontWeight: 500, fontSize: "13px" }}
+                >
+                  {value}
+                </span>
+              )}
+            />
+          </PieChart>
+        ) : (
+          // 🟢 নো-ডাটা স্টেট (UX ফ্রেন্ডলি)
+          <Box sx={{ textAlign: "center" }}>
+            <Typography
+              variant="body1"
+              fontWeight={600}
+              color="text.secondary"
+              sx={{ mb: 0.5 }}
+            >
+              No Sales Data Available
+            </Typography>
+            <Typography variant="caption" color="text.disabled">
+              Once you make sales, the top products chart will appear here.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Paper>
   );

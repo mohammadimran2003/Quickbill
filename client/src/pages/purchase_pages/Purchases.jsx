@@ -11,7 +11,7 @@ function Purchases() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: "auto", p: 3 }}>
+    <Box>
       <PageHeader
         title="Purchases"
         btnText="Add Purchase"

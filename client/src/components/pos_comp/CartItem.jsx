@@ -2,11 +2,12 @@ import { Box, ListItem, Typography, List, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { formatCurrency } from "../../utils/formatCurrency";
-
 import QuantityInput from "./QuantityInput";
+import useFmt from "../../hooks/useFmt";
 
 function CartItem({ items, updateQuantity, removeItem }) {
+  const fmt = useFmt();
+
   return (
     <List disablePadding>
       {items.map((item) => (
@@ -67,7 +68,7 @@ function CartItem({ items, updateQuantity, removeItem }) {
               color="text.secondary"
               fontWeight="medium"
             >
-              {formatCurrency(item.basePrice)}
+              {fmt(item.basePrice)}
             </Typography>
 
             <Box
@@ -104,7 +105,7 @@ function CartItem({ items, updateQuantity, removeItem }) {
               fontWeight="bold"
               color="primary.main"
             >
-              {formatCurrency(item.basePrice * item.quantity)}
+              {fmt(item.basePrice * item.quantity)}
             </Typography>
           </Box>
         </ListItem>

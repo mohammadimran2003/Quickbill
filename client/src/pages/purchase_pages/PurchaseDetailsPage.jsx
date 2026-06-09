@@ -26,6 +26,8 @@ import ReturnDialog from "../../components/orders_comp/ReturnDialog";
 import PurchaseItemsTable from "../../components/purchases_comp/PurchaseItemsTable";
 import createReturn from "../../api/returns_api/createReturn";
 import { toast } from "sonner";
+import getStatusColor from "../../utils/getStatusColor";
+import PurchaseInfoItem from "../../components/purchases_comp/purchaseInfoItem";
 
 const PurchaseDetailsPage = () => {
   const navigate = useNavigate();
@@ -77,12 +79,11 @@ const PurchaseDetailsPage = () => {
     );
 
   const purchase = purchaseData.data;
-  console.log(purchase);
 
   const {
     purchaseNumber,
     supplier,
-    items,
+
     subTotal,
     total,
     paidAmount,
@@ -93,35 +94,8 @@ const PurchaseDetailsPage = () => {
     createdAt,
   } = purchase;
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "RECEIVED":
-        return "success";
-      case "ORDERED":
-        return "warning";
-      case "CANCELLED":
-        return "error";
-      default:
-        return "default";
-    }
-  };
-
-  const infoItem = (icon, label, value) => (
-    <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-      <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
-      <Box>
-        <Typography variant="caption" color="text.secondary" display="block">
-          {label}
-        </Typography>
-        <Typography variant="body1" fontWeight={500}>
-          {value || "N/A"}
-        </Typography>
-      </Box>
-    </Stack>
-  );
-
   return (
-    <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
+    <Box>
       {/* Header Section */}
       <Stack
         direction="row"
@@ -176,8 +150,8 @@ const PurchaseDetailsPage = () => {
 
             {supplier ? (
               <>
-                {infoItem(<PersonIcon />, "Name", supplier.name)}
-                {infoItem(<PhoneIcon />, "Phone", supplier.phone)}
+                {PurchaseInfoItem(<PersonIcon />, "Name", supplier.name)}
+                {PurchaseInfoItem(<PhoneIcon />, "Phone", supplier.phone)}
                 <Button
                   variant="text"
                   size="small"

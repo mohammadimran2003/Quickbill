@@ -134,7 +134,7 @@ function Users() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: "auto", p: 3 }}>
+    <Box>
       <PageHeader title="Users" btnText="Add User" onBtnClick={handleAddUser} />
 
       <UsersTable

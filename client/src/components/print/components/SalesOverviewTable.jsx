@@ -1,7 +1,7 @@
-import React from "react";
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 
 const SalesOverviewTable = ({ chartData }) => {
+  const fmt = useFmt();
   return (
     <table
       style={{

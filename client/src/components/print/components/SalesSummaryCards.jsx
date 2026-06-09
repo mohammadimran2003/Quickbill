@@ -1,7 +1,8 @@
-import React from "react";
-import fmt from "../../../utils/fmt";
+import useFmt from "../../../hooks/useFmt";
 
 const SalesSummaryCards = ({ summary }) => {
+  const fmt = useFmt();
+
   return (
     <div
       style={{

@@ -10,28 +10,22 @@ const createPurchase = async (req, res) => {
     paymentMethod = "CASH",
   } = req.body;
   const createdBy = req.user.id;
-  console.log(req.body, "req.body");
 
   const productIds = items.map((item) => item.productId);
-
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
   });
 
   if (products.length !== items.length) {
-    throw new AppError("Product not found", 404);
+    throw new AppError("One or more products not found", 404);
   }
 
-  let subTotal = 0;
-  let totalAmount = 0;
-  let walletDeduction = 0;
-
-  for (let item of items) {
-    subTotal += item.unitCost * item.quantity;
-  }
-
-  totalAmount = subTotal;
-  let dueAmount = totalAmount > paidAmount ? totalAmount - paidAmount : 0;
+  let subTotal = items.reduce(
+    (acc, item) => acc + item.unitCost * item.quantity,
+    0,
+  );
+  let totalAmount = subTotal;
+  console.log(totalAmount, "total amount for");
 
   const purchaseCoutner = await prisma.purchaseCounter.upsert({
     where: { name: "PURCHASE_COUNTER" },
@@ -39,24 +33,26 @@ const createPurchase = async (req, res) => {
     create: { name: "PURCHASE_COUNTER", value: 1 },
   });
 
-  const purchaseNumber = `PUR-${String(purchaseCoutner.value).padStart(
-    4,
-    "0",
-  )}`;
-
-  if (supplierId) {
-    const supplier = await prisma.supplier.findUnique({
-      where: { id: supplierId },
-    });
-
-    if (supplier.walletBalance > 0 && dueAmount > 0) {
-      walletDeduction = Math.min(supplier.walletBalance, dueAmount);
-      dueAmount = dueAmount - walletDeduction;
-    }
-  }
+  const purchaseNumber = `PUR-${String(purchaseCoutner.value).padStart(4, "0")}`;
 
   const result = await prisma.$transaction(async (tx) => {
-    // update product stock
+    const supplier = supplierId
+      ? await tx.supplier.findUnique({ where: { id: supplierId } })
+      : null;
+
+    let walletDeduction = 0;
+
+    let finalDue = 0;
+
+    if (paidAmount && totalAmount > paidAmount) {
+      finalDue = totalAmount - paidAmount;
+    }
+
+    if (supplier && supplier.walletBalance > 0 && finalDue > 0) {
+      walletDeduction = Math.min(Number(supplier.walletBalance), finalDue);
+      finalDue = finalDue - walletDeduction;
+    }
+
     for (let item of items) {
       await tx.product.update({
         where: { id: item.productId },
@@ -64,34 +60,37 @@ const createPurchase = async (req, res) => {
       });
     }
 
-    await tx.supplier.update({
-      where: { id: supplierId },
-      data: {
-        walletBalance: { decrement: walletDeduction },
-        totalDue: { increment: dueAmount },
-        totalSpent: { increment: totalAmount },
-      },
-    });
+    if (supplierId) {
+      await tx.supplier.update({
+        where: { id: supplierId },
+        data: {
+          walletBalance: { decrement: walletDeduction },
+          totalDue: { increment: finalDue },
+          totalSpent: { increment: totalAmount },
+        },
+      });
+    }
 
     const orderDate = new Date();
-    orderDate.setHours(0, 0, 0, 0);
     const monthLabel = orderDate.toLocaleString("en-US", { month: "short" });
     const currentYear = orderDate.getFullYear();
+    console.log(walletDeduction, "walletdeduction");
 
-    // create purchase
-    const purchase = await tx.purchase.create({
+    return await tx.purchase.create({
       data: {
         supplierId,
         subTotal,
         total: totalAmount,
+        dueAmount: finalDue,
         note,
         createdBy,
-        dueAmount,
         purchaseNumber,
         paymentMethod,
         items: {
           create: items.map((item) => ({
-            ...item,
+            productId: item.productId,
+            quantity: item.quantity,
+            unitCost: item.unitCost,
             total: item.unitCost * item.quantity,
           })),
         },
@@ -100,8 +99,6 @@ const createPurchase = async (req, res) => {
         year: currentYear,
       },
     });
-
-    return purchase;
   });
 
   res.status(201).json({

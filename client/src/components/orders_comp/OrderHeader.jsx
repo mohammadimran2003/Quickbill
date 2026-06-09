@@ -1,18 +1,7 @@
-import React from "react";
-import {
-  Box,
-  Stack,
-  Typography,
-  Chip,
-  Button,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
-import PrintIcon from "@mui/icons-material/Print";
-import EditIcon from "@mui/icons-material/Edit";
+import { Box, Stack, Typography, Chip } from "@mui/material";
+
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { useReactToPrint } from "react-to-print";
-import { OrderPrintTemplate } from "../../components/print/OrderPrintTemplate";
 import PrintBtn from "../shared/PrintBtn";
 
 const OrderHeader = ({ order, printRef }) => {

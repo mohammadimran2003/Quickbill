@@ -4,10 +4,13 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import fmt from "../../utils/fmt";
+
 import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
+import useFmt from "../../hooks/useFmt";
 
 function StockReportStats({ summary, isLoading }) {
+  const fmt = useFmt();
+
   if (isLoading) {
     return <StatsSkeleton />;
   }

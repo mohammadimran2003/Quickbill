@@ -68,7 +68,7 @@ function Expenses() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: "auto", p: 3 }}>
+    <Box>
       <PageHeader
         title="Expenses"
         btnText="Add Expense"

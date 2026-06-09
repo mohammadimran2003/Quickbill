@@ -11,10 +11,11 @@ import {
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import getDiscountAmount from "../../utils/getDiscountAmount";
-import { formatCurrency } from "../../utils/formatCurrency";
+import useFmt from "../../hooks/useFmt";
 
 const ProductCard = ({ product, onAddToCart }) => {
   const isOutOfStock = product.stock <= 0;
+  const fmt = useFmt();
 
   const discountAmount = getDiscountAmount(
     product.discountType,
@@ -108,7 +109,7 @@ const ProductCard = ({ product, onAddToCart }) => {
             fontWeight="bold"
             sx={{ lineHeight: 1 }}
           >
-            {formatCurrency(finalPrice)}
+            {fmt(finalPrice)}
           </Typography>
           {product.discountValue > 0 && (
             <Typography
@@ -117,7 +118,7 @@ const ProductCard = ({ product, onAddToCart }) => {
               sx={{ textDecoration: "line-through", lineHeight: 1.2 }}
             >
               {" "}
-              {formatCurrency(product.basePrice)}
+              {fmt(product.basePrice)}
             </Typography>
           )}
         </Stack>

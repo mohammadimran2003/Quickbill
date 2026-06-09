@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
 import {
   Grid,
   TextField,
-  Typography,
   Autocomplete,
   IconButton,
   Table,
@@ -16,78 +14,36 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormSection from "./FormSection";
+import usePurchaseStore from "../../../store/purchaseStore";
+import { useFormContext } from "react-hook-form";
 
 const PurchaseItemsSection = ({ productsData }) => {
   const [productSearch, setProductSearch] = useState(null);
-  const [quantityInput, setQuantityInput] = useState(1);
-  const [unitCostInput, setUnitCostInput] = useState(0);
+
+  const { items, addItem, removeItem, updateQuantity, updateUnitCost } =
+    usePurchaseStore();
 
   const {
-    control,
-    watch,
     formState: { errors },
+    clearErrors,
   } = useFormContext();
-
-  const { fields, append, remove, update } = useFieldArray({
-    control,
-    name: "items",
-  });
-
-  const items = watch("items");
 
   const handleAddProduct = (event, product) => {
     if (product) {
-      const existingItemIndex = items.findIndex(
-        (item) => item.productId === product.id,
-      );
-
-      const productCost = product.costPrice || 0;
-      const productName = product.name;
-
-      if (existingItemIndex >= 0) {
-        const currentItem = items[existingItemIndex];
-        const newQuantity = currentItem.quantity + 1;
-
-        update(existingItemIndex, {
-          ...currentItem,
-          productName,
-          quantity: newQuantity,
-          unitCost: productCost,
-          total: newQuantity * productCost,
-        });
-      } else {
-        append({
-          productId: product.id,
-          productName,
-          quantity: 1,
-          unitCost: productCost,
-          total: productCost,
-        });
-      }
+      addItem(product);
       setProductSearch(null);
+      // Clear error when item is added (form mode "all" will handle re-validation)
+      clearErrors("items");
     }
   };
-
   const handleQuantityChange = (index, value) => {
     const quantity = parseInt(value) || 0;
-    const item = items[index];
-    const newTotal = quantity * item.unitCost;
-    update(index, {
-      ...item,
-      quantity,
-      total: newTotal,
-    });
+    updateQuantity(index, quantity);
   };
 
   const handleUnitCostChange = (index, value) => {
     const unitCost = parseFloat(value) || 0;
-    const item = items[index];
-    const newTotal = item.quantity * unitCost;
-    update(index, {
-      ...item,
-      unitCost,
-      total: newTotal,
-    });
+    updateUnitCost(index, unitCost);
   };
 
   return (
@@ -106,6 +62,8 @@ const PurchaseItemsSection = ({ productsData }) => {
               label="Search and Add Product"
               variant="outlined"
               size="small"
+              error={!!errors.items}
+              helperText={errors.items?.message}
             />
           )}
         />
@@ -126,18 +84,18 @@ const PurchaseItemsSection = ({ productsData }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {fields.map((field, index) => (
-                <TableRow key={field.id}>
-                  <TableCell>{field.productName}</TableCell>
+              {items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.productName}</TableCell>
                   <TableCell>
                     <TextField
                       type="number"
                       size="small"
-                      value={quantityInput}
-                      onChange={(e) => setQuantityInput(e.target.value)}
-                      onBlur={(e) =>
+                      value={item.quantity}
+                      onChange={(e) =>
                         handleQuantityChange(index, e.target.value)
                       }
+                      onFocus={(e) => e.target.select()}
                       slotProps={{
                         htmlInput: {
                           min: 1,
@@ -149,11 +107,11 @@ const PurchaseItemsSection = ({ productsData }) => {
                     <TextField
                       type="number"
                       size="small"
-                      value={unitCostInput}
-                      onChange={(e) => setUnitCostInput(e.target.value)}
-                      onBlur={(e) =>
+                      value={item.unitCost}
+                      onChange={(e) =>
                         handleUnitCostChange(index, e.target.value)
                       }
+                      onFocus={(e) => e.target.select()}
                       slotProps={{
                         htmlInput: {
                           min: 0,
@@ -162,19 +120,22 @@ const PurchaseItemsSection = ({ productsData }) => {
                       }}
                     />
                   </TableCell>
-                  <TableCell>{field.total?.toFixed(2)}</TableCell>
+                  <TableCell>{item.total?.toFixed(2)}</TableCell>
                   <TableCell align="center">
                     <IconButton
                       color="error"
                       size="small"
-                      onClick={() => remove(index)}
+                      onClick={() => {
+                        removeItem(index);
+                        trigger("items");
+                      }}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-              {fields.length === 0 && (
+              {items.length === 0 && (
                 <TableRow>
                   <TableCell
                     colSpan={5}
@@ -189,15 +150,6 @@ const PurchaseItemsSection = ({ productsData }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        {errors.items && (
-          <Typography
-            color="error"
-            variant="caption"
-            sx={{ mt: 1, display: "block" }}
-          >
-            {errors.items.message}
-          </Typography>
-        )}
       </Grid>
     </FormSection>
   );
