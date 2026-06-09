@@ -222,25 +222,6 @@ const UserModal = ({
                 )}
               />
             </FormControl>
-            <FormControl fullWidth size="small">
-              <InputLabel id="role-label">Role *</InputLabel>
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    labelId="role-label"
-                    label="Role *"
-                    error={!!errors.role}
-                  >
-                    <MenuItem value="ADMIN">Admin</MenuItem>
-                    <MenuItem value="MANAGER">Manager</MenuItem>
-                    <MenuItem value="SALESMAN">Salesman</MenuItem>
-                  </Select>
-                )}
-              />
-            </FormControl>
 
             {/* Phone Field */}
             <TextField

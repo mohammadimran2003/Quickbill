@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
   if (err.code === "P2002") {
     return res.status(409).json({
       success: false,
-      message: `${err.meta?.modelName} already exists from errorHandler`,
+      message: `${err.meta?.modelName} already exists`,
     });
   }
   if (err.code === "P2023") {

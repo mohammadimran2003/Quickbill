@@ -8,6 +8,8 @@ const register = async (req, res) => {
   const { name, email, password, role, isActive, phone, address, photo } =
     req.body;
 
+  console.log(req.body, "req.body, from register");
+
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await prisma.user.create({
@@ -16,10 +18,10 @@ const register = async (req, res) => {
       email,
       role,
       password: hashPassword,
-      phone,
+      phone: phone || null,
+      address: address || null,
+      photo: photo || null,
       isActive,
-      address,
-      photo,
     },
   });
 

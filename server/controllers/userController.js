@@ -1,6 +1,7 @@
 import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import AppError from "../lib/utils/AppError.js";
+import { log } from "node:console";
 
 const createUser = async (req, res) => {
   const { name, email, password, role, isActive, phone, address, photo } =
@@ -14,10 +15,10 @@ const createUser = async (req, res) => {
       email,
       role,
       password: hashPassword,
-      phone,
+      phone: phone || null,
+      address: address || null,
+      photo: photo || null,
       isActive,
-      address,
-      photo,
     },
   });
 
@@ -109,11 +110,11 @@ const updateUser = async (req, res) => {
     address,
     photo,
   } = req.body;
-  console.log(isActive, "isActive", req.body, "req. body");
-
+  const user = req.user;
   if (password && confirmPassword && password !== confirmPassword) {
     throw new AppError("Passwords do not match!", 400);
   }
+  console.log(user, "user");
 
   const updateData = {};
 

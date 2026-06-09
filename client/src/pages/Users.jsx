@@ -74,13 +74,11 @@ function Users() {
       toast.promise(resetPasswordAsync(userData), {
         loading: "Resetting password...",
         success: (data) => {
-          console.log(data);
           setModalOpen(false);
           return "Password reset successfully";
         },
         error: (error) => {
-          console.log(error.message, "error");
-          return "Failed to reset password";
+          return error?.response?.data?.message || "Failed to reset password";
         },
       });
       return;
@@ -89,7 +87,6 @@ function Users() {
       toast.promise(updateUserAsync(userData), {
         loading: "Updating user...",
         success: (data) => {
-          console.log(data);
           setModalOpen(false);
           return "User updated successfully";
         },
@@ -102,13 +99,11 @@ function Users() {
       toast.promise(createUserAsync(userData), {
         loading: "Saving user...",
         success: (data) => {
-          console.log(data);
           setModalOpen(false);
           return "User saved successfully";
         },
         error: (error) => {
-          console.log(error);
-          return "Failed to save user";
+          return error?.response?.data?.message || "Failed to save user";
         },
       });
     }
