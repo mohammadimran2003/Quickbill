@@ -310,9 +310,20 @@ const getProfitReport = async (req, res) => {
 const getStockReport = async (req, res) => {
   const { from, to, groupBy = "daily" } = req.query;
 
-  const startDate = new Date(from);
-  const endDate = new Date(to);
+  let startDate = new Date(from);
+  let endDate = new Date(to);
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    const now = new Date();
+
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date();
+  }
+
   endDate.setHours(23, 59, 59, 999);
+
+  console.log(startDate, "startDAte");
+  console.log(endDate, "end Date");
 
   const where = {
     createdAt: { gte: startDate, lte: endDate },

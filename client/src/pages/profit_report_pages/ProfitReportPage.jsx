@@ -53,8 +53,6 @@ function ProfitReportPage() {
     });
   };
 
-  console.log(data, "data in page");
-
   const summary = data?.data?.summary || {};
   const chartData = data?.data?.chartData || [];
   const profitableProducts = data?.data?.profitableProducts || [];

@@ -10,6 +10,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import getExpenseStats from "../../api/expenses_api/getExpenseStats";
 import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
 import TakaIcon from "../shared/TakaIcon";
+import getStore from "../../api/stores_api/getStore";
 const DashboardTop = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardSummery"],
@@ -22,6 +23,11 @@ const DashboardTop = () => {
   } = useQuery({
     queryKey: ["expenseStats"],
     queryFn: () => getExpenseStats(),
+  });
+
+  const { data: storeData } = useQuery({
+    queryKey: ["store"],
+    queryFn: () => getStore(),
   });
 
   const { today, allTime } = data?.data || {};
@@ -43,7 +49,22 @@ const DashboardTop = () => {
         <StatCard
           title="Today Sales"
           value={today.sales}
-          icon={<TakaIcon sx={{ fontSize: 28 }} />}
+          icon={
+            <Typography
+              component="span"
+              sx={{
+                fontSize: 28,
+                fontWeight: "bold",
+                lineHeight: 1,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {storeData?.data.currency.symbol || (
+                <TakaIcon sx={{ fontSize: 28 }} />
+              )}
+            </Typography>
+          }
           type="sales"
         />
       </Grid>

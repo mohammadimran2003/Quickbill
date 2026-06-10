@@ -21,7 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import getBrandById from "../../api/brands_api/getBrandById";
 import DetailsStatCard from "../../components/shared/DetailsStatCard";
 import InfoItem from "../../components/shared/InfoItem";
-import DetailsPageheader from "../../components/shared/DetailsPageHeader";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
 
 const BrandDetailsPage = () => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const BrandDetailsPage = () => {
 
   return (
     <Box>
-      <DetailsPageheader
+      <DetailsPageHeader
         name={name}
         isActive={isActive}
         onEdit={() => navigate(`/brands/edit-brand/${id}`)}

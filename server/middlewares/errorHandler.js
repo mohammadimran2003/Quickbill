@@ -24,6 +24,14 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  if (err.code === "P2014") {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Cannot delete record because it is referenced by another record",
+    });
+  }
+
   // Custom AppError
   if (err.isOperational) {
     return res.status(err.statusCode).json({

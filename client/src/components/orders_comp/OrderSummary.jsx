@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Paper, Typography, Box, Divider, Chip } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import PersonIcon from "@mui/icons-material/Person";

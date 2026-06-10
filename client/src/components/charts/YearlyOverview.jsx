@@ -20,7 +20,6 @@ function YearlyOverview() {
     queryKey: ["monthlyPurchaseSales"],
     queryFn: () => getSalesPurchaseYearOverview(),
   });
-  console.log(data, "data");
 
   const chartData = data?.chartData || [];
 

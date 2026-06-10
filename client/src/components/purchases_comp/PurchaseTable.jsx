@@ -17,16 +17,13 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import getPurchases from "../../api/purchases_api/getPurchases";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useQuery } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deletePurchase from "../../api/purchases_api/deletePurchase";
 import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
-import { toast } from "sonner";
 
 import usePurchaseColumns from "./hooks/usePurchaseColumns";
 import PurchaseFilterSection from "./PurchaseFilterSection";
@@ -36,11 +33,6 @@ function PurchaseTable() {
   const [rowSelection, setRowSelection] = useState({});
   const [sorting, setSorting] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [purchaseToDelete, setPurchaseToDelete] = useState(null);
-
-  const queryClient = useQueryClient();
-
   const pageNumber = Number(searchParams.get("page")) || 1;
   const pageLimit = Number(searchParams.get("limit")) || 10;
 
@@ -49,25 +41,7 @@ function PurchaseTable() {
     queryFn: () => getPurchases(Object.fromEntries(searchParams)),
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: deletePurchase,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["purchases"] });
-      setDeleteDialogOpen(false);
-      setPurchaseToDelete(null);
-      toast.success("Purchase deleted successfully");
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to delete purchase");
-    },
-  });
-
-  const columns = usePurchaseColumns({
-    onDeleteClick: (purchase) => {
-      setPurchaseToDelete(purchase);
-      setDeleteDialogOpen(true);
-    },
-  });
+  const columns = usePurchaseColumns();
 
   const handlePageChange = (newPage) => {
     setSearchParams((prev) => ({ ...Object.fromEntries(prev), page: newPage }));
@@ -197,17 +171,6 @@ function PurchaseTable() {
           handleLimitChange(parseInt(event.target.value, 10))
         }
         rowsPerPageOptions={[2, 5, 10, 25, 50, 100]}
-      />
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onClose={() => {
-          setDeleteDialogOpen(false);
-          setPurchaseToDelete(null);
-        }}
-        onConfirm={() => deleteMutation.mutate(purchaseToDelete.id)}
-        title="Delete Purchase"
-        message={`Are you sure you want to delete purchase "${purchaseToDelete?.purchaseNumber}"? This action cannot be undone.`}
-        loading={deleteMutation.isPending}
       />
     </Paper>
   );

@@ -62,7 +62,6 @@ function PurchaseForm() {
     }
     prevItemsLength.current = items.length;
   }, [items, subTotal, total, paidAmount, dueAmount, setValue, clearErrors]);
-  console.log(paidAmount, "paid Amount");
 
   const {
     handleSubmit,

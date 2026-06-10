@@ -24,11 +24,11 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   const {
-    categoryId = "",
+    category = "",
     page = 1,
-    brandId = "",
+    brand = "",
     limit = 10,
-    search = "",
+    productName = "",
     sku = "",
     sortBy = "createdAt",
     sortOrder = "desc",
@@ -39,14 +39,14 @@ const getAllProducts = async (req, res) => {
   const skip = (Number(page) - 1) * Number(limit);
 
   const where = {
-    ...(search
+    ...(productName
       ? {
-          name: { contains: search, mode: "insensitive" },
+          name: { contains: productName, mode: "insensitive" },
         }
       : {}),
     ...(sku ? { sku: { contains: sku, mode: "insensitive" } } : {}),
-    ...(categoryId ? { categoryId: categoryId } : {}),
-    ...(brandId ? { brandId: brandId } : {}),
+    ...(category ? { categoryId: category } : {}),
+    ...(brand ? { brandId: brand } : {}),
     ...(productType ? { productType } : {}),
     ...(stockStatus
       ? {

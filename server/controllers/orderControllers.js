@@ -1,3 +1,4 @@
+import calculateReturnMetrics from "../lib/calculateReturnMetrics.js";
 import prisma from "../lib/prisma.js";
 import AppError from "../lib/utils/AppError.js";
 import getDiscountAmount from "../lib/utils/getDiscountAmount.js";
@@ -267,28 +268,10 @@ const getOrder = async (req, res) => {
   if (!order) {
     throw new AppError("Order not found", 404);
   }
+  console.log(order, "order");
 
-  // 2. ekta object e kon product koto bar return hoise ta jore dewa
-  const returnedQuantities = {};
-  order.returns.forEach((ret) => {
-    ret.items.forEach((item) => {
-      returnedQuantities[item.productId] =
-        (returnedQuantities[item.productId] || 0) + item.quantity;
-    });
-  });
-  // 3. mul order er item gulor sathe 'availableToReturn' hiseb jure dewa
-  const itemsWithReturnValidation = order.items.map((item) => {
-    const totalAlreadyReturned = returnedQuantities[item.productId] || 0;
-    const availableToReturn = item.quantity - totalAlreadyReturned;
+  const itemsWithReturnValidation = calculateReturnMetrics(order);
 
-    return {
-      ...item,
-      totalAlreadyReturned,
-      availableToReturn: availableToReturn < 0 ? 0 : availableToReturn,
-    };
-  });
-
-  // 4. frontend er jonnno clean response
   const { returns, ...cleanOrderData } = order;
   cleanOrderData.items = itemsWithReturnValidation;
 

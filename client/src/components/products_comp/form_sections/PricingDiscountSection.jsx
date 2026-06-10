@@ -17,8 +17,6 @@ const PricingDiscountSection = () => {
 
   const isDiscountValueDisabled = !discountType || discountType === "NONE";
 
-  console.log(discountType, "discounttyp");
-
   return (
     <FormSection title="Pricing & Discount">
       <Grid size={3}>

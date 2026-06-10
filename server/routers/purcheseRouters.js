@@ -1,7 +1,6 @@
 import express from "express";
 import {
   createPurchase,
-  deletePurchase,
   getPurchaseById,
   getPurchases,
   updatePurchase,
@@ -21,6 +20,5 @@ purchaseRouter.post(
 purchaseRouter.get("/", getPurchases);
 purchaseRouter.get("/:id", getPurchaseById);
 purchaseRouter.put("/:id", restrictTo("ADMIN", "MANAGER"), updatePurchase);
-purchaseRouter.delete("/:id", restrictTo("ADMIN", "MANAGER"), deletePurchase);
 
 export default purchaseRouter;

@@ -1,3 +1,4 @@
+import calculateReturnMetrics from "../lib/calculateReturnMetrics.js";
 import prisma from "../lib/prisma.js";
 import AppError from "../lib/utils/AppError.js";
 
@@ -8,6 +9,7 @@ const createPurchase = async (req, res) => {
     note,
     paidAmount,
     paymentMethod = "CASH",
+    status,
   } = req.body;
   const createdBy = req.user.id;
 
@@ -25,15 +27,6 @@ const createPurchase = async (req, res) => {
     0,
   );
   let totalAmount = subTotal;
-  console.log(totalAmount, "total amount for");
-
-  const purchaseCoutner = await prisma.purchaseCounter.upsert({
-    where: { name: "PURCHASE_COUNTER" },
-    update: { value: { increment: 1 } },
-    create: { name: "PURCHASE_COUNTER", value: 1 },
-  });
-
-  const purchaseNumber = `PUR-${String(purchaseCoutner.value).padStart(4, "0")}`;
 
   const result = await prisma.$transaction(async (tx) => {
     const supplier = supplierId
@@ -41,40 +34,56 @@ const createPurchase = async (req, res) => {
       : null;
 
     let walletDeduction = 0;
-
     let finalDue = 0;
+    let advanceAmount = 0;
 
-    if (paidAmount && totalAmount > paidAmount) {
-      finalDue = totalAmount - paidAmount;
+    let currentPaid = Number(paidAmount) || 0;
+
+    if (totalAmount > currentPaid) {
+      finalDue = totalAmount - currentPaid;
+
+      if (supplier && supplier.walletBalance > 0) {
+        walletDeduction = Math.min(Number(supplier.walletBalance), finalDue);
+        finalDue -= walletDeduction;
+        currentPaid += walletDeduction;
+      }
+    } else if (currentPaid > totalAmount) {
+      advanceAmount = currentPaid - totalAmount;
     }
 
-    if (supplier && supplier.walletBalance > 0 && finalDue > 0) {
-      walletDeduction = Math.min(Number(supplier.walletBalance), finalDue);
-      finalDue = finalDue - walletDeduction;
-    }
-
-    for (let item of items) {
-      await tx.product.update({
-        where: { id: item.productId },
-        data: { stock: { increment: item.quantity } },
-      });
+    if (status === "RECEIVED") {
+      for (let item of items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
     }
 
     if (supplierId) {
       await tx.supplier.update({
         where: { id: supplierId },
         data: {
-          walletBalance: { decrement: walletDeduction },
+          walletBalance:
+            advanceAmount > 0
+              ? { increment: advanceAmount }
+              : { decrement: walletDeduction },
           totalDue: { increment: finalDue },
           totalSpent: { increment: totalAmount },
         },
       });
     }
+    const purchaseCoutner = await tx.purchaseCounter.upsert({
+      where: { name: "PURCHASE_COUNTER" },
+      update: { value: { increment: 1 } },
+      create: { name: "PURCHASE_COUNTER", value: 1 },
+    });
+
+    const purchaseNumber = `PUR-${String(purchaseCoutner.value).padStart(4, "0")}`;
 
     const orderDate = new Date();
     const monthLabel = orderDate.toLocaleString("en-US", { month: "short" });
     const currentYear = orderDate.getFullYear();
-    console.log(walletDeduction, "walletdeduction");
 
     return await tx.purchase.create({
       data: {
@@ -82,12 +91,15 @@ const createPurchase = async (req, res) => {
         subTotal,
         total: totalAmount,
         dueAmount: finalDue,
+        paidAmount: currentPaid,
         note,
+        status,
         createdBy,
         purchaseNumber,
         paymentMethod,
         items: {
           create: items.map((item) => ({
+            productName: item.productName,
             productId: item.productId,
             quantity: item.quantity,
             unitCost: item.unitCost,
@@ -161,44 +173,89 @@ const getPurchaseById = async (req, res) => {
     where: { id },
     include: {
       supplier: true,
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              stock: true,
+            },
+          },
+        },
+      },
+      returns: {
+        include: { items: true },
+      },
     },
   });
+
+  const purchaseWithReturnMetrics = calculateReturnMetrics(purchase);
+
+  const { returns, ...cleanPurchaseData } = purchase;
+  cleanPurchaseData.items = purchaseWithReturnMetrics;
+
+  console.log(purchaseWithReturnMetrics, "purchaseWithRegturnMetrics");
+
   res.status(200).json({
     success: true,
     message: "Purchase retrieved successfully",
-    data: purchase,
+    data: cleanPurchaseData,
   });
 };
 
 const updatePurchase = async (req, res) => {
   const { id } = req.params;
-  const purchase = await prisma.purchase.update({
-    where: { id },
-    data: { ...req.body },
+
+  const { items, supplier, ...purchaseData } = req.body;
+
+  const updatedPurchase = await prisma.$transaction(async (tx) => {
+    const purchaseUpdate = await tx.purchase.update({
+      where: { id },
+      data: purchaseData,
+    });
+
+    if (items && Array.isArray(items)) {
+      for (const item of items) {
+        const {
+          id: itemId,
+          productId,
+          productName,
+          quantity,
+          returnedQty,
+          unitCost,
+          total,
+        } = item;
+
+        await tx.purchaseItem.update({
+          where: { id: itemId },
+          data: {
+            productId,
+            productName,
+            quantity,
+            returnedQty,
+            unitCost,
+            total,
+          },
+        });
+
+        await tx.product.update({
+          where: { id: productId },
+          data: {
+            stock: {
+              increment: quantity,
+            },
+          },
+        });
+      }
+    }
+
+    return purchaseUpdate;
   });
+
   res.status(200).json({
     success: true,
     message: "Purchase updated successfully",
-    data: purchase,
+    data: updatedPurchase,
   });
 };
 
-const deletePurchase = async (req, res) => {
-  const { id } = req.params;
-  await prisma.purchase.delete({
-    where: { id },
-  });
-  res.status(200).json({
-    success: true,
-    message: "Purchase deleted successfully",
-  });
-};
-
-export {
-  createPurchase,
-  getPurchases,
-  getPurchaseById,
-  updatePurchase,
-  deletePurchase,
-};
+export { createPurchase, getPurchases, getPurchaseById, updatePurchase };

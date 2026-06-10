@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import getCategoryById from "../../api/categories_api/getCategoryById";
 import InfoItem from "../../components/shared/InfoItem";
 import DetailsStatCard from "../../components/shared/DetailsStatCard";
-import DetailsPageheader from "../../components/shared/DetailsPageHeader";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
 
 const CategoryDetailsPage = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const CategoryDetailsPage = () => {
   return (
     <Box>
       {/* Header Section */}
-      <DetailsPageheader
+      <DetailsPageHeader
         name={name}
         isActive={isActive}
         onEdit={() => navigate(`/categories/edit-category/${id}`)}

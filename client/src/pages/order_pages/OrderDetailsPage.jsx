@@ -31,7 +31,6 @@ const OrderDetailsPage = () => {
     queryFn: () => getOrderById(id),
   });
   const order = data?.data || {};
-  console.log(order, "data");
 
   const returnMutation = useMutation({
     mutationFn: createReturn,

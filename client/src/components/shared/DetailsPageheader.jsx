@@ -11,7 +11,7 @@ import {
   Edit as EditIcon,
 } from "@mui/icons-material";
 
-function DetailsPageheader({ name, isActive, onEdit, editLabel }) {
+function DetailsPageHeader({ name, isActive, onEdit, editLabel }) {
   return (
     <Stack
       direction="row"
@@ -47,4 +47,4 @@ function DetailsPageheader({ name, isActive, onEdit, editLabel }) {
   );
 }
 
-export default DetailsPageheader;
+export default DetailsPageHeader;

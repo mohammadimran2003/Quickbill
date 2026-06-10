@@ -42,8 +42,6 @@ function Customers() {
     setModalOpen(true);
   };
 
-  console.log(selectedCustomer, "se");
-
   const handleEditClick = (customer) => {
     setSelectedCustomer(customer);
     setModalOpen(true);

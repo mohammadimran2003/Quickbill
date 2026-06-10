@@ -9,11 +9,7 @@ const ReportHeader = React.forwardRef(
       queryFn: () => getStore(),
     });
 
-    console.log(storeData, "storeData");
-
-    const { name, address, phone, currency } = storeData?.data || {};
-
-    const currencySymbol = currency?.symbol || currency || "৳";
+    const { name, address, phone } = storeData?.data || {};
 
     return (
       <div

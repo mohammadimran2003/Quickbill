@@ -1,8 +1,5 @@
-import z from "zod";
-
 const validatorsMiddleware = (schema) => (req, res, next) => {
   const result = schema.safeParse(req.body);
-  console.log(req.body, "req.body");
 
   if (!result.success) {
     return res.status(400).json({

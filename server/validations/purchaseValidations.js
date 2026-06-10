@@ -15,6 +15,7 @@ const purchaseSchema = z.object({
   note: z.string().optional(),
   paidAmount: z.number().min(0, "Paid amount cannot be negative"),
   paymentMethod: z.enum(["CASH", "CARD", "MOBILE_BANKING", "UNPAID"]),
+  status: z.enum(["ORDERED", "RECEIVED", "CANCELLED"]),
 });
 
 export default purchaseSchema;

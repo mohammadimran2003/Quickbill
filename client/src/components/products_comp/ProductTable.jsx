@@ -118,7 +118,7 @@ function ProductTable({ onEditClick = () => {} }) {
     state: { rowSelection, sorting },
     manualPagination: true,
     manualSorting: true,
-    rowCount: data?.count || 0,
+    rowCount: data?.pagination?.total || 0,
     onRowSelectionChange: setRowSelection,
     onSortingChange: handleSortingChange,
     getRowId: (row) => row.id,
@@ -216,14 +216,14 @@ function ProductTable({ onEditClick = () => {} }) {
 
       <TablePagination
         component="div"
-        count={data?.count || 0}
+        count={data?.pagination?.total || 0}
         page={pageNumber - 1}
         onPageChange={(_, newPage) => handlePageChange(newPage + 1)}
         rowsPerPage={pageLimit}
         onRowsPerPageChange={(e) =>
           handleLimitChange(parseInt(e.target.value, 10))
         }
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
       />
 
       <DeleteConfirmationDialog

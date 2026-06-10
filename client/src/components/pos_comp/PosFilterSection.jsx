@@ -35,8 +35,8 @@ function PosFilterSection({ hasFilters }) {
     });
   };
 
-  const currentBrandId = searchParams.get("brandId");
-  const currentCategoryId = searchParams.get("categoryId");
+  const currentBrandId = searchParams.get("brand");
+  const currentCategoryId = searchParams.get("category");
 
   const selectedBrand =
     currentBrandId && currentBrandId !== "undefined"
@@ -50,11 +50,10 @@ function PosFilterSection({ hasFilters }) {
 
   return (
     <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-      {/*  Brands Autocomplete */}
       <Autocomplete
         options={brands}
         value={selectedBrand}
-        onChange={(event, newValue) => handleFilterChange("brandId", newValue)}
+        onChange={(event, newValue) => handleFilterChange("brand", newValue)}
         getOptionLabel={(option) => option.name || ""}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         sx={{ width: 250 }}
@@ -68,9 +67,7 @@ function PosFilterSection({ hasFilters }) {
       <Autocomplete
         options={categories}
         value={selectedCategory}
-        onChange={(event, newValue) =>
-          handleFilterChange("categoryId", newValue)
-        }
+        onChange={(event, newValue) => handleFilterChange("category", newValue)}
         getOptionLabel={(option) => option.name || ""}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         sx={{ width: 250 }}

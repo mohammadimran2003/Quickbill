@@ -26,22 +26,22 @@ function POS() {
 
   const [searchInputValue, setSearchInputValue] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const brandId = searchParams.get("brandId") || "";
-  const categoryId = searchParams.get("categoryId") || "";
-  const search = searchParams.get("search") || "";
+  const brand = searchParams.get("brand") || "";
+  const category = searchParams.get("category") || "";
+  const productName = searchParams.get("productName") || "";
 
-  const hasFilters = brandId || categoryId || search;
+  const hasFilters = brand || category || productName;
 
   const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["products", search, brandId, categoryId],
+      queryKey: ["products", productName, brand, category],
       queryFn: ({ pageParam = 1 }) =>
         getProducts({
           page: pageParam,
           limit: 12,
-          search,
-          brandId,
-          categoryId,
+          productName,
+          brand,
+          category,
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
@@ -55,9 +55,9 @@ function POS() {
       setSearchParams((prev) => {
         const currentParams = Object.fromEntries(prev);
         if (value) {
-          currentParams.search = value;
+          currentParams.productName = value;
         } else {
-          delete currentParams.search;
+          delete currentParams.productName;
         }
         return currentParams;
       });

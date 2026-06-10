@@ -15,7 +15,6 @@ import {
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 const PurchaseItemsTable = ({ purchase, onReturnItem }) => {
-  console.log(purchase, "purchase");
   return (
     <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 2 }}>
       <Box sx={{ p: 2 }}>
