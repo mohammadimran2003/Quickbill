@@ -58,17 +58,6 @@ function ProfitReportPage() {
   const profitableProducts = data?.data?.profitableProducts || [];
   const profitByCategory = data?.data?.profitByCategory || [];
 
-  const totalRevenue = summary?.totalRevenue || 0;
-  const totalProfit = summary?.totalProfit || 0;
-  const totalCostPrice = summary?.totalCostPrice || 0;
-
-  const profitMargin =
-    totalRevenue > 0 ? ((totalProfit / totalRevenue) * 100).toFixed(1) : "0.0";
-  const markupPercentage =
-    totalCostPrice > 0
-      ? ((totalProfit / totalCostPrice) * 100).toFixed(1)
-      : "0.0";
-
   if (isError) {
     return (
       <Box sx={{ p: 4 }}>
