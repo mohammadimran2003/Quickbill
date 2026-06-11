@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import getCategoryById from "../../api/categories_api/getCategoryById";
 import InfoItem from "../../components/shared/InfoItem";
 import DetailsStatCard from "../../components/shared/DetailsStatCard";
-import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader.jsx";
 
 const CategoryDetailsPage = () => {
   const navigate = useNavigate();

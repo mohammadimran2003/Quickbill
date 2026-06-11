@@ -21,7 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import getBrandById from "../../api/brands_api/getBrandById";
 import DetailsStatCard from "../../components/shared/DetailsStatCard";
 import InfoItem from "../../components/shared/InfoItem";
-import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader.jsx";
 
 const BrandDetailsPage = () => {
   const navigate = useNavigate();

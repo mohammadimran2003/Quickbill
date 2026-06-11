@@ -23,7 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import getSupplierById from "../../api/suppliers_api/getSupplierById";
 import InfoItem from "../../components/shared/InfoItem";
 import DetailsStatCard from "../../components/shared/DetailsStatCard";
-import DetailsPageHeader from "../../components/shared/DetailsPageHeader";
+import DetailsPageHeader from "../../components/shared/DetailsPageHeader.jsx";
 
 const SupplierDetailsPage = () => {
   const navigate = useNavigate();
