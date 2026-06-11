@@ -47,7 +47,7 @@ const createOrder = async (req, res) => {
 
     if (product.stock < item.quantity) {
       throw new AppError(
-        `${product.name} er stock nai. Available: ${product.stock}`,
+        `Out of stock for ${product.name}. Available: ${product.stock}`,
         400,
       );
     }

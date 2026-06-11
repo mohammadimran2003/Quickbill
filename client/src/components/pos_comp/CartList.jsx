@@ -119,8 +119,6 @@ function CartList() {
         draftId: draftData?.id,
       };
 
-      console.log(orderData, "orderData");
-
       toast.promise(createOrderMutation(orderData), {
         loading: "Creating order...",
         success: (data) => {

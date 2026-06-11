@@ -57,7 +57,7 @@ const orderSchema = z
     },
     {
       message:
-        "Amount paid 0 hole method 'UNPAID' hote hobe, ar taka dile 'UNPAID' kora jabe na",
+        "Payment status must be 'UNPAID' when the amount paid is 0, and cannot be 'UNPAID' if an amount has been paid.",
       path: ["paymentMethod"],
     },
   );
