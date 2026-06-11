@@ -15,7 +15,7 @@ import PageHeader from "../../components/shared/PageHeader.jsx";
 import PurchaseDetailsSection from "../../components/purchases_comp/form_sections/PurchaseDetailsSection.jsx";
 import PurchaseItemsSection from "../../components/purchases_comp/form_sections/PurchaseItemsSection.jsx";
 import PurchaseSummarySection from "../../components/purchases_comp/form_sections/PurchaseSummarySection.jsx";
-import usePurchaseStore from "../../store/purchaseStore.jsx";
+import usePurchaseStore from "../../store/purchaseStore.js";
 
 const defaultValues = {
   supplierId: "",

@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
-import useCartStore from "../../store/cartStore.jsx";
+import useCartStore from "../../store/cartStore.js";
 import { useMutation } from "@tanstack/react-query";
 import createDraft from "../../api/drafts_api/createDraft.js";
 import { toast } from "sonner";

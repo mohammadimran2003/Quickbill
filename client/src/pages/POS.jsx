@@ -8,9 +8,9 @@ import {
 import { useInfiniteQuery } from "@tanstack/react-query";
 import getProducts from "../api/products_api/getProducts.js";
 import ProductCard from "../components/pos_comp/ProductCard.jsx";
-import useCartStore from "../store/cartStore.jsx";
+import useCartStore from "../store/cartStore.js";
 import CartList from "../components/pos_comp/CartList.jsx";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";
 import PosFilterSection from "../components/pos_comp/PosFilterSection.jsx";

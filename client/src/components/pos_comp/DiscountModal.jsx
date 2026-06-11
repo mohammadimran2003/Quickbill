@@ -11,7 +11,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import useCartStore from "../../store/cartStore.jsx";
+import useCartStore from "../../store/cartStore.js";
 import { useState } from "react";
 
 function DiscountModal({ open, setOpen }) {

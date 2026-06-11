@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import getDrafts from "../../api/drafts_api/getDrafts.js";
 import deleteDraft from "../../api/drafts_api/draftDelete.js";
-import useCartStore from "../../store/cartStore.jsx";
+import useCartStore from "../../store/cartStore.js";
 import { toast } from "sonner";
 import DeleteIcon from "@mui/icons-material/Delete";
 

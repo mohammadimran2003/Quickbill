@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useCartStore from "../../store/cartStore.jsx";
+import useCartStore from "../../store/cartStore.js";
 import { Box, Typography, IconButton, Button, Paper } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";

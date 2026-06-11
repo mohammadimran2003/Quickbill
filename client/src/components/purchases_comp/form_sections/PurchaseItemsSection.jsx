@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormSection from "./FormSection.jsx";
-import usePurchaseStore from "../../../store/purchaseStore.jsx";
+import usePurchaseStore from "../../../store/purchaseStore.js";
 import { useFormContext } from "react-hook-form";
 
 const PurchaseItemsSection = ({ productsData }) => {
