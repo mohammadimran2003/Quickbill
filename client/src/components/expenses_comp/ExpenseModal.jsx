@@ -165,7 +165,7 @@ const ExpenseModal = ({ open, onClose, onSave, initialData = null }) => {
 
           {/* Amount Field */}
           <TextField
-            {...register("amount", { valueAsNumber: true })}
+            {...register("amount")}
             label="Amount"
             type="number"
             fullWidth

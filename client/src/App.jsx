@@ -40,25 +40,7 @@ import getTheme from "./theme.js";
 
 function App() {
   const { user } = useAuth();
-
   const { mode } = useContext(ThemeContext);
-
-  function same(arr1, arr2) {
-    let result = [];
-    for (let item1 of arr1) {
-      result.push(item1 * item1);
-    }
-
-    const isEqual =
-      result.length === arr2.length &&
-      JSON.stringify([...result].sort()) === JSON.stringify([...arr2].sort());
-
-    console.log(result, arr2);
-
-    return isEqual;
-  }
-
-  console.log(same([2, 3, 6], [9, 4, 36]));
 
   return (
     <MuiThemeProvider theme={getTheme(mode)}>
