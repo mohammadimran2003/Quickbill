@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material";
-import menuSections from "../../data/MenuSections";
+import menuSections from "../../data/MenuSections.jsx";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink, useLocation } from "react-router-dom";

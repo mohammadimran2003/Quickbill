@@ -14,11 +14,11 @@ import {
   Typography,
   Switch,
 } from "@mui/material";
-import { createCategorySchema } from "../../validations/categoryValidation";
-import createCategory from "../../api/categories_api/createCategory";
-import getCategoryById from "../../api/categories_api/getCategoryById";
+import { createCategorySchema } from "../../validations/categoryValidation.js";
+import createCategory from "../../api/categories_api/createCategory.js";
+import getCategoryById from "../../api/categories_api/getCategoryById.js";
 import { toast } from "sonner";
-import updateCategory from "../../api/categories_api/updateCategory";
+import updateCategory from "../../api/categories_api/updateCategory.js";
 
 const defaultValues = {
   name: "",

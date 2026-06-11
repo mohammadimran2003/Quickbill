@@ -16,18 +16,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getPurchases from "../../api/purchases_api/getPurchases";
+import getPurchases from "../../api/purchases_api/getPurchases.js";
 import { useQuery } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
-
-import usePurchaseColumns from "./hooks/usePurchaseColumns";
-import PurchaseFilterSection from "./PurchaseFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import usePurchaseColumns from "./hooks/usePurchaseColumns.jsx";
+import PurchaseFilterSection from "./PurchaseFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function PurchaseTable() {
   const [rowSelection, setRowSelection] = useState({});

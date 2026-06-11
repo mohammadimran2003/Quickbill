@@ -1,16 +1,16 @@
 import { Grid } from "@mui/material";
 import { Box, Typography } from "@mui/material";
-import StatCard from "../shared/StatCard";
-import getDashboardSummery from "../../api/dashboard_api/getDashboardSummery";
+import StatCard from "../shared/StatCard.jsx";
+import getDashboardSummery from "../../api/dashboard_api/getDashboardSummery.js";
 import { useQuery } from "@tanstack/react-query";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import getExpenseStats from "../../api/expenses_api/getExpenseStats";
-import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
-import TakaIcon from "../shared/TakaIcon";
-import getStore from "../../api/stores_api/getStore";
+import getExpenseStats from "../../api/expenses_api/getExpenseStat.jss";
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton.jsx";
+import TakaIcon from "../shared/TakaIcon.jsx";
+import getStore from "../../api/stores_api/getStore.js";
 const DashboardTop = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardSummery"],

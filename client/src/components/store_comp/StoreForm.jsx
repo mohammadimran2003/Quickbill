@@ -1,7 +1,7 @@
 import { Box, Button, Paper } from "@mui/material";
-import BasicInformationSection from "./BasicInformationSection";
-import InvoiceSettingsSection from "./InvoiceSettingsSection";
-import RegionalSettingsSection from "./RegionalSettingsSection";
+import BasicInformationSection from "./BasicInformationSection.jsx";
+import InvoiceSettingsSection from "./InvoiceSettingsSection.jsx";
+import RegionalSettingsSection from "./RegionalSettingsSection.jsx";
 
 const StoreForm = ({
   register,

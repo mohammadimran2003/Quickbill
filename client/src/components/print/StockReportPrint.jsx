@@ -1,11 +1,11 @@
 import React from "react";
-import ReportHeader from "../shared/ReportHeader";
-import ReportFooter from "../shared/ReportFooter";
-import SummaryCard from "./components/SummaryCard";
-import StockReportTable from "./components/StockReportTable";
-import LowStockTable from "./components/LowStockTable";
-import StockByCategoryTable from "./components/StockByCategoryTable";
-import useFmt from "../../hooks/useFmt";
+import ReportHeader from "../shared/ReportHeader.jsx";
+import ReportFooter from "../shared/ReportFooter.jsx";
+import SummaryCard from "./components/SummaryCard.jsx";
+import StockReportTable from "./components/StockReportTable.jsx";
+import LowStockTable from "./components/LowStockTable.jsx";
+import StockByCategoryTable from "./components/StockByCategoryTable.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 const StockReportPrint = React.forwardRef(
   (

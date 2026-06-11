@@ -14,7 +14,7 @@ import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getLowStock } from "../../api/products_api/getLowStock";
+import { getLowStock } from "../../api/products_api/getLowStock.js";
 
 function Notification() {
   const theme = useTheme();

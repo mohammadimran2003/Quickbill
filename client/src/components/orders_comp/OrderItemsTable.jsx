@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import useFmt from "../../hooks/useFmt";
+import useFmt from "../../hooks/useFmt.js";
 
 const OrderItemsTable = ({ order, onReturnItem }) => {
   const fmt = useFmt();

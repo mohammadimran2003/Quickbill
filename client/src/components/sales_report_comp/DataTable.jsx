@@ -10,8 +10,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
-import useFmt from "../../hooks/useFmt";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 function DataTable({ chartData, isLoading }) {
   const fmt = useFmt();

@@ -17,15 +17,15 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import getExpenseCategories from "../../api/expenses_api/getExpenseCategories";
-import createExpenseCategory from "../../api/expenses_api/createExpenseCategory";
+import getExpenseCategories from "../../api/expenses_api/getExpenseCategories.js";
+import createExpenseCategory from "../../api/expenses_api/createExpenseCategory.js";
 import AddIcon from "@mui/icons-material/Add";
 import { toast } from "sonner";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { createExpenseSchema } from "../../validations/expenseValidations";
+import { createExpenseSchema } from "../../validations/expenseValidations.js";
 
 const ExpenseModal = ({ open, onClose, onSave, initialData = null }) => {
   const isEditMode = !!initialData;

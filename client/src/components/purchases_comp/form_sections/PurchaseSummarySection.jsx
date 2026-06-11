@@ -1,6 +1,6 @@
 import { Grid, Typography, Stack, Divider, TextField } from "@mui/material";
-import FormSection from "./FormSection";
-import usePurchaseStore from "../../../store/purchaseStore";
+import FormSection from "./FormSection.jsx";
+import usePurchaseStore from "../../../store/purchaseStore.jsx";
 
 const PurchaseSummarySection = () => {
   const { total, dueAmount, paidAmount, setPaidAmount } = usePurchaseStore();

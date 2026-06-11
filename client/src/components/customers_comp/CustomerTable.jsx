@@ -17,7 +17,7 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import getCustomers from "../../api/customers_api/getCustomers";
+import getCustomers from "../../api/customers_api/getCustomers.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import TablePagination from "@mui/material/TablePagination";
@@ -25,13 +25,13 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteCustomer from "../../api/customers_api/deleteCustomer";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
+import deleteCustomer from "../../api/customers_api/deleteCustomer.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
 
-import useCustomerColumns from "./hooks/useCustomerColumns";
-import CustomerFilterSection from "./CustomerFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useCustomerColumns from "./hooks/useCustomerColumns.jsx";
+import CustomerFilterSection from "./CustomerFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function CustomerTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});

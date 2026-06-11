@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import getStore from "../api/stores_api/getStore";
+import getStore from "../api/stores_api/getStore.js";
 
 const useFmt = () => {
   const { data } = useQuery({

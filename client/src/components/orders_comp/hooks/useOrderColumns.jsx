@@ -1,7 +1,7 @@
 import { Checkbox, Stack, Tooltip, IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
-import useFmt from "../../../hooks/useFmt";
+import useFmt from "../../../hooks/useFmt.js";
 
 function useOrderColumns() {
   const navigate = useNavigate();

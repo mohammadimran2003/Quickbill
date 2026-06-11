@@ -6,18 +6,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import getProducts from "../api/products_api/getProducts";
-import ProductCard from "../components/pos_comp/ProductCard";
-import useCartStore from "../store/cartStore";
-import CartList from "../components/pos_comp/CartList";
+import getProducts from "../api/products_api/getProducts.js";
+import ProductCard from "../components/pos_comp/ProductCard.jsx";
+import useCartStore from "../store/cartStore.jsx";
+import CartList from "../components/pos_comp/CartList.jsx";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";
-import PosFilterSection from "../components/pos_comp/PosFilterSection";
+import PosFilterSection from "../components/pos_comp/PosFilterSection.jsx";
 import { useSearchParams } from "react-router-dom";
-import ProductNotFound from "../components/pos_comp/ProductNotFound";
+import ProductNotFound from "../components/pos_comp/ProductNotFound.jsx";
 import { useTheme } from "@mui/material";
-import ProductSkeleton from "../components/shared/skeletons/ProductSkeleton";
+import ProductSkeleton from "../components/shared/skeletons/ProductSkeleton.jsx";
 
 function POS() {
   const theme = useTheme();

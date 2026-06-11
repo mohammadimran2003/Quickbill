@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, Chip } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { useReactToPrint } from "react-to-print";
-import PrintBtn from "../shared/PrintBtn";
+import PrintBtn from "../shared/PrintBtn.jsx";
 
 const OrderHeader = ({ order, printRef }) => {
   const handlePrint = useReactToPrint({

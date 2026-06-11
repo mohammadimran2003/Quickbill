@@ -17,7 +17,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { customerSchema } from "../../validations/customerValidation";
+import { customerSchema } from "../../validations/customerValidation.js";
 
 const CustomerModal = ({ open, onClose, onSave, initialData = null }) => {
   const isEditMode = !!initialData;

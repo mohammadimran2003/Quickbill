@@ -14,10 +14,10 @@ import {
   Typography,
   Switch,
 } from "@mui/material";
-import { createBrandSchema } from "../../validations/brandValidation";
-import createBrand from "../../api/brands_api/createBrand";
-import updateBrand from "../../api/brands_api/updateBrand";
-import getBrandById from "../../api/brands_api/getBrandById";
+import { createBrandSchema } from "../../validations/brandValidation.js";
+import createBrand from "../../api/brands_api/createBrand.js";
+import updateBrand from "../../api/brands_api/updateBrand.js";
+import getBrandById from "../../api/brands_api/getBrandById.js";
 import { toast } from "sonner";
 
 const defaultValues = {

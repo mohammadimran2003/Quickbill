@@ -1,4 +1,4 @@
-import useFmt from "../../../hooks/useFmt";
+import useFmt from "../../../hooks/useFmt.js";
 
 const SalesSummaryCards = ({ summary }) => {
   const fmt = useFmt();

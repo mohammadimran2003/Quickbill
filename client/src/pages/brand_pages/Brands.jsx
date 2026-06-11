@@ -1,11 +1,10 @@
-import BrandTable from "../../components/brands_comp/BrandTable";
-import BrandModal from "../../components/brands_comp/BrandModal";
-import PageHeader from "../../components/shared/PageHeader";
-import { Box } from "@mui/material";
+import BrandTable from "../../components/brands_comp/BrandTable.jsx";
+import BrandModal from "../../components/brands_comp/BrandModal.jsx";
+import PageHeader from "../../components/shared/PageHeader.jsx";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import createBrand from "../../api/brands_api/createBrand";
-import updateBrand from "../../api/brands_api/updateBrand";
+import createBrand from "../../api/brands_api/createBrand.js";
+import updateBrand from "../../api/brands_api/updateBrand.js";
 import { toast } from "sonner";
 
 function Brands() {

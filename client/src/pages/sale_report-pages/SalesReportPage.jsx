@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef, Suspense } from "react";
-import SalesReportChart from "../../components/sales_report_comp/SalesReportChart";
+import SalesReportChart from "../../components/sales_report_comp/SalesReportChart.jsx";
 import { Box, Grid, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getSalesReport } from "../../api/reports_api/getSalesReports";
+import { getSalesReport } from "../../api/reports_api/getSalesReports.js";
 import dayjs from "dayjs";
-import DataTable from "../../components/sales_report_comp/DataTable";
-import TopProductsTable from "../../components/sales_report_comp/TopProductsTable";
-import TopCustomersTable from "../../components/sales_report_comp/TopCustomersTable";
+import DataTable from "../../components/sales_report_comp/DataTable.jsx";
+import TopProductsTable from "../../components/sales_report_comp/TopProductsTable.jsx";
+import TopCustomersTable from "../../components/sales_report_comp/TopCustomersTable.jsx";
 import { useReactToPrint } from "react-to-print";
-import SalesReportPrint from "../../components/print/SalesReportPrint";
-import DateRangeFilter from "../../components/shared/DateRangeFilter";
-import PrintBtn from "../../components/shared/PrintBtn";
-import SalesStats from "../../components/sales_report_comp/SalesStats";
-import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
+import SalesReportPrint from "../../components/print/SalesReportPrint.jsx";
+import DateRangeFilter from "../../components/shared/DateRangeFilter.jsx";
+import PrintBtn from "../../components/shared/PrintBtn.jsx";
+import SalesStats from "../../components/sales_report_comp/SalesStats.jsx";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton.jsx";
 
 function SalesReportPage() {
   const [groupBy, setGroupBy] = useState("daily");

@@ -12,7 +12,7 @@ import {
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth.js";
 
 function UserProfile() {
   const theme = useTheme();

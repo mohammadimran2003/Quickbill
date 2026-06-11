@@ -1,17 +1,5 @@
+import { Box, Typography, Grid, Paper, Divider, Stack } from "@mui/material";
 import {
-  Box,
-  Typography,
-  Grid,
-  Paper,
-  Divider,
-  Chip,
-  Stack,
-  IconButton,
-  Button,
-} from "@mui/material";
-import {
-  ArrowBack as ArrowBackIcon,
-  Edit as EditIcon,
   Inventory as InventoryIcon,
   Phone as PhoneIcon,
   Email as EmailIcon,
@@ -20,9 +8,9 @@ import {
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import getSupplierById from "../../api/suppliers_api/getSupplierById";
-import InfoItem from "../../components/shared/InfoItem";
-import DetailsStatCard from "../../components/shared/DetailsStatCard";
+import getSupplierById from "../../api/suppliers_api/getSupplierById.js";
+import InfoItem from "../../components/shared/InfoItem.jsx";
+import DetailsStatCard from "../../components/shared/DetailsStatCard.jsx";
 import DetailsPageHeader from "../../components/shared/DetailsPageHeader.jsx";
 
 const SupplierDetailsPage = () => {

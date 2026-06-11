@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef, Suspense } from "react";
-import { Box, Grid, CircularProgress, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
-import DateRangeFilter from "../../components/shared/DateRangeFilter";
+import DateRangeFilter from "../../components/shared/DateRangeFilter.jsx";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { getProfitReport } from "../../api/reports_api/getProfitReports";
-import ProfitVsRevenueChart from "../../components/charts/ProfitVsRevenueChart";
-import MostProfitableProducts from "../../components/profits_report_comp/MostProfitableProducts";
-import ProfitReportPrint from "../../components/print/ProfitReportPrint";
-import ProfitByCategoryChart from "../../components/charts/ProfitByCategoryChart";
-import PrintBtn from "../../components/shared/PrintBtn";
-import ProfitsStats from "../../components/profits_report_comp/ProfitsStats";
-import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
+import { getProfitReport } from "../../api/reports_api/getProfitReports.js";
+import ProfitVsRevenueChart from "../../components/charts/ProfitVsRevenueChart.jsx";
+import MostProfitableProducts from "../../components/profits_report_comp/MostProfitableProducts.jsx";
+import ProfitReportPrint from "../../components/print/ProfitReportPrint.jsx";
+import ProfitByCategoryChart from "../../components/charts/ProfitByCategoryChart.jsx";
+import PrintBtn from "../../components/shared/PrintBtn.jsx";
+import ProfitsStats from "../../components/profits_report_comp/ProfitsStats.jsx";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton.jsx";
 
 function ProfitReportPage() {
   const [groupBy, setGroupBy] = useState("daily");

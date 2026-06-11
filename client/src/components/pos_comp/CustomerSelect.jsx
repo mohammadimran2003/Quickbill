@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { debounce } from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import getCustomers from "../../api/customers_api/getCustomers";
+import getCustomers from "../../api/customers_api/getCustomers.js";
 
 const CustomerSelect = ({
   selectedCustomer,

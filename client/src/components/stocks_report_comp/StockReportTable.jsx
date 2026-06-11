@@ -11,7 +11,7 @@ import {
   Chip,
   Box,
 } from "@mui/material";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 const StockReportTable = ({ stockDetails, isLoading }) => {
   if (!stockDetails || stockDetails.length === 0) {

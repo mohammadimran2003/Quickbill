@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../axios.js";
 
 const createUser = async (userData) => {
   console.log(userData, "userData");

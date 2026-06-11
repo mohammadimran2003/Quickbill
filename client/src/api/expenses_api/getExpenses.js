@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../axios.js";
 
 const getExpenses = async (params) => {
   const response = await api.get("/expenses", { params });

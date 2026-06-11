@@ -1,5 +1,5 @@
-import PageHeader from "../../components/shared/PageHeader";
-import SupplierTable from "../../components/suppliers_comp/SupplierTable";
+import PageHeader from "../../components/shared/PageHeader.jsx";
+import SupplierTable from "../../components/suppliers_comp/SupplierTable.jsx";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { Box, Paper, Typography, useTheme } from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {

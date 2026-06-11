@@ -16,20 +16,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getCategories from "../../api/categories_api/getCategories";
+import getCategories from "../../api/categories_api/getCategories.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteCategory from "../../api/categories_api/deleteCategory";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
+import deleteCategory from "../../api/categories_api/deleteCategory.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
 
-import useCategoryColumns from "./hooks/useCategoryColumns";
-import CategoryFilterSection from "./CategoryFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useCategoryColumns from "./hooks/useCategoryColumns.jsx";
+import CategoryFilterSection from "./CategoryFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function CategoryTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});

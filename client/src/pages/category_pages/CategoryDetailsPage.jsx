@@ -1,14 +1,13 @@
 import { Box, Typography, Grid, Paper, Divider, Stack } from "@mui/material";
 import {
-  Edit as EditIcon,
   Inventory as InventoryIcon,
   Description as DescriptionIcon,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import getCategoryById from "../../api/categories_api/getCategoryById";
-import InfoItem from "../../components/shared/InfoItem";
-import DetailsStatCard from "../../components/shared/DetailsStatCard";
+import getCategoryById from "../../api/categories_api/getCategoryById.js";
+import InfoItem from "../../components/shared/InfoItem.jsx";
+import DetailsStatCard from "../../components/shared/DetailsStatCard.jsx";
 import DetailsPageHeader from "../../components/shared/DetailsPageHeader.jsx";
 
 const CategoryDetailsPage = () => {

@@ -9,7 +9,6 @@ import {
   TableBody,
   TableCell,
   Stack,
-  CircularProgress,
 } from "@mui/material";
 import {
   flexRender,
@@ -24,14 +23,14 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { toast } from "sonner";
-import getProducts from "../../api/products_api/getProducts";
-import deleteProduct from "../../api/products_api/deleteProduct";
-import getCategories from "../../api/categories_api/getCategories";
-import getBrands from "../../api/brands_api/getBrands";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
-import ProductFilterSection from "./ProductFilterSection";
-import useProductColumns from "./hooks/useProductColumns";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import getProducts from "../../api/products_api/getProducts.js";
+import deleteProduct from "../../api/products_api/deleteProduct.js";
+import getCategories from "../../api/categories_api/getCategories.js";
+import getBrands from "../../api/brands_api/getBrands.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
+import ProductFilterSection from "./ProductFilterSection.jsx";
+import useProductColumns from "./hooks/useProductColumns.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function ProductTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});

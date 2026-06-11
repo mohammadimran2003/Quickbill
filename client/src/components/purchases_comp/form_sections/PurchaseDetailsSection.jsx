@@ -8,7 +8,7 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
-import FormSection from "./FormSection";
+import FormSection from "./FormSection.jsx";
 
 const PurchaseDetailsSection = ({ suppliersData }) => {
   const { control, register } = useFormContext();

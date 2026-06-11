@@ -1,6 +1,6 @@
 import { useFormContext, Controller, useWatch } from "react-hook-form";
 import { Grid, TextField, MenuItem } from "@mui/material";
-import FormSection from "./FormSection";
+import FormSection from "./FormSection.jsx";
 
 const PricingDiscountSection = () => {
   const {

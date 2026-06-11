@@ -22,10 +22,10 @@ import {
   BrandingWatermark as BrandIcon,
 } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
-import getProductById from "../../api/products_api/getProductById";
-import ProductDetailHeader from "../../components/products_comp/ProductDetailHeader";
+import getProductById from "../../api/products_api/getProductById.js";
+import ProductDetailHeader from "../../components/products_comp/ProductDetailHeader.jsx";
 import { Suspense } from "react";
-import ProductDetailSkeleton from "../../components/shared/skeletons/ProductDetailSkeleton";
+import ProductDetailSkeleton from "../../components/shared/skeletons/ProductDetailSkeleton.jsx";
 import { useParams } from "react-router-dom";
 
 const ProductDetailsPage = () => {

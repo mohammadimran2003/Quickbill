@@ -1,7 +1,7 @@
 // store/cartStore.js
 import { toast } from "sonner";
 import { create } from "zustand";
-import getCustomerById from "../api/customers_api/getCustomerById";
+import getCustomerById from "../api/customers_api/getCustomerById.js";
 
 const useCartStore = create((set, get) => ({
   // State

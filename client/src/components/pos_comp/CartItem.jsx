@@ -2,8 +2,8 @@ import { Box, ListItem, Typography, List, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
-import QuantityInput from "./QuantityInput";
-import useFmt from "../../hooks/useFmt";
+import QuantityInput from "./QuantityInput.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 function CartItem({ items, updateQuantity, removeItem }) {
   const fmt = useFmt();

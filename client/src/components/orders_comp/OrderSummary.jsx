@@ -1,7 +1,7 @@
 import { Stack, Paper, Typography, Box, Divider, Chip } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import PersonIcon from "@mui/icons-material/Person";
-import useFmt from "../../hooks/useFmt";
+import useFmt from "../../hooks/useFmt.js";
 
 const OrderSummary = ({ order }) => {
   const fmt = useFmt();

@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 const TopLowStockTable = ({ topLowStockProducts, isLoading }) => {
   if (isLoading) {

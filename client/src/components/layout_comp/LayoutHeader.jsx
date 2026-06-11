@@ -1,13 +1,12 @@
 import { Box, Badge, IconButton } from "@mui/material";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import UserProfile from "../profile/UserProfile";
+import UserProfile from "../profile/UserProfile.jsx";
 import { useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Notification from "./Notification";
+import Notification from "./Notification.jsx";
 import { useContext } from "react";
-import { ThemeContext } from "../../context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext.jsx";
 
 function LayoutHeader() {
   const theme = useTheme();

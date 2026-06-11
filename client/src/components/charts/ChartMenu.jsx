@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, Paper, Tabs, Tab } from "@mui/material";
-import SalesOverviewChart from "./SalesOverviewChart";
-import YearlyOverview from "./YearlyOverview";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import SalesOverviewChart from "./SalesOverviewChart.jsx";
+import YearlyOverview from "./YearlyOverview.jsx";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;

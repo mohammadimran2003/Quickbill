@@ -1,5 +1,5 @@
 import { Grid, TextField } from "@mui/material";
-import FormSection from "../shared/FormSection";
+import FormSection from "../shared/FormSection.jsx";
 
 const InvoiceSettingsSection = ({ register }) => {
   return (

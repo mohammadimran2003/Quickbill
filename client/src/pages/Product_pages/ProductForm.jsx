@@ -12,20 +12,19 @@ import {
   Typography,
 } from "@mui/material";
 
-import productsSchema from "../../validations/productValidations";
-import getCategories from "../../api/categories_api/getCategories";
-import getBrands from "../../api/brands_api/getBrands";
-import createProduct from "../../api/products_api/createProduct";
-import updateProduct from "../../api/products_api/updateProduct";
-import getProductById from "../../api/products_api/getProductById";
+import productsSchema from "../../validations/productValidations.js";
+import getCategories from "../../api/categories_api/getCategories.js";
+import getBrands from "../../api/brands_api/getBrands.js";
+import createProduct from "../../api/products_api/createProduct.js";
+import updateProduct from "../../api/products_api/updateProduct.js";
+import getProductById from "../../api/products_api/getProductById.js";
 import { toast } from "sonner";
-
-import BasicInfoSection from "../../components/products_comp/form_sections/BasicInfoSection";
-import CategoryTypeSection from "../../components/products_comp/form_sections/CategoryTypeSection";
-import PricingDiscountSection from "../../components/products_comp/form_sections/PricingDiscountSection";
-import InventorySection from "../../components/products_comp/form_sections/InventorySection";
-import MediaMetadataSection from "../../components/products_comp/form_sections/MediaMetadataSection";
-import StatusSection from "../../components/products_comp/form_sections/StatusSection";
+import BasicInfoSection from "../../components/products_comp/form_sections/BasicInfoSection.jsx";
+import CategoryTypeSection from "../../components/products_comp/form_sections/CategoryTypeSection.jsx";
+import PricingDiscountSection from "../../components/products_comp/form_sections/PricingDiscountSection.jsx";
+import InventorySection from "../../components/products_comp/form_sections/InventorySection.jsx";
+import MediaMetadataSection from "../../components/products_comp/form_sections/MediaMetadataSection.jsx";
+import StatusSection from "../../components/products_comp/form_sections/StatusSection.jsx";
 
 const defaultValues = {
   name: "",

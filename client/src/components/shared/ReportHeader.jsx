@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import getStore from "../../api/stores_api/getStore";
+import getStore from "../../api/stores_api/getStore.js";
 
 const ReportHeader = React.forwardRef(
   ({ title, dateRange, showDateRange = true }, ref) => {

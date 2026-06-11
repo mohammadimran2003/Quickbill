@@ -1,11 +1,11 @@
 import { Box, Grid, Typography, Chip, Stack, Skeleton } from "@mui/material";
-import StatCard from "../shared/StatCard";
+import StatCard from "../shared/StatCard.jsx";
 import { useQuery } from "@tanstack/react-query";
-import getExpenseStats from "../../api/expenses_api/getExpenseStats";
+import getExpenseStats from "../../api/expenses_api/getExpenseStats.js";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CategoryIcon from "@mui/icons-material/Category";
-import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton.jsx";
 
 function ExpenseStats() {
   const { data, isLoading, isError } = useQuery({

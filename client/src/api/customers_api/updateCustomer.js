@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../axios.js";
 
 const updateCustomer = async ({ id, data }) => {
   console.log(data, "data");

@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Box, useTheme } from "@mui/material";
 
-import SidebarHeader from "../components/layout_comp/SidebarHeader";
-import LayoutHeader from "../components/layout_comp/LayoutHeader";
-import SidebarMenus from "../components/layout_comp/SidebarMenus";
+import SidebarHeader from "../components/layout_comp/SidebarHeader.jsx";
+import LayoutHeader from "../components/layout_comp/LayoutHeader.jsx";
+import SidebarMenus from "../components/layout_comp/SidebarMenus.jsx";
 
 function DashboardLayout() {
   const theme = useTheme();

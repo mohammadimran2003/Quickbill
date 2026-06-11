@@ -1,47 +1,64 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import AuthLayout from "./layouts/AuthLayout";
-import DashboardLayout from "./layouts/DashboardLayout";
-import PrivateRoute from "./components/PrivateRoute";
-import Products from "./pages/product_pages/Products";
-import ProductForm from "./pages/product_pages/ProductForm";
-import Categories from "./pages/category_pages/Categories";
-import Brands from "./pages/brand_pages/Brands";
-import BrandDetailsPage from "./pages/brand_pages/BrandDetailsPage";
-import CategoryDetailsPage from "./pages/category_pages/CategoryDetailsPage";
-import BrandForm from "./pages/brand_pages/BrandForm";
-import CategoryForm from "./pages/category_pages/CategoryForm";
-import ProductDetailsPage from "./pages/product_pages/ProductDetailsPage";
-import Orders from "./pages/order_pages/Orders";
-import OrderDetailsPage from "./pages/order_pages/OrderDetailsPage";
-import POS from "./pages/POS";
-import CustomerForm from "./pages/customer_pages/CustomerForm";
-import Customers from "./pages/customer_pages/Customers";
-import CustomerDetailsPage from "./pages/customer_pages/CustomerDetailsPage";
-import SupplierForm from "./pages/supplier_pages/SupplierForm";
-import Suppliers from "./pages/supplier_pages/Suppliers";
-import SupplierDetailsPage from "./pages/supplier_pages/SupplierDetailsPage";
-import PurchaseForm from "./pages/purchase_pages/PurchaseForm";
-import Purchases from "./pages/purchase_pages/Purchases";
-import PurchaseDetailsPage from "./pages/purchase_pages/PurchaseDetailsPage";
-import SalesReportPage from "./pages/sale_report-pages/SalesReportPage";
-import ProfitReportPage from "./pages/profit_report_pages/ProfitReportPage";
-import StockReportPage from "./pages/stock_report_pages/StockReportPage";
-import useAuth from "./hooks/useAuth";
-import Users from "./pages/Users";
-import StoreInfo from "./pages/settings_pages/StoreInfo";
-import Expenses from "./pages/Expenses";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import AuthLayout from "./layouts/AuthLayout.jsx";
+import DashboardLayout from "./layouts/DashboardLayout.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
+import Products from "./pages/product_pages/Products.jsx";
+import ProductForm from "./pages/product_pages/ProductForm.jsx";
+import Categories from "./pages/category_pages/Categories.jsx";
+import Brands from "./pages/brand_pages/Brands.jsx";
+import BrandDetailsPage from "./pages/brand_pages/BrandDetailsPage.jsx";
+import CategoryDetailsPage from "./pages/category_pages/CategoryDetailsPage.jsx";
+import BrandForm from "./pages/brand_pages/BrandForm.jsx";
+import CategoryForm from "./pages/category_pages/CategoryForm.jsx";
+import ProductDetailsPage from "./pages/product_pages/ProductDetailsPage.jsx";
+import Orders from "./pages/order_pages/Orders.jsx";
+import OrderDetailsPage from "./pages/order_pages/OrderDetailsPage.jsx";
+import POS from "./pages/POS.jsx";
+import CustomerForm from "./pages/customer_pages/CustomerForm.jsx";
+import Customers from "./pages/customer_pages/Customers.jsx";
+import CustomerDetailsPage from "./pages/customer_pages/CustomerDetailsPage.jsx";
+import SupplierForm from "./pages/supplier_pages/SupplierForm.jsx";
+import Suppliers from "./pages/supplier_pages/Suppliers.jsx";
+import SupplierDetailsPage from "./pages/supplier_pages/SupplierDetailsPage.jsx";
+import PurchaseForm from "./pages/purchase_pages/PurchaseForm.jsx";
+import Purchases from "./pages/purchase_pages/Purchases.jsx";
+import PurchaseDetailsPage from "./pages/purchase_pages/PurchaseDetailsPage.jsx";
+import SalesReportPage from "./pages/sale_report-pages/SalesReportPage.jsx";
+import ProfitReportPage from "./pages/profit_report_pages/ProfitReportPage.jsx";
+import StockReportPage from "./pages/stock_report_pages/StockReportPage.jsx";
+import useAuth from "./hooks/useAuth.js";
+import Users from "./pages/Users.jsx";
+import StoreInfo from "./pages/settings_pages/StoreInfo.jsx";
+import Expenses from "./pages/Expenses.jsx";
 import { useContext } from "react";
-import { ThemeContext } from "./context/ThemeContext";
+import { ThemeContext } from "./context/ThemeContext.jsx";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
-import getTheme from "./theme";
+import getTheme from "./theme.js";
 
 function App() {
   const { user } = useAuth();
 
   const { mode } = useContext(ThemeContext);
+
+  function same(arr1, arr2) {
+    let result = [];
+    for (let item1 of arr1) {
+      result.push(item1 * item1);
+    }
+
+    const isEqual =
+      result.length === arr2.length &&
+      JSON.stringify([...result].sort()) === JSON.stringify([...arr2].sort());
+
+    console.log(result, arr2);
+
+    return isEqual;
+  }
+
+  console.log(same([2, 3, 6], [9, 4, 36]));
 
   return (
     <MuiThemeProvider theme={getTheme(mode)}>

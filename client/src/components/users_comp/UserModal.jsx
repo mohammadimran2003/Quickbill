@@ -19,7 +19,7 @@ import {
   createUserSchema,
   updateUserSchema,
   resetPasswordSchema,
-} from "../../validations/userValidation";
+} from "../../validations/userValidation.js";
 
 const UserModal = ({
   open,

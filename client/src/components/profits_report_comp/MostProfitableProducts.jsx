@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
-import useFmt from "../../hooks/useFmt";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 const RANK_LABELS = [
   "🥇",

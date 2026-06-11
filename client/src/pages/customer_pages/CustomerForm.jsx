@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { customerSchema } from "../../validations/customerValidation";
+import { customerSchema } from "../../validations/customerValidation.js";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import createCustomer from "../../api/customers_api/createCustomer";
+import createCustomer from "../../api/customers_api/createCustomer.js";
 import { toast } from "sonner";
 
 const CustomerForm = () => {

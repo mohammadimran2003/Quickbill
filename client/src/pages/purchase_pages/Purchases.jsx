@@ -1,5 +1,5 @@
-import PageHeader from "../../components/shared/PageHeader";
-import PurchaseTable from "../../components/purchases_comp/PurchaseTable";
+import PageHeader from "../../components/shared/PageHeader.jsx";
+import PurchaseTable from "../../components/purchases_comp/PurchaseTable.jsx";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

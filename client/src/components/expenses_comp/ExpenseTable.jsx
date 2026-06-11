@@ -16,19 +16,19 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getExpenses from "../../api/expenses_api/getExpenses";
+import getExpenses from "../../api/expenses_api/getExpenses.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteExpense from "../../api/expenses_api/deleteExpense";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
+import deleteExpense from "../../api/expenses_api/deleteExpense.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
-import useExpenseColumns from "./hooks/useExpenseColumns";
-import ExpenseFilterSection from "./ExpenseFilterSection";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
+import useExpenseColumns from "./hooks/useExpenseColumns.jsx";
+import ExpenseFilterSection from "./ExpenseFilterSection.jsx";
 
 function ExpenseTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});

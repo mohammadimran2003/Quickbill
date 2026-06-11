@@ -16,20 +16,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getBrands from "../../api/brands_api/getBrands";
+import getBrands from "../../api/brands_api/getBrands.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteBrand from "../../api/brands_api/deleteBrand";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
+import deleteBrand from "../../api/brands_api/deleteBrand.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
 
-import useBrandColumns from "./hooks/useBrandColumns";
-import BrandFilterSection from "./BrandFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useBrandColumns from "./hooks/useBrandColumns.jsx";
+import BrandFilterSection from "./BrandFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function BrandTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});

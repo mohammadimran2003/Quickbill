@@ -1,7 +1,7 @@
 import { Grid, Paper, Typography, Divider, Button } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
-import PurchaseInfoItem from "./purchaseInfoItem";
+import PurchaseInfoItem from "./purchaseInfoItem.jsx";
 import { useNavigate } from "react-router-dom";
 
 function SupplierInfo({ supplier }) {

@@ -1,11 +1,11 @@
 import React from "react";
 
-import ReportHeader from "../shared/ReportHeader";
-import ReportFooter from "../shared/ReportFooter";
-import SalesSummaryCards from "./components/SalesSummaryCards";
-import SalesOverviewTable from "./components/SalesOverviewTable";
-import TopProductsTable from "./components/TopProductsTable";
-import TopCustomersTable from "./components/TopCustomersTable";
+import ReportHeader from "../shared/ReportHeader.jsx";
+import ReportFooter from "../shared/ReportFooter.jsx";
+import SalesSummaryCards from "./components/SalesSummaryCards.jsx";
+import SalesOverviewTable from "./components/SalesOverviewTable.jsx";
+import TopProductsTable from "./components/TopProductsTable.jsx";
+import TopCustomersTable from "./components/TopCustomersTable.jsx";
 
 const SalesReportPrint = React.forwardRef(
   ({ summary, chartData, products, customers, dateRange }, ref) => {

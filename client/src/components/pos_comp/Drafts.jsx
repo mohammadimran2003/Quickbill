@@ -7,11 +7,12 @@ import {
   TextField,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
-import useCartStore from "../../store/cartStore";
+import useCartStore from "../../store/cartStore.jsx";
 import { useMutation } from "@tanstack/react-query";
-import createDraft from "../../api/drafts_api/createDraft";
+import createDraft from "../../api/drafts_api/createDraft.js";
 import { toast } from "sonner";
-import updateDraft from "../../api/drafts_api/updateDrafft";
+import updateDraft from "../../api/drafts_api/updateDraft.js";
+
 function Drafts() {
   const [open, setOpen] = useState(false);
   const [draftName, setDraftName] = useState("");

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Box, Typography, IconButton, Divider } from "@mui/material";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
-import DiscountModal from "./DiscountModal";
-import useCartStore from "../../store/cartStore";
-import useFmt from "../../hooks/useFmt";
+import DiscountModal from "./DiscountModal.jsx";
+import useCartStore from "../../store/cartStore.jsx";
+import useFmt from "../../hooks/useFmt.js";
+
 function CartSummary({ total, subTotal, discount }) {
   const [discountModal, setDiscountModal] = useState(false);
   const { discountValue, discountType } = useCartStore();

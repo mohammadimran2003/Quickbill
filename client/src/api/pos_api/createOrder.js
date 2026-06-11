@@ -1,5 +1,5 @@
-import orderSchema from "../../validations/orderValidations";
-import api from "../axios";
+import orderSchema from "../../validations/orderValidations.js";
+import api from "../axios.js";
 
 const createOrder = async (data) => {
   const validation = orderSchema.safeParse(data);

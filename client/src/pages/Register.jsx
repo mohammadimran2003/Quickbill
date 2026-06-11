@@ -14,8 +14,8 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import { toast } from "sonner";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../validations/authValidation";
-import registerUser from "../api/auth/registerUser";
+import { registerSchema } from "../validations/authValidation.js";
+import registerUser from "../api/auth/registerUser.js";
 import { useNavigate } from "react-router-dom";
 
 function Register() {

@@ -9,9 +9,9 @@ import {
 } from "recharts";
 import { Box, Typography, Paper, useTheme } from "@mui/material";
 
-import getLast30DaysSales from "../../api/dashboard_api/getLast30DaysSales";
+import getLast30DaysSales from "../../api/dashboard_api/getLast30DaysSales.js";
 import { useQuery } from "@tanstack/react-query";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton.jsx";
 
 const SalesOverviewChart = () => {
   const theme = useTheme();

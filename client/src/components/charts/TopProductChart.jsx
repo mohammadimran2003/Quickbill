@@ -7,10 +7,9 @@ import {
   Legend,
 } from "recharts";
 import { Paper, Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import getTopProducts from "../../api/dashboard_api/getTopProducts";
+import getTopProducts from "../../api/dashboard_api/getTopProducts.js";
 import { useQuery } from "@tanstack/react-query";
-import PieChartSkeleton from "../shared/skeletons/PieChartSkeleton";
+import PieChartSkeleton from "../shared/skeletons/PieChartSkeleton.jsx";
 
 // Professional Color Palette
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];

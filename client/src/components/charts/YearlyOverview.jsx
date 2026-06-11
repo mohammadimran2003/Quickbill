@@ -9,9 +9,9 @@ import {
   ComposedChart,
 } from "recharts";
 import { Box, Typography, useTheme } from "@mui/material";
-import getSalesPurchaseYearOverview from "../../api/dashboard_api/getSalesPurchaseYearOverview";
+import getSalesPurchaseYearOverview from "../../api/dashboard_api/getSalesPurchaseYearOverview.js";
 import { useQuery } from "@tanstack/react-query";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton.jsx";
 
 function YearlyOverview() {
   const theme = useTheme();

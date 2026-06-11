@@ -1,12 +1,11 @@
 import { Grid } from "@mui/material";
-import StatCard from "../shared/StatCard";
-
+import StatCard from "../shared/StatCard.jsx";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import StatsSkeleton from "../shared/skeletons/StatsSkeleton";
-import TakaIcon from "../shared/TakaIcon";
-import useFmt from "../../hooks/useFmt";
+import StatsSkeleton from "../shared/skeletons/StatsSkeleton.jsx";
+import TakaIcon from "../shared/TakaIcon.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 function SalesStats({ summary, isLoading }) {
   const fmt = useFmt();

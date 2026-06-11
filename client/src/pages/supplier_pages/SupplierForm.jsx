@@ -14,10 +14,10 @@ import {
   Typography,
   Switch,
 } from "@mui/material";
-import { supplierSchema } from "../../validations/supplierValidations";
-import createSupplier from "../../api/suppliers_api/createSupplier";
-import getSupplierById from "../../api/suppliers_api/getSupplierById";
-import updateSupplier from "../../api/suppliers_api/updateSupplier";
+import { supplierSchema } from "../../validations/supplierValidations.js";
+import createSupplier from "../../api/suppliers_api/createSupplier.js";
+import getSupplierById from "../../api/suppliers_api/getSupplierById.js";
+import updateSupplier from "../../api/suppliers_api/updateSupplier.js";
 import { toast } from "sonner";
 
 const defaultValues = {

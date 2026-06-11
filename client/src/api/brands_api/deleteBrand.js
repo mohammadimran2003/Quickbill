@@ -1,8 +1,8 @@
-import axios from '../axios';
+import api from "../axios.js";
 
 const deleteBrand = async (id) => {
-	const response = await axios.delete(`/brands/${id}`);
-	return response.data;
+  const response = await api.delete(`/brands/${id}`);
+  return response.data;
 };
 
 export default deleteBrand;

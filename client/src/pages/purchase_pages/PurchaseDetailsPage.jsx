@@ -21,15 +21,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import getPurchaseById from "../../api/purchases_api/getPurchaseById";
-import ReturnDialog from "../../components/orders_comp/ReturnDialog";
-import PurchaseItemsTable from "../../components/purchases_comp/PurchaseItemsTable";
-import createReturn from "../../api/returns_api/createReturn";
+import getPurchaseById from "../../api/purchases_api/getPurchaseById.js";
+import ReturnDialog from "../../components/orders_comp/ReturnDialog.jsx";
+import PurchaseItemsTable from "../../components/purchases_comp/PurchaseItemsTable.jsx";
+import createReturn from "../../api/returns_api/createReturn.js";
 import { toast } from "sonner";
-import getStatusColor from "../../utils/getStatusColor";
-import PurchaseInfoItem from "../../components/purchases_comp/purchaseInfoItem";
-import PaymentSummary from "../../components/purchases_comp/PaymentSummary";
-import SupplierInfo from "../../components/purchases_comp/SupplierInfo";
+import getStatusColor from "../../utils/getStatusColor.js";
+import PaymentSummary from "../../components/purchases_comp/PaymentSummary.jsx";
+import SupplierInfo from "../../components/purchases_comp/SupplierInfo.jsx";
 
 const PurchaseDetailsPage = () => {
   const navigate = useNavigate();

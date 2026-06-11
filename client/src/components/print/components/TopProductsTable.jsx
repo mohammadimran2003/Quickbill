@@ -1,4 +1,4 @@
-import useFmt from "../../../hooks/useFmt";
+import useFmt from "../../../hooks/useFmt.js";
 
 const TopProductsTable = ({ products }) => {
   const fmt = useFmt();

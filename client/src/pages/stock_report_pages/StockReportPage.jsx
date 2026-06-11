@@ -1,19 +1,18 @@
 import { Box, Grid, Typography } from "@mui/material";
-
-import DateRangeFilter from "../../components/shared/DateRangeFilter";
+import DateRangeFilter from "../../components/shared/DateRangeFilter.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useReactToPrint } from "react-to-print";
 import dayjs from "dayjs";
-import getStockReports from "../../api/reports_api/getStockReports";
-import StockReportTable from "../../components/stocks_report_comp/StockReportTable";
-import TopLowStockTable from "../../components/stocks_report_comp/TopLowStockTable";
-import StockByCategoryChart from "../../components/charts/StockByCategoryChart";
-import StockReportPrint from "../../components/print/StockReportPrint";
-import PrintBtn from "../../components/shared/PrintBtn";
-import StockReportStats from "../../components/stocks_report_comp/StockReportStats";
-import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton";
+import getStockReports from "../../api/reports_api/getStockReports.js";
+import StockReportTable from "../../components/stocks_report_comp/StockReportTable.jsx";
+import TopLowStockTable from "../../components/stocks_report_comp/TopLowStockTable.jsx";
+import StockByCategoryChart from "../../components/charts/StockByCategoryChart.jsx";
+import StockReportPrint from "../../components/print/StockReportPrint.jsx";
+import PrintBtn from "../../components/shared/PrintBtn.jsx";
+import StockReportStats from "../../components/stocks_report_comp/StockReportStats.jsx";
+import StatsSkeleton from "../../components/shared/skeletons/StatsSkeleton.jsx";
 
 function StockReportPage() {
   const [searchParams, setSearchParams] = useSearchParams();

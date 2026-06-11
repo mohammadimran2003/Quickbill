@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import StatCard from "../shared/StatCard";
+import StatCard from "../shared/StatCard.jsx";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";

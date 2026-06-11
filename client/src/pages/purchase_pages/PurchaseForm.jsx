@@ -4,18 +4,18 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, CircularProgress, Paper, Divider } from "@mui/material";
-import { purchaseSchema } from "../../validations/purchaseValidation";
-import createPurchase from "../../api/purchases_api/createPurchase";
-import getPurchaseById from "../../api/purchases_api/getPurchaseById";
-import updatePurchase from "../../api/purchases_api/updatePurchase";
-import getSuppliers from "../../api/suppliers_api/getSuppliers";
-import getProducts from "../../api/products_api/getProducts";
+import { purchaseSchema } from "../../validations/purchaseValidation.js";
+import createPurchase from "../../api/purchases_api/createPurchase.js";
+import getPurchaseById from "../../api/purchases_api/getPurchaseById.js";
+import updatePurchase from "../../api/purchases_api/updatePurchase.js";
+import getSuppliers from "../../api/suppliers_api/getSuppliers.js";
+import getProducts from "../../api/products_api/getProducts.js";
 import { toast } from "sonner";
-import PageHeader from "../../components/shared/PageHeader";
-import PurchaseDetailsSection from "../../components/purchases_comp/form_sections/PurchaseDetailsSection";
-import PurchaseItemsSection from "../../components/purchases_comp/form_sections/PurchaseItemsSection";
-import PurchaseSummarySection from "../../components/purchases_comp/form_sections/PurchaseSummarySection";
-import usePurchaseStore from "../../store/purchaseStore";
+import PageHeader from "../../components/shared/PageHeader.jsx";
+import PurchaseDetailsSection from "../../components/purchases_comp/form_sections/PurchaseDetailsSection.jsx";
+import PurchaseItemsSection from "../../components/purchases_comp/form_sections/PurchaseItemsSection.jsx";
+import PurchaseSummarySection from "../../components/purchases_comp/form_sections/PurchaseSummarySection.jsx";
+import usePurchaseStore from "../../store/purchaseStore.jsx";
 
 const defaultValues = {
   supplierId: "",

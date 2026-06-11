@@ -1,9 +1,9 @@
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth.js";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../validations/authValidation";
+import { loginSchema } from "../validations/authValidation.js";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

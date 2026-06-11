@@ -10,7 +10,7 @@ import {
   Typography,
   Slider,
 } from "@mui/material";
-import useFmt from "../../hooks/useFmt";
+import useFmt from "../../hooks/useFmt.js";
 
 const ReturnDialog = ({ open, onClose, item, order, purchase, onConfirm }) => {
   const [quantity, setQuantity] = useState(1);

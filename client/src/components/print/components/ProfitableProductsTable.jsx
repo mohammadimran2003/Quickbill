@@ -1,4 +1,4 @@
-import useFmt from "../../../hooks/useFmt";
+import useFmt from "../../../hooks/useFmt.js";
 import { thStyle, tdStyle } from "./TableStyles";
 
 const RANK_LABELS = [

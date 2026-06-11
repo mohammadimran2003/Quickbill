@@ -1,12 +1,12 @@
-import ExpenseTable from "../components/expenses_comp/ExpenseTable";
-import ExpenseModal from "../components/expenses_comp/ExpenseModal";
-import ExpenseStats from "../components/expenses_comp/ExpenseStats";
-import PageHeader from "../components/shared/PageHeader";
+import ExpenseTable from "../components/expenses_comp/ExpenseTable.jsx";
+import ExpenseModal from "../components/expenses_comp/ExpenseModal.jsx";
+import ExpenseStats from "../components/expenses_comp/ExpenseStats.jsx";
+import PageHeader from "../components/shared/PageHeader.jsx";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import createExpense from "../api/expenses_api/createExpense";
-import updateExpense from "../api/expenses_api/updateExpense";
+import createExpense from "../api/expenses_api/createExpense.js";
+import updateExpense from "../api/expenses_api/updateExpense.js";
 import { toast } from "sonner";
 
 function Expenses() {

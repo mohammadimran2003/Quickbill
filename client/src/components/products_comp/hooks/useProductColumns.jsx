@@ -3,8 +3,8 @@ import { Stack, IconButton, Tooltip, Checkbox, Chip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PriceTierModal from "../PriceTierModal";
-import useFmt from "../../../hooks/useFmt";
+import PriceTierModal from "../PriceTierModal.jsx";
+import useFmt from "../../../hooks/useFmt.js";
 
 const useProductColumns = ({ onDeleteClick, onEditClick }) => {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import { Box, Paper, Typography, Chip } from "@mui/material";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton.jsx";
 
 // Curated vibrant color palette
 const COLORS = [

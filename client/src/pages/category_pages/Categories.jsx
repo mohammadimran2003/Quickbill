@@ -1,11 +1,11 @@
-import PageHeader from "../../components/shared/PageHeader";
-import CategoryTable from "../../components/categories_comp/CategoryTable";
-import CategoryModal from "../../components/categories_comp/CategoryModal";
+import PageHeader from "../../components/shared/PageHeader.jsx";
+import CategoryTable from "../../components/categories_comp/CategoryTable.jsx";
+import CategoryModal from "../../components/categories_comp/CategoryModal.jsx";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import createCategory from "../../api/categories_api/createCategory";
-import updateCategory from "../../api/categories_api/updateCategory";
+import createCategory from "../../api/categories_api/createCategory.js";
+import updateCategory from "../../api/categories_api/updateCategory.js";
 import { toast } from "sonner";
 
 function Categories() {

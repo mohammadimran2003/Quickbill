@@ -1,11 +1,11 @@
 import React from "react";
-import ReportHeader from "../shared/ReportHeader";
-import ReportFooter from "../shared/ReportFooter";
-import SummaryCard from "./components/SummaryCard";
-import ProfitTrendTable from "./components/ProfitTrendTable";
-import ProfitableProductsTable from "./components/ProfitableProductsTable";
-import ProfitByCategoryTable from "./components/ProfitByCategoryTable";
-import useFmt from "../../hooks/useFmt";
+import ReportHeader from "../shared/ReportHeader.jsx";
+import ReportFooter from "../shared/ReportFooter.jsx";
+import SummaryCard from "./components/SummaryCard.jsx";
+import ProfitTrendTable from "./components/ProfitTrendTable.jsx";
+import ProfitableProductsTable from "./components/ProfitableProductsTable.jsx";
+import ProfitByCategoryTable from "./components/ProfitByCategoryTable.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 

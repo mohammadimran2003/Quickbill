@@ -16,21 +16,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getSuppliers from "../../api/suppliers_api/getSuppliers";
+import getSuppliers from "../../api/suppliers_api/getSuppliers.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CircularProgress from "@mui/material/CircularProgress";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteSupplier from "../../api/suppliers_api/deleteSupplier";
-import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog";
+import deleteSupplier from "../../api/suppliers_api/deleteSupplier.js";
+import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
 
-import useSupplierColumns from "./hooks/useSupplierColumns";
-import SupplierFilterSection from "./SupplierFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useSupplierColumns from "./hooks/useSupplierColumns.jsx";
+import SupplierFilterSection from "./SupplierFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function SupplierTable() {
   const [rowSelection, setRowSelection] = useState({});

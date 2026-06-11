@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../axios.js";
 
 const getPurchaseById = async (id) => {
   const response = await api.get(`/purchases/${id}`);

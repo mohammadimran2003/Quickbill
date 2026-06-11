@@ -1,11 +1,11 @@
-import api from '../axios';
+import api from "../axios.js";
 
 const loginUser = async (data) => {
-	const { email, password } = data;
-	const response = await api.post('/auth/login', { email, password });
-	console.log(response.data, 'login user ');
+  const { email, password } = data;
+  const response = await api.post("/auth/login", { email, password });
+  console.log(response.data, "login user ");
 
-	return response.data;
+  return response.data;
 };
 
 export default loginUser;

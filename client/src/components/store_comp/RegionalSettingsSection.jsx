@@ -8,13 +8,11 @@ import {
 } from "@mui/material";
 
 import { Controller } from "react-hook-form";
-
-import FormSection from "../shared/FormSection";
-
+import FormSection from "../shared/FormSection.jsx";
 import {
   timeZoneOptions,
   currencyOptions,
-} from "../../constants/storeConstants";
+} from "../../constants/storeConstants.js";
 
 const RegionalSettingsSection = ({ register, control }) => {
   return (

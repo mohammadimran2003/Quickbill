@@ -1,9 +1,9 @@
-import api from '../axios';
+import api from "../axios.js";
 
 const getCategoryById = async (id) => {
-	const response = await api.get(`/categories/${id}`);
+  const response = await api.get(`/categories/${id}`);
 
-	return response.data;
+  return response.data;
 };
 
 export default getCategoryById;

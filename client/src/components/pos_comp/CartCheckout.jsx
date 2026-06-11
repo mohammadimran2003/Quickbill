@@ -1,5 +1,5 @@
 import { Button, Stack, TextField, Typography, Box } from "@mui/material";
-import useFmt from "../../hooks/useFmt";
+import useFmt from "../../hooks/useFmt.js";
 
 const paymentMethods = ["CASH", "CARD", "MOBILE_BANKING", "UNPAID"];
 

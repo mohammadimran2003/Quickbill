@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { createStoreSchema } from "../../validations/storeValidation";
+import { createStoreSchema } from "../../validations/storeValidation.js";
 import { toast } from "sonner";
-import StoreForm from "../../components/store_comp/StoreForm";
-import getStore from "../../api/stores_api/getStore";
-import updateStore from "../../api/stores_api/updateStore";
-import { currencyOptions } from "../../constants/storeConstants";
+import StoreForm from "../../components/store_comp/StoreForm.jsx";
+import getStore from "../../api/stores_api/getStore.js";
+import updateStore from "../../api/stores_api/updateStore.js";
+import { currencyOptions } from "../../constants/storeConstants.js";
 
 const mapStoreToFormValues = (store) => ({
   name: store?.name || "",

@@ -10,8 +10,8 @@ import {
   Stack,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import getDiscountAmount from "../../utils/getDiscountAmount";
-import useFmt from "../../hooks/useFmt";
+import getDiscountAmount from "../../utils/getDiscountAmount.js";
+import useFmt from "../../hooks/useFmt.js";
 
 const ProductCard = ({ product, onAddToCart }) => {
   const isOutOfStock = product.stock <= 0;

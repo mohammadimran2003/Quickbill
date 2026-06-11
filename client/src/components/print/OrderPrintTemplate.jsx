@@ -13,10 +13,10 @@ import {
   Grid,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import getStore from "../../api/stores_api/getStore";
-import PrintHeader from "../shared/PrintHeader";
-import PrintFooter from "../shared/PrintFooter";
-import useFmt from "../../hooks/useFmt";
+import getStore from "../../api/stores_api/getStore.js";
+import PrintHeader from "../shared/PrintHeader.jsx";
+import PrintFooter from "../shared/PrintFooter.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 export const OrderPrintTemplate = React.forwardRef(({ order }, ref) => {
   const { data: storeData } = useQuery({

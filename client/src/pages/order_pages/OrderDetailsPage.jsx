@@ -10,13 +10,13 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import getOrderById from "../../api/orders_api/getOrderById";
-import { OrderPrintTemplate } from "../../components/print/OrderPrintTemplate";
-import OrderHeader from "../../components/orders_comp/OrderHeader";
-import OrderItemsTable from "../../components/orders_comp/OrderItemsTable";
-import OrderSummary from "../../components/orders_comp/OrderSummary";
-import ReturnDialog from "../../components/orders_comp/ReturnDialog";
-import createReturn from "../../api/returns_api/createReturn";
+import getOrderById from "../../api/orders_api/getOrderById.js";
+import { OrderPrintTemplate } from "../../components/print/OrderPrintTemplate.jsx";
+import OrderHeader from "../../components/orders_comp/OrderHeader.jsx";
+import OrderItemsTable from "../../components/orders_comp/OrderItemsTable.jsx";
+import OrderSummary from "../../components/orders_comp/OrderSummary.jsx";
+import ReturnDialog from "../../components/orders_comp/ReturnDialog.jsx";
+import createReturn from "../../api/returns_api/createReturn.js";
 import { toast } from "sonner";
 
 const OrderDetailsPage = () => {

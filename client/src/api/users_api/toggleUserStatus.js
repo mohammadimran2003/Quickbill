@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../axios.js";
 
 export const toggleUserStatus = async (data) => {
   const response = await api.put(`/users/${data.userId}`, {

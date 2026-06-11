@@ -16,16 +16,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getOrders from "../../api/orders_api/getOrders";
+import getOrders from "../../api/orders_api/getOrders.js";
 import { useQuery } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import useOrderColumns from "./hooks/useOrderColumns";
-import OrderFilterSection from "./OrderFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useOrderColumns from "./hooks/useOrderColumns.jsx";
+import OrderFilterSection from "./OrderFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function OrderTable() {
   const [rowSelection, setRowSelection] = useState({});

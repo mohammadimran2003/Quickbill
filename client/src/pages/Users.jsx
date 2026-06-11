@@ -1,14 +1,14 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
-import PageHeader from "../components/shared/PageHeader";
-import UsersTable from "../components/users_comp/UsersTable";
-import UserModal from "../components/users_comp/UserModal";
+import PageHeader from "../components/shared/PageHeader.jsx";
+import UsersTable from "../components/users_comp/UsersTable.jsx";
+import UserModal from "../components/users_comp/UserModal.jsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser } from "../api/users_api/createUser";
+import { createUser } from "../api/users_api/createUser.js";
 import { toast } from "sonner";
-import { toggleUserStatus } from "../api/users_api/toggleUserStatus";
-import updateUser from "../api/users_api/updateUser";
-import resetPassword from "../api/users_api/resetPassword";
+import { toggleUserStatus } from "../api/users_api/toggleUserStatus.js";
+import updateUser from "../api/users_api/updateUser.js";
+import resetPassword from "../api/users_api/resetPassword.js";
 
 function Users() {
   const [modalOpen, setModalOpen] = useState(false);

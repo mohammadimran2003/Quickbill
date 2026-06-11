@@ -12,7 +12,7 @@ import ResetIcon from "@mui/icons-material/RestartAlt";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import getExpenseCategories from "../../api/expenses_api/getExpenseCategories";
+import getExpenseCategories from "../../api/expenses_api/getExpenseCategories.js";
 
 function ExpenseFilterSection({ onSetSorting }) {
   const [expenseAnchorEl, setExpenseAnchorEl] = useState(null);

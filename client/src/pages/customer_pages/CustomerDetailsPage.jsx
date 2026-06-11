@@ -20,14 +20,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import getCustomerById from "../../api/customers_api/getCustomerById";
-import RechargeWalletModal from "./RechargeWalletModal";
+import getCustomerById from "../../api/customers_api/getCustomerById.js";
+import RechargeWalletModal from "./RechargeWalletModal.jsx";
 import { useMutation } from "@tanstack/react-query";
-import CustomerModal from "../../components/customers_comp/CustomerModal";
+import CustomerModal from "../../components/customers_comp/CustomerModal.jsx";
 import { toast } from "sonner";
-import updateCustomer from "../../api/customers_api/updateCustomer";
-import InfoItem from "../../components/shared/InfoItem";
-import DetailsStatCard from "../../components/shared/DetailsStatCard";
+import updateCustomer from "../../api/customers_api/updateCustomer.js";
+import InfoItem from "../../components/shared/InfoItem.jsx";
+import DetailsStatCard from "../../components/shared/DetailsStatCard.jsx";
 
 const CustomerDetailsPage = () => {
   const navigate = useNavigate();

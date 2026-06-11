@@ -8,8 +8,8 @@ import {
 } from "recharts";
 import { Box, Paper, Typography, Chip } from "@mui/material";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
-import useFmt from "../../hooks/useFmt";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 // Curated vibrant color palette
 const COLORS = [

@@ -1,8 +1,8 @@
-import api from '../axios';
+import api from "../axios.js";
 
 const createBrand = async (data) => {
-	const response = await api.post('/brands', data);
-	return response.data;
+  const response = await api.post("/brands", data);
+  return response.data;
 };
 
 export default createBrand;

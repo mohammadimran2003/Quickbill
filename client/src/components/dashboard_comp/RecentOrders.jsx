@@ -15,10 +15,10 @@ import {
   Typography,
   Chip,
 } from "@mui/material";
-import getRecentOrders from "../../api/dashboard_api/getRecentOrders";
+import getRecentOrders from "../../api/dashboard_api/getRecentOrders.js";
 import { useQuery } from "@tanstack/react-query";
-import getRecentOrderTableColumn from "./getRecentOrderTableColumn";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import getRecentOrderTableColumn from "./getRecentOrderTableColumn.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 const RecentOrders = () => {
   const { data, isLoading, isError } = useQuery({

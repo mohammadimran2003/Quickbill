@@ -16,18 +16,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import getUsers from "../../api/users_api/getUsers";
+import getUsers from "../../api/users_api/getUsers.js";
 import { useQuery } from "@tanstack/react-query";
-import CircularProgress from "@mui/material/CircularProgress";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
 
-import useUserColumns from "./hooks/useUserColumns";
-import UserFilterSection from "./UserFilterSection";
-import TableSkeleton from "../shared/skeletons/TableSkeleton";
+import useUserColumns from "./hooks/useUserColumns.jsx";
+import UserFilterSection from "./UserFilterSection.jsx";
+import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
 
 function UsersTable({
   onEditUser = () => {},

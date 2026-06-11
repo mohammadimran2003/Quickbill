@@ -1,13 +1,12 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useState } from "react";
-import CustomerTable from "../../components/customers_comp/CustomerTable";
-import CustomerModal from "../../components/customers_comp/CustomerModal";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import createCustomer from "../../api/customers_api/createCustomer";
+import CustomerTable from "../../components/customers_comp/CustomerTable.jsx";
+import CustomerModal from "../../components/customers_comp/CustomerModal.jsx";
+import createCustomer from "../../api/customers_api/createCustomer.js";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import updateCustomer from "../../api/customers_api/updateCustomer";
-import PageHeader from "../../components/shared/PageHeader";
+import updateCustomer from "../../api/customers_api/updateCustomer.js";
+import PageHeader from "../../components/shared/PageHeader.jsx";
 
 function Customers() {
   const [modalOpen, setModalOpen] = useState(false);

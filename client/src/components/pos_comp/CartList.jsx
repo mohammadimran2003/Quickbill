@@ -1,25 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import useCartStore from "../../store/cartStore";
+import useCartStore from "../../store/cartStore.jsx";
 import { Box, Typography, IconButton, Button, Paper } from "@mui/material";
-
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import getCustomers from "../../api/customers_api/getCustomers";
-import CartItem from "./CartItem";
-import CustomerModal from "../customers_comp/CustomerModal";
-import createCustomer from "../../api/customers_api/createCustomer";
-import createOrder from "../../api/pos_api/createOrder";
+import CartItem from "./CartItem.jsx";
+import CustomerModal from "../customers_comp/CustomerModal.jsx";
+import createCustomer from "../../api/customers_api/createCustomer.js";
+import createOrder from "../../api/pos_api/createOrder.js";
 import { toast } from "sonner";
 import { useReactToPrint } from "react-to-print";
-import getCustomerByPhone from "../../api/orders_api/getCustomerByPhone";
-import { OrderPrintTemplate } from "../print/OrderPrintTemplate";
-import CartSummary from "./CartSummary";
-import getDiscountAmount from "../../utils/getDiscountAmount";
-import CartCheckout from "./CartCheckout";
-import Drafts from "./Drafts";
-import DraftList from "./DraftList";
-import CustomerSelect from "./CustomerSelect";
+import getCustomerByPhone from "../../api/orders_api/getCustomerByPhone.js";
+import { OrderPrintTemplate } from "../print/OrderPrintTemplate.jsx";
+import CartSummary from "./CartSummary.jsx";
+import getDiscountAmount from "../../utils/getDiscountAmount.js";
+import CartCheckout from "./CartCheckout.jsx";
+import Drafts from "./Drafts.jsx";
+import DraftList from "./DraftList.jsx";
+import CustomerSelect from "./CustomerSelect.jsx";
 
 function CartList() {
   const {

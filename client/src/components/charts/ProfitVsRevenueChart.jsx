@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { Box, Paper, Typography, useTheme } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
-import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton";
+import ChartMenuSkeleton from "../shared/skeletons/ChartMenuSkeleton.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
