@@ -6,12 +6,14 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CategoryIcon from "@mui/icons-material/Category";
 import StatsSkeleton from "../shared/skeletons/StatsSkeleton.jsx";
+import useFmt from "../../hooks/useFmt.js";
 
 function ExpenseStats() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["expense-stats"],
     queryFn: getExpenseStats,
   });
+  const fmt = useFmt();
 
   if (isLoading)
     return (
@@ -26,17 +28,13 @@ function ExpenseStats() {
 
   const stats = data?.data || {};
 
-  const formatCurrency = (amount) => {
-    return `৳${amount.toLocaleString()}`;
-  };
-
   return (
     <Box sx={{ mb: 4, color: "text.primary" }}>
       <Grid container spacing={2}>
         <Grid size={4}>
           <StatCard
             title="This Month"
-            value={formatCurrency(stats.thisMonth || 0)}
+            value={fmt(stats.thisMonth || 0)}
             icon={<CalendarMonthIcon sx={{ fontSize: 28 }} />}
             type="expenseThisMonth"
           />
@@ -44,7 +42,7 @@ function ExpenseStats() {
         <Grid size={4}>
           <StatCard
             title="All Time"
-            value={formatCurrency(stats.allTime || 0)}
+            value={fmt(stats.allTime || 0)}
             icon={<AccountBalanceWalletIcon sx={{ fontSize: 28 }} />}
             type="expenseAllTime"
           />
@@ -76,7 +74,7 @@ function ExpenseStats() {
             {Object.entries(stats.byCategory).map(([category, amount]) => (
               <Chip
                 key={category}
-                label={`${category}: ${formatCurrency(amount)}`}
+                label={`${category}: ${fmt(amount)}`}
                 sx={{
                   bgcolor: "statCard.expenseByCategory.bg",
                   color: "statCard.expenseByCategory.color",

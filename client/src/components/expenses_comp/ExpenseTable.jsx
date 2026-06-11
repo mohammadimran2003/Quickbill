@@ -17,13 +17,12 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import getExpenses from "../../api/expenses_api/getExpenses.js";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import TablePagination from "@mui/material/TablePagination";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import { useSearchParams } from "react-router-dom";
-import deleteExpense from "../../api/expenses_api/deleteExpense.js";
 import DeleteConfirmationDialog from "../shared/DeleteConfirmationDialog.jsx";
 import { toast } from "sonner";
 import TableSkeleton from "../shared/skeletons/TableSkeleton.jsx";
@@ -34,9 +33,6 @@ function ExpenseTable({ onEditClick = () => {} }) {
   const [rowSelection, setRowSelection] = useState({});
   const [sorting, setSorting] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [expenseToDelete, setExpenseToDelete] = useState(null);
-
   const queryClient = useQueryClient();
 
   const pageNumber = Number(searchParams.get("page")) || 1;
@@ -47,26 +43,8 @@ function ExpenseTable({ onEditClick = () => {} }) {
     queryFn: () => getExpenses(Object.fromEntries(searchParams)),
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteExpense,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      queryClient.invalidateQueries({ queryKey: ["expense-stats"] });
-      setDeleteDialogOpen(false);
-      setExpenseToDelete(null);
-      toast.success("Expense deleted successfully");
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to delete expense");
-    },
-  });
-
   const columns = useExpenseColumns({
     onEditClick,
-    onDeleteClick: (expense) => {
-      setExpenseToDelete(expense);
-      setDeleteDialogOpen(true);
-    },
   });
 
   const handlePageChange = (newPage) => {
@@ -220,17 +198,6 @@ function ExpenseTable({ onEditClick = () => {} }) {
           handleLimitChange(parseInt(event.target.value, 10));
         }}
         rowsPerPageOptions={[2, 5, 10, 25, 50, 100]}
-      />
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onClose={() => {
-          setDeleteDialogOpen(false);
-          setExpenseToDelete(null);
-        }}
-        onConfirm={() => deleteMutation.mutate(expenseToDelete.id)}
-        title="Delete Expense"
-        message={`Are you sure you want to delete "${expenseToDelete?.title}"? This action cannot be undone.`}
-        loading={deleteMutation.isPending}
       />
     </Paper>
   );
