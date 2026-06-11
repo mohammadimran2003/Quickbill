@@ -15,7 +15,7 @@ const OrderSummary = ({ order }) => {
         <Stack spacing={1.5}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">Subtotal</Typography>
-            <Typography fontWeight="medium">{order?.subtotal}</Typography>
+            <Typography fontWeight="medium">{fmt(order?.subtotal)}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography color="text.secondary">

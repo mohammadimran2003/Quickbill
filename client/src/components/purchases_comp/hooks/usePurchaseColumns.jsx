@@ -2,7 +2,6 @@ import { Checkbox, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
-import CancelIcon from "@mui/icons-material/Cancel";
 import useFmt from "../../../hooks/useFmt.js";
 
 const usePurchaseColumns = () => {
@@ -102,26 +101,19 @@ const usePurchaseColumns = () => {
               <VisibilityIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Edit">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() =>
-                navigate(`/purchases/edit-purchase/${row.original.id}`)
-              }
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Cancel Purchase">
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => console.log(row.original)}
-            >
-              <CancelIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          {row.original.status === "ORDERED" && (
+            <Tooltip title="Edit">
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() =>
+                  navigate(`/purchases/edit-purchase/${row.original.id}`)
+                }
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
         </Stack>
       ),
     },
