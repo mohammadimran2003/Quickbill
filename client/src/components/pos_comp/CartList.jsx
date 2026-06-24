@@ -69,7 +69,7 @@ function CartList() {
 	const { mutate } = useMutation({
 		mutationFn: (customer) => createCustomer(customer),
 		onSuccess: () => {
-			refetch();
+			queryClient.invalidateQueries({ queryKey: ['customers'] });
 			setOpenCustomerModal(false);
 		},
 		onError: (err) => {
@@ -93,8 +93,16 @@ function CartList() {
 
 	//handler function
 	const handleCreateCustomerSubmit = (data) => {
-		mutate(data);
-		setOpenCustomerModal(false);
+		toast.promise(mutate(data), {
+			loading: 'Creating customer...',
+			success: (data) => {
+				setOpenCustomerModal(false);
+				return data?.message || 'Customer created successfully';
+			},
+			error: (err) => {
+				return err?.response?.data?.message || 'Failed to create customer';
+			},
+		});
 	};
 
 	const handleOpenCustomerModal = () => {
