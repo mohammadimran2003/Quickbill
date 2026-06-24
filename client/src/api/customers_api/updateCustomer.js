@@ -1,10 +1,8 @@
-import api from "../axios.js";
+import api from '../axios.js';
 
 const updateCustomer = async ({ id, data }) => {
-  console.log(data, "data");
-
-  const response = await api.put(`/customers/${id}`, data);
-  return response.data;
+	const response = await api.put(`/customers/${id}`, data);
+	return response.data;
 };
 
 export default updateCustomer;

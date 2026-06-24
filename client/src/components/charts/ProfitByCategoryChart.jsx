@@ -25,7 +25,7 @@ const COLORS = [
   "#6366F1",
 ];
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, fmt }) => {
   if (active && payload && payload.length) {
     const d = payload[0].payload;
     return (
@@ -262,7 +262,7 @@ export default function ProfitByCategoryChart({
                 />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip fmt={fmt} />} />
             <Legend content={<CustomLegend />} />
           </PieChart>
         </ResponsiveContainer>

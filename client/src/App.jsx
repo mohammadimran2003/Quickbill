@@ -42,6 +42,8 @@ function App() {
   const { user } = useAuth();
   const { mode } = useContext(ThemeContext);
 
+  
+
   return (
     <MuiThemeProvider theme={getTheme(mode)}>
       <BrowserRouter>
